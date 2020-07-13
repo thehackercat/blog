@@ -1,0 +1,17 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title>Jieba - Tag - LexusLee&#39;s blog</title>
+        <link>https://example.com/tags/jieba/</link>
+        <description>Jieba - Tag - LexusLee&#39;s blog</description>
+        <generator>Hugo -- gohugo.io</generator><language>en</language><managingEditor>lexuscyborg103@gmail.com (LexusLee)</managingEditor>
+            <webMaster>lexuscyborg103@gmail.com (LexusLee)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Wed, 26 Apr 2017 03:33:27 &#43;0000</lastBuildDate><atom:link href="https://example.com/tags/jieba/" rel="self" type="application/rss+xml" /><item>
+    <title>Whoosh&#43;jieba 中文检索</title>
+    <link>https://example.com/whoosh-search/</link>
+    <pubDate>Wed, 26 Apr 2017 03:33:27 &#43;0000</pubDate>
+    <author>Author</author>
+    <guid>https://example.com/whoosh-search/</guid>
+    <description><![CDATA[<h2 id="whoosh--jieba-中文检索">Whoosh + jieba 中文检索</h2>
+<h3 id="背景">背景</h3>
+<p>最近项目要用到 <a href="https://whoosh.readthedocs.io/" target="_blank" rel="noopener noreffer">Whoosh</a> 一个 Python 编写的索引检索模块，发现比较少中文资料并且看了学长的代码也好多不懂，故自己照着官网文档撸了一遍，把我自己的理解和官网一些不太清楚的解释写下来。</p>]]></description>
+</item></channel>
+</rss>

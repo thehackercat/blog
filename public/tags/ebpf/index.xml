@@ -1,0 +1,16 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title>eBPF - Tag - LexusLee&#39;s blog</title>
+        <link>https://example.com/tags/ebpf/</link>
+        <description>eBPF - Tag - LexusLee&#39;s blog</description>
+        <generator>Hugo -- gohugo.io</generator><language>en</language><managingEditor>lexuscyborg103@gmail.com (LexusLee)</managingEditor>
+            <webMaster>lexuscyborg103@gmail.com (LexusLee)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Mon, 13 Jan 2020 18:26:09 &#43;0000</lastBuildDate><atom:link href="https://example.com/tags/ebpf/" rel="self" type="application/rss+xml" /><item>
+    <title>eBPF learning 01</title>
+    <link>https://example.com/ebpf-leanring1/</link>
+    <pubDate>Mon, 13 Jan 2020 18:26:09 &#43;0000</pubDate>
+    <author>Author</author>
+    <guid>https://example.com/ebpf-leanring1/</guid>
+    <description><![CDATA[(译) eBPF Tracing 简明教程与示例 背景    原文链接 http://www.brendangregg.com/blog/2019-01-01/learn-ebpf-tracing.html     原文作者 Brendan Gregg   出版时间 01 Jan 2019   翻译时间 11 Jan 2020    之前开 2019 ShangHai KubeConf 听了几场 eBPF 的分享, 最近才开始深入研究, 故打算把研究 Linux performance 的大佬 Brendan Gregg 的文章《Learn eBPF Tracing: Tutorial and Examples》 作为 eBPF 入门翻译一遍, 希望对其他非英语母语的开发者有帮助。
+译文 在 2019 年的 Linux Plumber&rsquo;s 大会上至少有 24 场关于 eBPF 的讲座, eBPF 迅速地成为了炙手可热的技术。所以也许你也计划在新的一年里开始学习 eBPF!]]></description>
+</item></channel>
+</rss>

@@ -1,0 +1,62 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title>RESTful - Tag - LexusLee&#39;s blog</title>
+        <link>https://example.com/tags/restful/</link>
+        <description>RESTful - Tag - LexusLee&#39;s blog</description>
+        <generator>Hugo -- gohugo.io</generator><language>en</language><managingEditor>lexuscyborg103@gmail.com (LexusLee)</managingEditor>
+            <webMaster>lexuscyborg103@gmail.com (LexusLee)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Wed, 06 Apr 2016 02:01:33 &#43;0800</lastBuildDate><atom:link href="https://example.com/tags/restful/" rel="self" type="application/rss+xml" /><item>
+    <title>Django REST Framework 5-关联性和超链接</title>
+    <link>https://example.com/drf-tutorial-5/</link>
+    <pubDate>Wed, 06 Apr 2016 02:01:33 &#43;0800</pubDate>
+    <author>Author</author>
+    <guid>https://example.com/drf-tutorial-5/</guid>
+    <description><![CDATA[<h2 id="关联性和超链接">关联性和超链接</h2>
+<p>之前我们的 api 都是用外键关联，然而实际上用超链接的方式更符合 RESTful 的思想。</p>
+<p>所以在这一章中我们将要用超链接(代替外键的方式)来提高关联性。</p>
+<h3 id="为-api-提供根路径">为 api 提供根路径</h3>
+<p>由于要采用超链接的方式，而之前我们的 &lsquo;movies&rsquo; / &lsquo;directors&rsquo; / &lsquo;users&rsquo; 虽然有了 endpoints ，但 api 本身却没有一个整体的根路径，所以我们使用 <code>@api_view</code> 装饰器来创建一个根路径。</p>
+<p>在 <code>douban/views.py</code> 中添加如下代码:</p>]]></description>
+</item><item>
+    <title>Django REST Framework 4-验证和授权</title>
+    <link>https://example.com/drf-tutorial-4/</link>
+    <pubDate>Mon, 04 Apr 2016 02:01:33 &#43;0800</pubDate>
+    <author>Author</author>
+    <guid>https://example.com/drf-tutorial-4/</guid>
+    <description><![CDATA[验证与授权 目前来看，我们的 API 并没有权限上的限制(即任何人都可以编辑或删除我们的 Movies )，这不是我们想要的。所以我们需要在 API 上做些限制以确保:
+ Movies 与 Users 关联起来。 只有授权了的用户才能创建新的 Movies。 只有 Movies 的创建者才可以更新或删除它。 未授权的用户只能进行查看。  在 models 中增加以下信息 我们先把之前注释掉的
+1 2 3 4 5 6 7  director = models.ForeignKey(&#39;celebrity&#39;, related_name=&#39;Movies&#39;) class celebrity(models.Model): name = models.CharField(max_length=100, blank=True, default=&#39;&#39;) age = models.IntegerField() gender = models.CharField(choices=GENDER_CHOICES, default=&#39;male&#39;, max_length=20)   关联导演类的注释解开，来看看多张表在生成的 api 里的关联性。
+接着在 models.py 中的 Movies 类中加入以下代码来确定 Movies 的创建者:
+1  owner = models.ForeignKey(&#39;auth.User&#39;, related_name=&#39;Movies&#39;)   最后 models.]]></description>
+</item><item>
+    <title>Django REST Framework 3-基于类的视图</title>
+    <link>https://example.com/drf-tutorial-3/</link>
+    <pubDate>Sun, 03 Apr 2016 02:01:33 &#43;0800</pubDate>
+    <author>Author</author>
+    <guid>https://example.com/drf-tutorial-3/</guid>
+    <description><![CDATA[基于类的视图 基于类的视图比先前基于函数的视图的可重用性更强，可以更多快好省地 ( DRY )地写出简洁的代码。
+把 API 用基于类的视图的方式重写 编辑 douban/views.py 进行如下重写
+1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 53  #!/usr/bin/python # -*- coding: utf-8 -*- from douban.]]></description>
+</item><item>
+    <title>Django REST Framework 2-请求和响应</title>
+    <link>https://example.com/drf-tutorial-2/</link>
+    <pubDate>Sat, 02 Apr 2016 02:01:33 &#43;0800</pubDate>
+    <author>Author</author>
+    <guid>https://example.com/drf-tutorial-2/</guid>
+    <description><![CDATA[请求与响应 请求对象 DRF 提供了一个 request 对象，它继承自 HttpRequest 并且提供了更丰富的对 request 的解析处理的方法。其中最核心的是 request 对象的 request.data 属性，它看起来和 Django 的request.POST 相似，但是在处理 Web API 上更强大些。
+1 2  request.POST # Only handles form data. Only works for &#39;POST&#39; method. request.data # Handles arbitrary data. Works for &#39;POST&#39;, &#39;PUT&#39; and &#39;PATCH&#39; methods.   request.data 相比于 request.POST 能够处理 api 中的 「POST」、「PUT」、「PATCH」等请求。
+返回对象 DRF 也提供了一个 response 对象，它能把未 render 的对象(数据)通过一定方式转化为正确的数据格式返回给客户端。
+1  return Response(data) # Renders to content type as requested by the client.]]></description>
+</item><item>
+    <title>Django REST Framework 1-序列化</title>
+    <link>https://example.com/drf-tutorial-1/</link>
+    <pubDate>Fri, 01 Apr 2016 02:01:33 &#43;0800</pubDate>
+    <author>Author</author>
+    <guid>https://example.com/drf-tutorial-1/</guid>
+    <description><![CDATA[序列化 环境搭建 首先我们先新建一个 restapi 项目并安装上 django-rest-framework (DRF) 环境
+1 2 3 4  $ pip install djangorestframework $ python manage.py startnewproject restapi $ cd restapi $ python manage.py startnewapp douban   接着，我们需要在 setting.py 里的加入如下代码:
+1 2 3 4 5  INSTALLED_APPS = ( ... &#39;rest_framework&#39;, &#39;douban&#39;, )   建立模型 由于我炒鸡喜欢看电影，所以仿着 douban-API 来做个简易的豆瓣电影的 rest-api 。
+所以我们就用这个「仿豆瓣电影 api 」来作为栗子开始教程吧！
+编辑 douban/models.py 文件并加入以下代码:
+1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41  #!]]></description>
+</item></channel>
+</rss>

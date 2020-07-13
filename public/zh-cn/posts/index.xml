@@ -1,0 +1,78 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title>所有文章 - LexusLee&#39;s blog</title>
+        <link>https://example.com/zh-cn/posts/</link>
+        <description>所有文章 | LexusLee&#39;s blog</description>
+        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>lexuscyborg103@gmail.com (LexusLee)</managingEditor>
+            <webMaster>lexuscyborg103@gmail.com (LexusLee)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Fri, 10 Jul 2020 19:10:46 &#43;0000</lastBuildDate><atom:link href="https://example.com/zh-cn/posts/" rel="self" type="application/rss+xml" /><item>
+    <title>升级 k8s 集群 docker</title>
+    <link>https://example.com/zh-cn/upgrade-dockerd-in-k8s/</link>
+    <pubDate>Fri, 10 Jul 2020 19:10:46 &#43;0000</pubDate>
+    <author>作者</author>
+    <guid>https://example.com/zh-cn/upgrade-dockerd-in-k8s/</guid>
+    <description><![CDATA[背景 最近需要给 k8s 集群升级 docker, 预期升到 19.03.x. 遇到一些问题, 记录下 调试期间遇到的问题: 集群中的 ingress 是以 daemonsets 方式部署, 通过 node-selector 选择节点定死. 而 kubectl drain node 并不 evict daemonset pods.]]></description>
+</item><item>
+    <title>告警收敛设计</title>
+    <link>https://example.com/zh-cn/alert-convergence/</link>
+    <pubDate>Tue, 07 Jul 2020 22:30:07 &#43;0000</pubDate>
+    <author>作者</author>
+    <guid>https://example.com/zh-cn/alert-convergence/</guid>
+    <description><![CDATA[背景 最近在豆瓣做面向开发者的 op 报警系统, 最头疼的是下列几种情况 脉冲型报警 单个原因引起的报警发散 多个报警为同个诱因 由于目前现有的一些告警系统都]]></description>
+</item><item>
+    <title>eBPF learning 01</title>
+    <link>https://example.com/zh-cn/ebpf-leanring1/</link>
+    <pubDate>Mon, 13 Jan 2020 18:26:09 &#43;0000</pubDate>
+    <author>作者</author>
+    <guid>https://example.com/zh-cn/ebpf-leanring1/</guid>
+    <description><![CDATA[(译) eBPF Tracing 简明教程与示例 背景 原文链接 http://www.brendangregg.com/blog/2019-01-01/learn-ebpf-tracing.html 原文作者 Brendan Gregg 出版时间 01 Jan 2019 翻译时间 11 Jan 2020 之前开 2019 ShangHai KubeConf 听了几场 eBPF 的分享, 最近才开始深入研究, 故打算把研究]]></description>
+</item><item>
+    <title>阿芙罗狄忒你不要哭泣</title>
+    <link>https://example.com/zh-cn/dont-cry-aphrodite/</link>
+    <pubDate>Thu, 09 Jan 2020 20:20:28 &#43;0000</pubDate>
+    <author>作者</author>
+    <guid>https://example.com/zh-cn/dont-cry-aphrodite/</guid>
+    <description><![CDATA[这些日子隐隐觉得你并不开心, 我十分自责, 总觉得是那天妖精们藏起了星星。 北京的天总是阴沉沉的，有时候好像是要开启一场庭审，让我紧张得四肢发麻，]]></description>
+</item><item>
+    <title>Talk about Kubernetes cronJob controller</title>
+    <link>https://example.com/zh-cn/talk-about-k8s-cronjob/</link>
+    <pubDate>Sat, 14 Dec 2019 13:57:32 &#43;0000</pubDate>
+    <author>作者</author>
+    <guid>https://example.com/zh-cn/talk-about-k8s-cronjob/</guid>
+    <description><![CDATA[背景 之前一段时间正好接触到 kubernetes cronjob, 在接入时遇上了在一定量级下 cronjob schedule delay 的问题, 故开始读了下代码, 发现了一些问题并试着调优了下 存在的问题 按生产环境实际]]></description>
+</item><item>
+    <title>你就是我的灵光</title>
+    <link>https://example.com/zh-cn/you-are-my-sunshine/</link>
+    <pubDate>Mon, 05 Aug 2019 21:54:03 &#43;0000</pubDate>
+    <author>作者</author>
+    <guid>https://example.com/zh-cn/you-are-my-sunshine/</guid>
+    <description><![CDATA[你像个琢磨不透的妖精。 前一天晚上我们一起打游戏到深夜，今天我却变成了冷漠的『这一位』 这么说，你是不是没那么喜欢我。 每每至此，我就又开始瞎想些]]></description>
+</item><item>
+    <title>请你不要吃掉我</title>
+    <link>https://example.com/zh-cn/badly-wanted/</link>
+    <pubDate>Fri, 02 Aug 2019 22:57:39 &#43;0000</pubDate>
+    <author>作者</author>
+    <guid>https://example.com/zh-cn/badly-wanted/</guid>
+    <description><![CDATA[真想听一听见你的声音啊。 今晚倘若再不能见着你，我准睡不着。 已经三个夜晚你没有理我了，你是不是故意躲着我。 今天是星期五，我一点都开心不起来，一]]></description>
+</item><item>
+    <title>大醋坛子熊猫侠</title>
+    <link>https://example.com/zh-cn/cutanzi-panda/</link>
+    <pubDate>Thu, 01 Aug 2019 20:19:11 &#43;0000</pubDate>
+    <author>作者</author>
+    <guid>https://example.com/zh-cn/cutanzi-panda/</guid>
+    <description><![CDATA[前天，我们吵架了，但主要是我一人暗暗生闷气。 在此之前，我总认为自己已经是不依附于任何情感的，也鲜有真正让我生气的事儿。 没想到在不经意间听到你]]></description>
+</item><item>
+    <title>我想你也看到这朵云</title>
+    <link>https://example.com/zh-cn/i-want-you-to-see-this-sky/</link>
+    <pubDate>Sat, 27 Jul 2019 20:43:04 &#43;0000</pubDate>
+    <author>作者</author>
+    <guid>https://example.com/zh-cn/i-want-you-to-see-this-sky/</guid>
+    <description><![CDATA[「你快看这朵云，舒张得恰巧。像刚出城堡骑着穿山甲的鹫鹰骑士，持着大枪冲向巨龙，刺破了一片天，天外的金光像流萤一样泄了出来」 刚在百老汇看完《旺]]></description>
+</item><item>
+    <title>记一次升级 kube-proxy ipvs 引发的线上故障</title>
+    <link>https://example.com/zh-cn/kubeproxy-ipvs-accident/</link>
+    <pubDate>Mon, 29 Apr 2019 19:10:46 &#43;0000</pubDate>
+    <author>作者</author>
+    <guid>https://example.com/zh-cn/kubeproxy-ipvs-accident/</guid>
+    <description><![CDATA[背景 最近在升级集群的 kube-prxoy 并开启 ipvs mode, 引发了一些线上故障 替换原因 由于豆瓣的集群使用 calico + kube-proxy iptables mode + puppet iptable 脚本管理 三个组件共同操作同一份 iptables, 容易出现 race condition 问题]]></description>
+</item></channel>
+</rss>

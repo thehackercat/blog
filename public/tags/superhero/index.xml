@@ -1,0 +1,17 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title>Superhero - Tag - LexusLee&#39;s blog</title>
+        <link>https://example.com/tags/superhero/</link>
+        <description>Superhero - Tag - LexusLee&#39;s blog</description>
+        <generator>Hugo -- gohugo.io</generator><language>en</language><managingEditor>lexuscyborg103@gmail.com (LexusLee)</managingEditor>
+            <webMaster>lexuscyborg103@gmail.com (LexusLee)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Sat, 16 May 2015 02:01:33 &#43;0800</lastBuildDate><atom:link href="https://example.com/tags/superhero/" rel="self" type="application/rss+xml" /><item>
+    <title>长颈鹿侠</title>
+    <link>https://example.com/giraffe-man/</link>
+    <pubDate>Sat, 16 May 2015 02:01:33 &#43;0800</pubDate>
+    <author>Author</author>
+    <guid>https://example.com/giraffe-man/</guid>
+    <description><![CDATA[<p></p>
+<p><strong>从小，我就想做英雄大侠。</strong></p>
+<p><strong>长着翅膀，穿梭云雾间如探囊取物的那种。</strong></p>]]></description>
+</item></channel>
+</rss>

@@ -1,0 +1,153 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title>All Posts - LexusLee&#39;s blog</title>
+        <link>https://example.com/posts/</link>
+        <description>All Posts | LexusLee&#39;s blog</description>
+        <generator>Hugo -- gohugo.io</generator><language>en</language><managingEditor>lexuscyborg103@gmail.com (LexusLee)</managingEditor>
+            <webMaster>lexuscyborg103@gmail.com (LexusLee)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Fri, 10 Jul 2020 19:10:46 &#43;0000</lastBuildDate><atom:link href="https://example.com/posts/" rel="self" type="application/rss+xml" /><item>
+    <title>升级 k8s 集群 docker</title>
+    <link>https://example.com/upgrade-dockerd-in-k8s/</link>
+    <pubDate>Fri, 10 Jul 2020 19:10:46 &#43;0000</pubDate>
+    <author>Author</author>
+    <guid>https://example.com/upgrade-dockerd-in-k8s/</guid>
+    <description><![CDATA[背景 最近需要给 k8s 集群升级 docker, 预期升到 19.03.x.
+遇到一些问题, 记录下
+调试期间遇到的问题: 集群中的 ingress 是以 daemonsets 方式部署, 通过 node-selector 选择节点定死.
+而 kubectl drain node 并不 evict daemonset pods. 故在升级/重启 dockerd 期间会造成 ingress 短暂不可用. 而现有的 lb 的 health check 不能 cover 这一点, 仍会有流量打入.会导致升级期间 ingress 流量黑洞问题.
+并且 dockerd 拉起来后, 有些 daemonsets 由于 ingress 自身 livenessProbe 等原因在 dockerd 升级期间持续 crashLoopbackoff 了, 一个原因是仍然 mount 一份旧的 docker overlay. 在 delete pod 重启后恢复. 故需要一个手段在升级后重启 ingress pods.
+Ref https://github.com/kubernetes/kubernetes/issues/75482#issuecomment-511476698]]></description>
+</item><item>
+    <title>告警收敛设计</title>
+    <link>https://example.com/alert-convergence/</link>
+    <pubDate>Tue, 07 Jul 2020 22:30:07 &#43;0000</pubDate>
+    <author>Author</author>
+    <guid>https://example.com/alert-convergence/</guid>
+    <description><![CDATA[背景 最近在豆瓣做面向开发者的 op 报警系统, 最头疼的是下列几种情况
+ 脉冲型报警 单个原因引起的报警发散 多个报警为同个诱因  由于目前现有的一些告警系统都强依赖后面的监控 agent/cmdb , 比如 open-falcon/prometheus 虽然都支持了告警收敛这一套, 但要从豆瓣的 statsd+icinga 迁移到 alertManager 需要折腾一阵。而我实际只想要一个中间轻量的 alert exporter 去做告警聚合/收敛.
+所以我期望实现下列 feature:
+ 对于告警可配置梯度, 比如 apperr &gt; 50, 则立马报警不做 retry, 并且 notify_interval 为 1 分钟; 对于 50 &gt; apperr &gt; 20 则有3次 retry, retry 周期为 1 分钟, 报警周期为2分钟. 对于 apperr &lt; 1 则 retry 5 次, retry 周期 3 分钟, 报警周期 5 分钟. 告警配置中可用 与|或|非 的方式进行组合告警,告警收敛. 如  1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18  [rules] apperr - script: xxx - label: http, service, statsd, codeerr - warning_threshold: 0.]]></description>
+</item><item>
+    <title>eBPF learning 01</title>
+    <link>https://example.com/ebpf-leanring1/</link>
+    <pubDate>Mon, 13 Jan 2020 18:26:09 &#43;0000</pubDate>
+    <author>Author</author>
+    <guid>https://example.com/ebpf-leanring1/</guid>
+    <description><![CDATA[(译) eBPF Tracing 简明教程与示例 背景    原文链接 http://www.brendangregg.com/blog/2019-01-01/learn-ebpf-tracing.html     原文作者 Brendan Gregg   出版时间 01 Jan 2019   翻译时间 11 Jan 2020    之前开 2019 ShangHai KubeConf 听了几场 eBPF 的分享, 最近才开始深入研究, 故打算把研究 Linux performance 的大佬 Brendan Gregg 的文章《Learn eBPF Tracing: Tutorial and Examples》 作为 eBPF 入门翻译一遍, 希望对其他非英语母语的开发者有帮助。
+译文 在 2019 年的 Linux Plumber&rsquo;s 大会上至少有 24 场关于 eBPF 的讲座, eBPF 迅速地成为了炙手可热的技术。所以也许你也计划在新的一年里开始学习 eBPF!]]></description>
+</item><item>
+    <title>阿芙罗狄忒你不要哭泣</title>
+    <link>https://example.com/dont-cry-aphrodite/</link>
+    <pubDate>Thu, 09 Jan 2020 20:20:28 &#43;0000</pubDate>
+    <author>Author</author>
+    <guid>https://example.com/dont-cry-aphrodite/</guid>
+    <description><![CDATA[这些日子隐隐觉得你并不开心, 我十分自责, 总觉得是那天妖精们藏起了星星。
+北京的天总是阴沉沉的，有时候好像是要开启一场庭审，让我紧张得四肢发麻，不知道你会不会也因此闷闷不乐。这样的日子，可真叫人腻味，我沮丧得想睡觉。唯独那天看着你把脸藏在被子里沉沉地入睡，我欢喜得不行，这一天何其矜贵，希望你做个好梦。
+所以我特别期望能有个间隙去看看被藏起来的东西，看星星也是我生活中为数不多的理想主义。
+那时你说我喋喋不休，要知道我是个时刻沸腾的人，能滋滋作响一整天，总有一些莫名其妙的巨大能量，但我也要悄悄地藏起来，可要把我所有的能量分成一天天的给你。这样我就能沉静许多，不过其实一见到你，那些跳脱的念头总能平静下来。
+就像一只海豚，终于跳进了阿芙罗狄忒的海湾，有海鸥有落日，不免沉浸其中。
+这样的日子，我也想藏起来，担心有一天我不会记得，只期望有那么几个瞬间，偶然念及你的名字，心底像冒出海葵与青荇，世界变量明亮开朗起来。
+所以，我还想看着你笑，看着你看电影时甜甜地睡着，你说，我哪能让你一个人生闷气呢。
+你说未来会有多少无生趣的毫不起眼的夜晚，我就跋涉到灯塔上，威胁妖精们把藏起来的光，投射下来。
+加油啊，阿芙罗狄忒。]]></description>
+</item><item>
+    <title>Talk about Kubernetes cronJob controller</title>
+    <link>https://example.com/talk-about-k8s-cronjob/</link>
+    <pubDate>Sat, 14 Dec 2019 13:57:32 &#43;0000</pubDate>
+    <author>Author</author>
+    <guid>https://example.com/talk-about-k8s-cronjob/</guid>
+    <description><![CDATA[背景 之前一段时间正好接触到 kubernetes cronjob, 在接入时遇上了在一定量级下 cronjob schedule delay 的问题, 故开始读了下代码, 发现了一些问题并试着调优了下
+存在的问题 按生产环境实际测试来看约 250-375 个 */1 * * * * 每分钟 interval 的 cronjob 就会产生 delay, cronjob 和 controller manager 没有异常 event 但新产生的 job 出现了延迟, 由于我们设置了 startingDeadlineSeconds 故累加起来的 delay 最终导致了 cron 任务严重滞后
+代码解读 出于分析上述问题的目的, 读了下 cronjob controller 的代码, 代码量不多, 可能由于没上 GA 的原因, 整个 controllor 代码的设计也比较过程式, 不会像其他组件用到一些比如 Informer, refractor之类的组件读起来相对晦涩
+下面开始解读下 release1.17 分支的 k8s cronjob controller 代码
+ Controller struct  1 2 3 4 5 6 7  type Controller struct { kubeClient clientset.]]></description>
+</item><item>
+    <title>你就是我的灵光</title>
+    <link>https://example.com/you-are-my-sunshine/</link>
+    <pubDate>Mon, 05 Aug 2019 21:54:03 &#43;0000</pubDate>
+    <author>Author</author>
+    <guid>https://example.com/you-are-my-sunshine/</guid>
+    <description><![CDATA[你像个琢磨不透的妖精。
+前一天晚上我们一起打游戏到深夜，今天我却变成了冷漠的『这一位』 这么说，你是不是没那么喜欢我。
+每每至此，我就又开始瞎想些我们分离的日子。
+我知道多疑是深植在我们的根性里，我对你却如此猜忌，我真是个坏家伙。
+昨天看书抄了一句话
+「对于见面我看得较重，对于分别我看得较轻，这是人生取巧之一法，否则聚少离多，悲哀多于欢乐，一生只好负着无尽痛苦的债了。」
+我却把别离看得很重，有时甚至有些宿命的情调，会觉得终有一天我们会分别，我害怕那天的到来。却又觉得这样揪着伫念的心，想必很会让你担心吧。所以总试着做些改变，我想着只要我们真正相爱，哪怕一天，一小时，那我可千万不能把我的苦难流露给你，我想看着你笑，特别想。
+今晚回家路上，见着一位小孩在卖盐水菠萝，周围散着飞蝇，狗叫和蝉鸣热闹得扎耳。可是都与你无关，顿时对菠萝失去的兴趣。
+到家时甚是沮丧，像是被一种抑郁缠绕其中，唯独想着你，写起日记来，才感觉所有的温情开始流到笔端。
+你说，今夜何时我才能听见你的声音。
+今天我和室友们说，我已经很久没有做梦了，像是被盗梦人收割走了灵光。
+我骗了他们，昨夜我又梦到了你，梦见我变成了聊斋志异里的促织，趴在你臂上，挠得你痒痒的。
+我不太愿意去想这意味着什么，醒来时只觉得心理暖洋洋的，这股暖流正逐渐透过我的细胞壁溢到空气里，我多想与你分享这间空气。
+希望你不要介意，那我一定说个不停。]]></description>
+</item><item>
+    <title>请你不要吃掉我</title>
+    <link>https://example.com/badly-wanted/</link>
+    <pubDate>Fri, 02 Aug 2019 22:57:39 &#43;0000</pubDate>
+    <author>Author</author>
+    <guid>https://example.com/badly-wanted/</guid>
+    <description><![CDATA[真想听一听见你的声音啊。
+今晚倘若再不能见着你，我准睡不着。
+已经三个夜晚你没有理我了，你是不是故意躲着我。
+今天是星期五，我一点都开心不起来，一想到不能像前几个周末一样宅在小屋子里看《乐队的夏天》，我的灵魂就像被汲取干了一般。
+我渴望见着你，我们打一架，把心里的不痛快都说出来，好不好。
+我又渴望抱抱你，这几天你是开心还是伤心呢，我全然不知。
+这几天下来，我逐渐开始认清自己，我实在是个坏人，你不要为我不安。
+啊你突然回来了，心跳好快，我不想写了，我有好多好多话跟你说，我看着你的眼睛，啥都说不出来，我想把你的美写下来，写不出，我想写诗，写雨，但满脑子想的都是你。]]></description>
+</item><item>
+    <title>大醋坛子熊猫侠</title>
+    <link>https://example.com/cutanzi-panda/</link>
+    <pubDate>Thu, 01 Aug 2019 20:19:11 &#43;0000</pubDate>
+    <author>Author</author>
+    <guid>https://example.com/cutanzi-panda/</guid>
+    <description><![CDATA[前天，我们吵架了，但主要是我一人暗暗生闷气。
+在此之前，我总认为自己已经是不依附于任何情感的，也鲜有真正让我生气的事儿。
+没想到在不经意间听到你提起那只臭猪的名字，忍不住暴跳如雷。
+我是惶恐的，极其自私的，真的。
+也许是我自己卑鄙无耻的胡猜，但一想到有一天会瞥见你清澈的晶状体房水里倒映的是别人的身影，我就懊恼。
+这些天你不怎么想理我，我能听到办公室的时针滴答滴答的毫无意义的钟摆。我把标记过的好多小说和电影都跳着翻了翻，却总是静不下心。我一度以为即便不再那么鲜活地见到你，我也能很平静地走过去，能逃遁到更远的地方去。
+王小波说的是对的，人是轻易不能知道自己的。
+人可以对别人有最细微的感觉，但对自己就迟钝得多。
+后知后觉地反应过来，耍的这些小脾气真的会让你担心。我以为自己会很得意，会觉得自己是被需要的，但才发现自己多么丑陋。我不愿意让你再焦心了。我喜欢看你笑，笑起来皱着鼻子，团成一只小饭团。可是我这么稀里糊涂地，又让你伤心了。
+我真是无可救药的大笨蛋，你说我这个人还有值得原谅的地方吗。
+我好难过，感觉自己有个什么决断做不出来，生闷气的那天晚上，我走到了很远的地方，看了很久的天空，夜晚的光收敛进漫天的星云中，我多希望里面会泄出金光，那我一定把你叫出来，想那些金萤的东西包裹住我们。
+你知不知道，有时候我脑洞很大，整个故事的来龙去脉，悲欢离合，我都想明白了，只是我还不能狠下心去告诉你，你一直在我理想生活的构建里。我多想告诉你我的秘密，我想把我所有感官，所有体验都分享给你，我是一个时刻沸腾着的人，永远滋滋地响，翻腾不休。但一想到你，小心翼翼地，我就能平静下来。
+明天就是星期五了，我真怕你从此不再理我，希望你明天能开始理我，要不，你可以吃掉我。]]></description>
+</item><item>
+    <title>我想你也看到这朵云</title>
+    <link>https://example.com/i-want-you-to-see-this-sky/</link>
+    <pubDate>Sat, 27 Jul 2019 20:43:04 &#43;0000</pubDate>
+    <author>Author</author>
+    <guid>https://example.com/i-want-you-to-see-this-sky/</guid>
+    <description><![CDATA[「你快看这朵云，舒张得恰巧。像刚出城堡骑着穿山甲的鹫鹰骑士，持着大枪冲向巨龙，刺破了一片天，天外的金光像流萤一样泄了出来」
+刚在百老汇看完《旺角卡门》, 饿得五脊六兽, 急冲冲地想去家粤菜馆子点一碗炖鸡老汤。
+记得第一次聊起这部电影，是给你写信后的两三周，你也说王家卫的电影里从来不会讲这俩人是因为什么爱上的，却好像都是无缘无故就爱上了。只有状态，毫无因果。
+这难道不迷人吗，我天生爱这些没由头的东西，它们是弹丸偏离轨道击碎的窗户，只能听见其响，意识过来时，玻璃渣已碎了一地。这些难以琢磨的不期而至的碰撞，总是不经意地夺走你的时光，直到踩在玻璃渣上刺痛了脚才反应过来。
+但我仍然好奇在长久的一段时间后，阿娥会不会反应过来，那个藏起来的杯子，一直没有被找到。从此以往地，便是像每一天这样灰暗愁闷的日子，也得爱，也得焦心。她得有多难过。
+莱蒙托夫说「也许我爱的已不是你，而是对你付出的热情。就像是一座神庙，即使荒芜，仍然是祭坛。一座雕像，即使坍塌，仍然是神」
+我最近又陷入了这种状态，第一次知悉你要去北方，不免觉得北方那么冷，由不得任性，满脑子叮嘱你得穿秋裤。
+等我真正到了北方，才发现北方的冬天是下雪的，一点也不冷，有几片孤花趁着下雪天旺盛地生长，有猫咪对着窗台飘的雪花跳脚。我憋足了劲儿说，你们都盛开起来吧，把白茫茫一片裸露的大地撕裂，把沸腾的鲜血都撒在上面。约莫半载，雪地里开始飘出红色的花瓣，风却慢慢把这些玫瑰吹散，最后枯竭得像精卫填海，填不进白茫茫一片，精疲力竭。
+再后来，屋子搬来了年轻人，像所有青年才俊一样，卯住劲投身入热枕中。就像你当时走过的路，我总想着这些发自内心的不愉悦却要被汲汲营营的名誉、条条框框的规则、战战兢兢的人情所淹没，就感到无比的孤独。
+我看你像大部分的水滴一样，流入了那条大河里，川流地河水互相摩擦生热逐渐漫起水雾，那些浓浊的雾气徘徊在你我之间，我想它散开，因为我怕看不见你，我又想它永远在这，因为我怕看不见你。
+就像基因编辑里人们趋之若鹜地想要拼接自己的 DNA 移植上最优的属性，巴不得是个天生的六边形战士，流水工厂式的繁殖，一代一代商品化的高级人，予取予求地寻找另一位六边形战士，聚群成一类分不清的基因链，齐步行走着，像是动物世界里驼铃的迁移。我暗暗期望你不会是那个空茫的人之一，能有间隙从真实人生中探出头放空出来，去做些心怡的事儿，也期望之中有人能游到更加真实的、离得不远的一些去处，逃离这些日复一日消磨着人的远足。
+去粤菜馆子的路上，看着窗外，这座城市像上了发条一般运转，循规蹈矩，咿呀作响，日复一日地用同一种模式运营着所有公民。仿佛悬浮于城市上空仍有一台工业时代的冒着仙气的蒸汽机，张牙舞爪地喷射着火焰，热飒了熊猫侠。似乎北方的夏天远比冬天令人生厌得多，不知道你那儿今夜起风吗。
+起风了，就该有云，云卷云舒，然后再被风吹散。
+归途路上，又不禁胡思乱想，那时候听你说想看成都的云，巴不得把天空扯得稀碎，结果只剩下三三两两形单影只的几朵，经不起妄想。
+飘飘然地，在归途路上，遇见了它，像奔向风车的骑士，喜欢极了，我多想你也看到这朵云。
+于北京，
+粤菜馆子路上，
+肚子饿饿饿。
+2019/07/27]]></description>
+</item><item>
+    <title>记一次升级 kube-proxy ipvs 引发的线上故障</title>
+    <link>https://example.com/kubeproxy-ipvs-accident/</link>
+    <pubDate>Mon, 29 Apr 2019 19:10:46 &#43;0000</pubDate>
+    <author>Author</author>
+    <guid>https://example.com/kubeproxy-ipvs-accident/</guid>
+    <description><![CDATA[背景 最近在升级集群的 kube-prxoy 并开启 ipvs mode, 引发了一些线上故障
+替换原因 由于豆瓣的集群使用 calico + kube-proxy iptables mode + puppet iptable 脚本管理
+三个组件共同操作同一份 iptables, 容易出现 race condition 问题, 并且还会互相抢占 iptables 锁, 是个 Mutex unsafe 的操作, 不易于维护.
+故打算尽量减少操作 iptables 的部分, 替换成 ipvs
+事故回溯 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24  @400000005cbea9a81eaf9164 W0423 13:58:54.514773 14016 server.go:195] WARNING: all flags other than --config, --write-config-to, and --cleanup are deprecated.]]></description>
+</item></channel>
+</rss>

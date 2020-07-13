@@ -1,0 +1,30 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title>Octopress - Tag - LexusLee&#39;s blog</title>
+        <link>https://example.com/tags/octopress/</link>
+        <description>Octopress - Tag - LexusLee&#39;s blog</description>
+        <generator>Hugo -- gohugo.io</generator><language>en</language><managingEditor>lexuscyborg103@gmail.com (LexusLee)</managingEditor>
+            <webMaster>lexuscyborg103@gmail.com (LexusLee)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Fri, 20 Nov 2015 16:32:12 &#43;0800</lastBuildDate><atom:link href="https://example.com/tags/octopress/" rel="self" type="application/rss+xml" /><item>
+    <title>在 Octopress 中生成包含 liquid 语句的代码</title>
+    <link>https://example.com/blog-build-with-liquid/</link>
+    <pubDate>Fri, 20 Nov 2015 16:32:12 &#43;0800</pubDate>
+    <author>Author</author>
+    <guid>https://example.com/blog-build-with-liquid/</guid>
+    <description><![CDATA[<h2 id="背景">背景</h2>
+<p>由于之前写 <a href="http://thehackercat.me/blog/2015/11/16/django-learning2/" target="_blank" rel="noopener noreffer">Django &ndash; Templates</a> 篇时要用到包含 Liquid 语法的示例代码，而 Octopress (Jekyll) 在后端使用 Liquid 来处理生成 Web Pages ，对于文章内部插入的原本用来作示例的 Liquid 代码会被解析成 Web Pages 生成语句而不是原本的内容。故苦恼了我一会儿 Q.Q</p>
+<p><del>不过这都不是事儿</del></p>
+<h2 id="解决方法">解决方法</h2>
+<p>比如，我之前写的</p>]]></description>
+</item><item>
+    <title>使用Octopress搭建静态博客</title>
+    <link>https://example.com/fix-the-datetime-bug/</link>
+    <pubDate>Mon, 09 Nov 2015 11:25:00 &#43;0800</pubDate>
+    <author>Author</author>
+    <guid>https://example.com/fix-the-datetime-bug/</guid>
+    <description><![CDATA[<p></p>
+<p>最近把个人博客搭好了，用了<a href="https://github.com/octopress/octopress" target="_blank" rel="noopener noreffer">Octopress</a>,一个基于 Jekyll 的集成开发工具。</p>
+<p>原来 CSDN 的那个『骇客猫』弃坑了。</p>
+<h2 id="安装和配置">安装和配置.</h2>
+<p>Octopress 的安装配置比较简单，是需要按照官网或者网上一些<a href="http://shengmingzhiqing.com/blog/setup-octopress-with-github-pages.html/" target="_blank" rel="noopener noreffer">教程</a>一步步走即可。</p>]]></description>
+</item></channel>
+</rss>

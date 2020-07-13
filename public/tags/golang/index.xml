@@ -1,0 +1,30 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title>Golang - Tag - LexusLee&#39;s blog</title>
+        <link>https://example.com/tags/golang/</link>
+        <description>Golang - Tag - LexusLee&#39;s blog</description>
+        <generator>Hugo -- gohugo.io</generator><language>en</language><managingEditor>lexuscyborg103@gmail.com (LexusLee)</managingEditor>
+            <webMaster>lexuscyborg103@gmail.com (LexusLee)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Sat, 14 Dec 2019 13:57:32 &#43;0000</lastBuildDate><atom:link href="https://example.com/tags/golang/" rel="self" type="application/rss+xml" /><item>
+    <title>Talk about Kubernetes cronJob controller</title>
+    <link>https://example.com/talk-about-k8s-cronjob/</link>
+    <pubDate>Sat, 14 Dec 2019 13:57:32 &#43;0000</pubDate>
+    <author>Author</author>
+    <guid>https://example.com/talk-about-k8s-cronjob/</guid>
+    <description><![CDATA[背景 之前一段时间正好接触到 kubernetes cronjob, 在接入时遇上了在一定量级下 cronjob schedule delay 的问题, 故开始读了下代码, 发现了一些问题并试着调优了下
+存在的问题 按生产环境实际测试来看约 250-375 个 */1 * * * * 每分钟 interval 的 cronjob 就会产生 delay, cronjob 和 controller manager 没有异常 event 但新产生的 job 出现了延迟, 由于我们设置了 startingDeadlineSeconds 故累加起来的 delay 最终导致了 cron 任务严重滞后
+代码解读 出于分析上述问题的目的, 读了下 cronjob controller 的代码, 代码量不多, 可能由于没上 GA 的原因, 整个 controllor 代码的设计也比较过程式, 不会像其他组件用到一些比如 Informer, refractor之类的组件读起来相对晦涩
+下面开始解读下 release1.17 分支的 k8s cronjob controller 代码
+ Controller struct  1 2 3 4 5 6 7  type Controller struct { kubeClient clientset.]]></description>
+</item><item>
+    <title>浅谈 k8s service&amp;kube-proxy</title>
+    <link>https://example.com/k8s-service-endpoints/</link>
+    <pubDate>Fri, 14 Sep 2018 19:10:46 &#43;0000</pubDate>
+    <author>Author</author>
+    <guid>https://example.com/k8s-service-endpoints/</guid>
+    <description><![CDATA[<div style="text-align: right;">Lexus Lee</div>
+<h3 id="背景">背景</h3>
+<p>最开始听到同事 k8s 分享时比较困惑我的一个问题是 k8s 怎么实现一个私有 ip(虚拟 ip，以下简称 vip)到另一个私有ip收发包的。</p>
+<p>不过其实我想知道的应该是 k8s 通信机制，它是怎么实现服务发现的，新建的 pod 是怎么感知到的，万一有些 pod 节点变更 vip 变了 k8s 是如何感知的。</p>
+<p>基于这个问题，做一下关于 k8s service&amp;kube-proxy 的分享。</p>]]></description>
+</item></channel>
+</rss>

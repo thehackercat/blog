@@ -1,0 +1,19 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title>Iptables - Tag - LexusLee&#39;s blog</title>
+        <link>https://example.com/tags/iptables/</link>
+        <description>Iptables - Tag - LexusLee&#39;s blog</description>
+        <generator>Hugo -- gohugo.io</generator><language>en</language><managingEditor>lexuscyborg103@gmail.com (LexusLee)</managingEditor>
+            <webMaster>lexuscyborg103@gmail.com (LexusLee)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Mon, 29 Apr 2019 19:10:46 &#43;0000</lastBuildDate><atom:link href="https://example.com/tags/iptables/" rel="self" type="application/rss+xml" /><item>
+    <title>记一次升级 kube-proxy ipvs 引发的线上故障</title>
+    <link>https://example.com/kubeproxy-ipvs-accident/</link>
+    <pubDate>Mon, 29 Apr 2019 19:10:46 &#43;0000</pubDate>
+    <author>Author</author>
+    <guid>https://example.com/kubeproxy-ipvs-accident/</guid>
+    <description><![CDATA[背景 最近在升级集群的 kube-prxoy 并开启 ipvs mode, 引发了一些线上故障
+替换原因 由于豆瓣的集群使用 calico + kube-proxy iptables mode + puppet iptable 脚本管理
+三个组件共同操作同一份 iptables, 容易出现 race condition 问题, 并且还会互相抢占 iptables 锁, 是个 Mutex unsafe 的操作, 不易于维护.
+故打算尽量减少操作 iptables 的部分, 替换成 ipvs
+事故回溯 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24  @400000005cbea9a81eaf9164 W0423 13:58:54.514773 14016 server.go:195] WARNING: all flags other than --config, --write-config-to, and --cleanup are deprecated.]]></description>
+</item></channel>
+</rss>

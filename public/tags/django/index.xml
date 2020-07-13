@@ -1,0 +1,134 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title>Django - Tag - LexusLee&#39;s blog</title>
+        <link>https://example.com/tags/django/</link>
+        <description>Django - Tag - LexusLee&#39;s blog</description>
+        <generator>Hugo -- gohugo.io</generator><language>en</language><managingEditor>lexuscyborg103@gmail.com (LexusLee)</managingEditor>
+            <webMaster>lexuscyborg103@gmail.com (LexusLee)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Wed, 06 Apr 2016 02:01:33 &#43;0800</lastBuildDate><atom:link href="https://example.com/tags/django/" rel="self" type="application/rss+xml" /><item>
+    <title>Django REST Framework 5-关联性和超链接</title>
+    <link>https://example.com/drf-tutorial-5/</link>
+    <pubDate>Wed, 06 Apr 2016 02:01:33 &#43;0800</pubDate>
+    <author>Author</author>
+    <guid>https://example.com/drf-tutorial-5/</guid>
+    <description><![CDATA[<h2 id="关联性和超链接">关联性和超链接</h2>
+<p>之前我们的 api 都是用外键关联，然而实际上用超链接的方式更符合 RESTful 的思想。</p>
+<p>所以在这一章中我们将要用超链接(代替外键的方式)来提高关联性。</p>
+<h3 id="为-api-提供根路径">为 api 提供根路径</h3>
+<p>由于要采用超链接的方式，而之前我们的 &lsquo;movies&rsquo; / &lsquo;directors&rsquo; / &lsquo;users&rsquo; 虽然有了 endpoints ，但 api 本身却没有一个整体的根路径，所以我们使用 <code>@api_view</code> 装饰器来创建一个根路径。</p>
+<p>在 <code>douban/views.py</code> 中添加如下代码:</p>]]></description>
+</item><item>
+    <title>Django REST Framework 4-验证和授权</title>
+    <link>https://example.com/drf-tutorial-4/</link>
+    <pubDate>Mon, 04 Apr 2016 02:01:33 &#43;0800</pubDate>
+    <author>Author</author>
+    <guid>https://example.com/drf-tutorial-4/</guid>
+    <description><![CDATA[验证与授权 目前来看，我们的 API 并没有权限上的限制(即任何人都可以编辑或删除我们的 Movies )，这不是我们想要的。所以我们需要在 API 上做些限制以确保:
+ Movies 与 Users 关联起来。 只有授权了的用户才能创建新的 Movies。 只有 Movies 的创建者才可以更新或删除它。 未授权的用户只能进行查看。  在 models 中增加以下信息 我们先把之前注释掉的
+1 2 3 4 5 6 7  director = models.ForeignKey(&#39;celebrity&#39;, related_name=&#39;Movies&#39;) class celebrity(models.Model): name = models.CharField(max_length=100, blank=True, default=&#39;&#39;) age = models.IntegerField() gender = models.CharField(choices=GENDER_CHOICES, default=&#39;male&#39;, max_length=20)   关联导演类的注释解开，来看看多张表在生成的 api 里的关联性。
+接着在 models.py 中的 Movies 类中加入以下代码来确定 Movies 的创建者:
+1  owner = models.ForeignKey(&#39;auth.User&#39;, related_name=&#39;Movies&#39;)   最后 models.]]></description>
+</item><item>
+    <title>Django REST Framework 3-基于类的视图</title>
+    <link>https://example.com/drf-tutorial-3/</link>
+    <pubDate>Sun, 03 Apr 2016 02:01:33 &#43;0800</pubDate>
+    <author>Author</author>
+    <guid>https://example.com/drf-tutorial-3/</guid>
+    <description><![CDATA[基于类的视图 基于类的视图比先前基于函数的视图的可重用性更强，可以更多快好省地 ( DRY )地写出简洁的代码。
+把 API 用基于类的视图的方式重写 编辑 douban/views.py 进行如下重写
+1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 53  #!/usr/bin/python # -*- coding: utf-8 -*- from douban.]]></description>
+</item><item>
+    <title>Django REST Framework 2-请求和响应</title>
+    <link>https://example.com/drf-tutorial-2/</link>
+    <pubDate>Sat, 02 Apr 2016 02:01:33 &#43;0800</pubDate>
+    <author>Author</author>
+    <guid>https://example.com/drf-tutorial-2/</guid>
+    <description><![CDATA[请求与响应 请求对象 DRF 提供了一个 request 对象，它继承自 HttpRequest 并且提供了更丰富的对 request 的解析处理的方法。其中最核心的是 request 对象的 request.data 属性，它看起来和 Django 的request.POST 相似，但是在处理 Web API 上更强大些。
+1 2  request.POST # Only handles form data. Only works for &#39;POST&#39; method. request.data # Handles arbitrary data. Works for &#39;POST&#39;, &#39;PUT&#39; and &#39;PATCH&#39; methods.   request.data 相比于 request.POST 能够处理 api 中的 「POST」、「PUT」、「PATCH」等请求。
+返回对象 DRF 也提供了一个 response 对象，它能把未 render 的对象(数据)通过一定方式转化为正确的数据格式返回给客户端。
+1  return Response(data) # Renders to content type as requested by the client.]]></description>
+</item><item>
+    <title>Django REST Framework 1-序列化</title>
+    <link>https://example.com/drf-tutorial-1/</link>
+    <pubDate>Fri, 01 Apr 2016 02:01:33 &#43;0800</pubDate>
+    <author>Author</author>
+    <guid>https://example.com/drf-tutorial-1/</guid>
+    <description><![CDATA[序列化 环境搭建 首先我们先新建一个 restapi 项目并安装上 django-rest-framework (DRF) 环境
+1 2 3 4  $ pip install djangorestframework $ python manage.py startnewproject restapi $ cd restapi $ python manage.py startnewapp douban   接着，我们需要在 setting.py 里的加入如下代码:
+1 2 3 4 5  INSTALLED_APPS = ( ... &#39;rest_framework&#39;, &#39;douban&#39;, )   建立模型 由于我炒鸡喜欢看电影，所以仿着 douban-API 来做个简易的豆瓣电影的 rest-api 。
+所以我们就用这个「仿豆瓣电影 api 」来作为栗子开始教程吧！
+编辑 douban/models.py 文件并加入以下代码:
+1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41  #!]]></description>
+</item><item>
+    <title>Django REST Framework 快速上手</title>
+    <link>https://example.com/django-rest-framework/</link>
+    <pubDate>Tue, 29 Mar 2016 15:43:36 &#43;0800</pubDate>
+    <author>Author</author>
+    <guid>https://example.com/django-rest-framework/</guid>
+    <description><![CDATA[<h2 id="django-rest-framework-快速上手">Django REST Framework 快速上手</h2>
+<h3 id="背景">背景</h3>
+<p>这几天正好在研究 RESTful 的方式来写 API，然后上手 Django REST 框架。</p>
+<p>Django REST Framework (以下简称 DRF )是一个轻量级的库，熟悉 Django 的话可以很容易的用它来构建 Web API。</p>]]></description>
+</item><item>
+    <title>在 Ubuntu 下搭建 uWSGI &#43; nginx &#43; Django</title>
+    <link>https://example.com/nginx-uwsgi-django/</link>
+    <pubDate>Sat, 27 Feb 2016 21:04:07 &#43;0800</pubDate>
+    <author>Author</author>
+    <guid>https://example.com/nginx-uwsgi-django/</guid>
+    <description><![CDATA[<h3 id="背景-">背景 :</h3>
+<p>公司要求用 Django 做些项目，之前按网上教程搭环境的时候就遇到很多问题，感觉有些教程都是有误的，今天用 uWSGI 开多线程的时候服务器报了 HTTP 500 的错( Internal Server Error )，然后就一直连不上去了。所以按<a href="http://uwsgi-docs.readthedocs.org/en/latest/tutorials/Django_and_nginx.html" target="_blank" rel="noopener noreffer">官网的教程</a>重新配置一遍，把出现的问题记录下来。</p>]]></description>
+</item><item>
+    <title>Django 高级 views 和 URLconf 配置</title>
+    <link>https://example.com/django-learning4/</link>
+    <pubDate>Tue, 08 Dec 2015 15:08:35 &#43;0800</pubDate>
+    <author>Author</author>
+    <guid>https://example.com/django-learning4/</guid>
+    <description><![CDATA[<p>由于官网教程讲得迷迷糊糊的，所以我提炼了下代码，发现便于理解很多。</p>
+<h2 id="urlconf-技巧">URLconf 技巧</h2>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-python" data-lang="python"><span class="c1"># 在模块开始导入关联的视图函数，直接传递函数对象</span>
+<span class="kn">from</span> <span class="nn">django.conf.urls</span> <span class="kn">import</span> <span class="n">include</span><span class="p">,</span> <span class="n">url</span>
+<span class="kn">from</span> <span class="nn">django.contrib</span> <span class="kn">import</span> <span class="n">admin</span>
+<span class="kn">from</span> <span class="nn">mysite.views</span> <span class="kn">import</span> <span class="n">hello</span><span class="p">,</span> <span class="n">current_datetime</span><span class="p">,</span> <span class="n">hours_ahead</span>
+
+<span class="n">urlpatterns</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="n">url</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^admin/&#39;</span><span class="p">,</span> <span class="n">include</span><span class="p">(</span><span class="n">admin</span><span class="o">.</span><span class="n">site</span><span class="o">.</span><span class="n">urls</span><span class="p">)),</span>
+    <span class="n">url</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^hello/$&#39;</span><span class="p">,</span> <span class="n">hello</span><span class="p">),</span>
+    <span class="n">url</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^time/$&#39;</span><span class="p">,</span> <span class="n">current_datetime</span><span class="p">),</span>
+    <span class="n">url</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^time/plus/(\d{1,2})/$&#39;</span><span class="p">,</span> <span class="n">hours_ahead</span><span class="p">),</span>
+<span class="p">]</span>
+</code></pre></td></tr></table>
+</div>
+</div>]]></description>
+</item><item>
+    <title> Django 学习笔记3-- Models </title>
+    <link>https://example.com/django-learning3/</link>
+    <pubDate>Sat, 21 Nov 2015 13:17:57 &#43;0800</pubDate>
+    <author>Author</author>
+    <guid>https://example.com/django-learning3/</guid>
+    <description><![CDATA[<h2 id="mtv-vs-mvc">MTV vs MVC</h2>
+<p>正如在之前<a href="http://thehackercat.me/blog/2015/11/14/django-learning1/" target="_blank" rel="noopener noreffer">这篇文章</a>所提到的， 把数据存取逻辑、业务逻辑和表现逻辑组合在一起的概念有时被称为软件架构的 Model-View-Controller ( MVC )模式。 在这个模式中， Model 代表数据存取层，View 代表的是系统中选择显示什么和怎么显示的部分，Controller 指的是系统中根据用户输入并视需要访问模型，以决定使用哪个视图的那部分。</p>]]></description>
+</item><item>
+    <title> Django 学习笔记2-- Templates </title>
+    <link>https://example.com/django-learning2/</link>
+    <pubDate>Mon, 16 Nov 2015 15:15:55 &#43;0800</pubDate>
+    <author>Author</author>
+    <guid>https://example.com/django-learning2/</guid>
+    <description><![CDATA[<p>虽然 Django 中 Html 可以直接硬编码到 Python 中，但是这种行为并不利于前端开发人员进行维护。所以 Django 有了<a href="http://liquidmarkup.org/" target="_blank" rel="noopener noreffer">流模板</a> ( Liquid Templates )。</p>
+<h2 id="流模板基础">流模板基础</h2>
+<p>举个例子，下面这个模板大致含括了 Django 模板的几个特性。</p>]]></description>
+</item></channel>
+</rss>

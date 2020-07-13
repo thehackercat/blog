@@ -1,0 +1,18 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title>REST - Tag - LexusLee&#39;s blog</title>
+        <link>https://example.com/tags/rest/</link>
+        <description>REST - Tag - LexusLee&#39;s blog</description>
+        <generator>Hugo -- gohugo.io</generator><language>en</language><managingEditor>lexuscyborg103@gmail.com (LexusLee)</managingEditor>
+            <webMaster>lexuscyborg103@gmail.com (LexusLee)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Tue, 29 Mar 2016 15:43:36 &#43;0800</lastBuildDate><atom:link href="https://example.com/tags/rest/" rel="self" type="application/rss+xml" /><item>
+    <title>Django REST Framework 快速上手</title>
+    <link>https://example.com/django-rest-framework/</link>
+    <pubDate>Tue, 29 Mar 2016 15:43:36 &#43;0800</pubDate>
+    <author>Author</author>
+    <guid>https://example.com/django-rest-framework/</guid>
+    <description><![CDATA[<h2 id="django-rest-framework-快速上手">Django REST Framework 快速上手</h2>
+<h3 id="背景">背景</h3>
+<p>这几天正好在研究 RESTful 的方式来写 API，然后上手 Django REST 框架。</p>
+<p>Django REST Framework (以下简称 DRF )是一个轻量级的库，熟悉 Django 的话可以很容易的用它来构建 Web API。</p>]]></description>
+</item></channel>
+</rss>

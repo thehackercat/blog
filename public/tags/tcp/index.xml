@@ -1,0 +1,18 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title>TCP - Tag - LexusLee&#39;s blog</title>
+        <link>https://example.com/tags/tcp/</link>
+        <description>TCP - Tag - LexusLee&#39;s blog</description>
+        <generator>Hugo -- gohugo.io</generator><language>en</language><managingEditor>lexuscyborg103@gmail.com (LexusLee)</managingEditor>
+            <webMaster>lexuscyborg103@gmail.com (LexusLee)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Wed, 06 Sep 2017 20:36:51 &#43;0000</lastBuildDate><atom:link href="https://example.com/tags/tcp/" rel="self" type="application/rss+xml" /><item>
+    <title>关于关闭 Socket 的一些坑</title>
+    <link>https://example.com/tcp-close-socket/</link>
+    <pubDate>Wed, 06 Sep 2017 20:36:51 &#43;0000</pubDate>
+    <author>Author</author>
+    <guid>https://example.com/tcp-close-socket/</guid>
+    <description><![CDATA[<h2 id="关于关闭-socket-的一些坑">关于关闭 Socket 的一些坑</h2>
+<div style="text-align: right">LexusLee</div>
+<h3 id="背景">背景</h3>
+<p>最近踩到一个 &ldquo;Socket 连接持续处于 Fin_Wait2 和 Close_Wait 状态无法关闭&rdquo; 的坑中。起因是在维护大量连接时调用 <code>socket.close()</code> 时，看到部分连接并没有正常关闭，而是从 <code>ESTABLISHED</code> 的状态变成 <code>FIN_WAIT2</code> 并且连接状态没有后续迁移，而对端的连接状态则是从 <code>ESTABLISHED</code> 变成了 <code>CLOSE_WAIT</code> 。</p>]]></description>
+</item></channel>
+</rss>

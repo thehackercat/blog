@@ -1,0 +1,17 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title>Design - Category - LexusLee&#39;s blog</title>
+        <link>https://example.com/categories/design/</link>
+        <description>Design - Category - LexusLee&#39;s blog</description>
+        <generator>Hugo -- gohugo.io</generator><language>en</language><managingEditor>lexuscyborg103@gmail.com (LexusLee)</managingEditor>
+            <webMaster>lexuscyborg103@gmail.com (LexusLee)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Tue, 22 Aug 2017 19:54:44 &#43;0000</lastBuildDate><atom:link href="https://example.com/categories/design/" rel="self" type="application/rss+xml" /><item>
+    <title>Sketch 锤子水箱图标仿制心得</title>
+    <link>https://example.com/sketch-icon-understanding/</link>
+    <pubDate>Tue, 22 Aug 2017 19:54:44 &#43;0000</pubDate>
+    <author>Author</author>
+    <guid>https://example.com/sketch-icon-understanding/</guid>
+    <description><![CDATA[Sketch 锤子水箱图标仿制心得 背景 第一次按照教程走了一遍，发现做出来的颜色、高光和饱和方面都很差，拟物化的感觉不是很明显。
+第二次修改心得 接着私信问了下大牛意见，再加上自己对比官方图，总结了几个修改点：
+ 水箱外边框应该用深色来突显波纹的&quot;反光&rdquo; 水箱边框的外阴影应该用过饱和的颜色来突出在黑色幕布下的力度 水箱内圈应该再加一层内嵌阴影来表达拟物化的层次感 气泡的构造！！！越深的气泡饱和度应该越高而透明度应该越低，这样贴近整个水波纹的颜色，而在水面的气泡容易和被水面的底材颜色覆盖，所以应该多加一层外边框做高亮，所以气泡应该分两层处理，水底和水面 icon 的波纹扭曲程度应该更夸张些 本身水箱整体的颜色是冷色系偏暗，所以 icon 颜色上应该有反差，不应该用原来黑色的，而应该换成白色的  下面是第二次修改后的图，整体感觉拟物化的效果好了一些]]></description>
+</item></channel>
+</rss>

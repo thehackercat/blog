@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1">
+        <title>eBPF learning 01 - LexusLee&#39;s blog</title><meta name="Description" content="LexusLee personal blog, recording things you people wouldn&#39;t believe. Like attack ships on fire off the shoulder of Orion, c-beams glitter in the dark near the Tannhauser Gate."><meta property="og:title" content="eBPF learning 01" />
+<meta property="og:description" content="(译) eBPF Tracing 简明教程与示例 背景    原文链接 http://www.brendangregg.com/blog/2019-01-01/learn-ebpf-tracing.html     原文作者 Brendan Gregg   出版时间 01 Jan 2019   翻译时间 11 Jan 2020    之前开 2019 ShangHai KubeConf 听了几场 eBPF 的分享, 最近才开始深入研究, 故打算把研究 Linux performance 的大佬 Brendan Gregg 的文章《Learn eBPF Tracing: Tutorial and Examples》 作为 eBPF 入门翻译一遍, 希望对其他非英语母语的开发者有帮助。
+译文 在 2019 年的 Linux Plumber&rsquo;s 大会上至少有 24 场关于 eBPF 的讲座, eBPF 迅速地成为了炙手可热的技术。所以也许你也计划在新的一年里开始学习 eBPF!" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://example.com/ebpf-leanring1/" />
+<meta property="og:image" content="https://example.com/logo.png"/>
+<meta property="article:published_time" content="2020-01-13T18:26:09+00:00" />
+<meta property="article:modified_time" content="2020-07-14T02:57:28+08:00" />
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://example.com/logo.png"/>
+
+<meta name="twitter:title" content="eBPF learning 01"/>
+<meta name="twitter:description" content="(译) eBPF Tracing 简明教程与示例 背景    原文链接 http://www.brendangregg.com/blog/2019-01-01/learn-ebpf-tracing.html     原文作者 Brendan Gregg   出版时间 01 Jan 2019   翻译时间 11 Jan 2020    之前开 2019 ShangHai KubeConf 听了几场 eBPF 的分享, 最近才开始深入研究, 故打算把研究 Linux performance 的大佬 Brendan Gregg 的文章《Learn eBPF Tracing: Tutorial and Examples》 作为 eBPF 入门翻译一遍, 希望对其他非英语母语的开发者有帮助。
+译文 在 2019 年的 Linux Plumber&rsquo;s 大会上至少有 24 场关于 eBPF 的讲座, eBPF 迅速地成为了炙手可热的技术。所以也许你也计划在新的一年里开始学习 eBPF!"/>
+<meta name="application-name" content="Nice to meet you">
+<meta name="apple-mobile-web-app-title" content="Nice to meet you"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://example.com/ebpf-leanring1/" /><link rel="prev" href="https://example.com/dont-cry-aphrodite/" /><link rel="next" href="https://example.com/alert-convergence/" /><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/normalize.css@8.0.1/normalize.min.css"><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.13.0/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.7.2/animate.min.css"><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "eBPF learning 01",
+        "inLanguage": "en",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/example.com\/ebpf-leanring1\/"
+        },"image": ["https:\/\/example.com\/images\/Apple-Devices-Preview.png"],"genre": "posts","keywords": "Linux, eBPF","wordcount":  524 ,
+        "url": "https:\/\/example.com\/ebpf-leanring1\/","datePublished": "2020-01-13T18:26:09+00:00","dateModified": "2020-07-14T02:57:28+08:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.","publisher": {
+            "@type": "Organization",
+            "name": "LexusLee","logo": {
+                    "@type": "ImageObject",
+                    "url": "https:\/\/example.com\/images\/avatar.png",
+                    "width":  552 ,
+                    "height":  608 
+                }},"author": {
+                "@type": "Person",
+                "name": "LexusLee"
+            },"description": ""
+    }
+    </script></head>
+    <body header-desktop="fixed" header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="LexusLee&#39;s blog"><span class="header-title-pre"><i class='far fa-kiss-wink-heart fa-fw'></i></span>Nice to meet you</a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/posts/"> Posts </a><a class="menu-item" href="/tags/"> Tags </a><a class="menu-item" href="/categories/"> Categories </a><a class="menu-item" href="/categories/documentation/"> Docs </a><a class="menu-item" href="/about/"> About </a><a class="menu-item" href="https://github.com/thehackercat" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i>  </a><span class="menu-item delimiter"></span><a href="javascript:void(0);" class="menu-item language" title="Select Language">English<i class="fas fa-chevron-right fa-fw"></i>
+                        <select class="language-select" id="language-select-desktop" onchange="location = this.value;"><option value="/ebpf-leanring1/" selected>English</option><option value="/zh-cn/ebpf-leanring1/">简体中文</option></select>
+                    </a><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="Search">
+                            <i class="fas fa-search fa-fw"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="Clear">
+                            <i class="fas fa-times-circle fa-fw"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <i class="fas fa-spinner fa-fw fa-spin"></i>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                    <i class="fas fa-adjust fa-fw"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="LexusLee&#39;s blog"><span class="header-title-pre"><i class='far fa-kiss-wink-heart fa-fw'></i></span>Nice to meet you</a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-mobile">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="Search">
+                            <i class="fas fa-search fa-fw"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="Clear">
+                            <i class="fas fa-times-circle fa-fw"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <i class="fas fa-spinner fa-fw fa-spin"></i>
+                        </span>
+                    </div>
+                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                        Cancel
+                    </a>
+                </div><a class="menu-item" href="/posts/" title="">Posts</a><a class="menu-item" href="/tags/" title="">Tags</a><a class="menu-item" href="/categories/" title="">Categories</a><a class="menu-item" href="/categories/documentation/" title="">Docs</a><a class="menu-item" href="/about/" title="">About</a><a class="menu-item" href="https://github.com/thehackercat" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i></a><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                <i class="fas fa-adjust fa-fw"></i>
+            </a><a href="javascript:void(0);" class="menu-item" title="Select Language">English<i class="fas fa-chevron-right fa-fw"></i>
+                    <select class="language-select" onchange="location = this.value;"><option value="/ebpf-leanring1/" selected>English</option><option value="/zh-cn/ebpf-leanring1/">简体中文</option></select>
+                </a></div>
+    </div>
+</header>
+<div class="search-dropdown desktop">
+    <div id="search-dropdown-desktop"></div>
+</div>
+<div class="search-dropdown mobile">
+    <div id="search-dropdown-mobile"></div>
+</div>
+<main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">Contents</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animated flipInX">eBPF learning 01</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw"></i>LexusLee</a></span>&nbsp;<span class="post-category">included in <a href="/categories/code/"><i class="far fa-folder fa-fw"></i>Code</a>&nbsp;<a href="/categories/linux/"><i class="far fa-folder fa-fw"></i>Linux</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw"></i>&nbsp;<time datetime="2020-01-13">2020-01-13</time>&nbsp;<i class="fas fa-pencil-alt fa-fw"></i>&nbsp;524 words&nbsp;
+                <i class="far fa-clock fa-fw"></i>&nbsp;3 minutes&nbsp;<span id="/ebpf-leanring1/" class="leancloud_visitors" data-flag-title="eBPF learning 01">
+                        <i class="far fa-eye fa-fw"></i>&nbsp;<span class=leancloud-visitors-count></span>&nbsp;views
+                    </span>&nbsp;</div>
+        </div><div class="details toc" id="toc-static"  kept="">
+                <div class="details-summary toc-title">
+                    <span>Contents</span>
+                    <span><i class="details-icon fas fa-angle-right"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#译-ebpf-tracing-简明教程与示例">(译) eBPF Tracing 简明教程与示例</a>
+      <ul>
+        <li><a href="#背景">背景</a></li>
+        <li><a href="#译文">译文</a></li>
+        <li><a href="#初学者">初学者</a>
+          <ul>
+            <li><a href="#1-什么是-ebpf-bcc-bpftrace-和-iovisor">1. 什么是 eBPF, bcc, bpftrace 和 iovisor?</a></li>
+            <li><a href="#2-ebpf-性能追踪的简单例子">2. eBPF 性能追踪的简单例子</a></li>
+            <li><a href="#3-怎么使用-ebpf-呢">3. 怎么使用 eBPF 呢?</a></li>
+            <li><a href="#4-新手教程">4. 新手教程</a></li>
+            <li><a href="#1-bpftrace-教程">1. bpftrace 教程</a></li>
+            <li><a href="#2-bpftrace-参考指南">2. bpftrace 参考指南</a></li>
+            <li><a href="#3-bpftrace-示例">3. bpftrace 示例</a></li>
+          </ul>
+        </li>
+        <li><a href="#老鸟">老鸟</a>
+          <ul>
+            <li><a href="#1-开发-bcc">1. 开发 bcc</a></li>
+            <li><a href="#2-提贡献">2. 提贡献</a></li>
+          </ul>
+        </li>
+        <li><a href="#总结">总结</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><h2 id="译-ebpf-tracing-简明教程与示例">(译) eBPF Tracing 简明教程与示例</h2>
+<h3 id="背景">背景</h3>
+<table>
+<thead>
+<tr>
+<th>原文链接</th>
+<th><a href="http://www.brendangregg.com/blog/2019-01-01/learn-ebpf-tracing.html">http://www.brendangregg.com/blog/2019-01-01/learn-ebpf-tracing.html</a></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>原文作者</td>
+<td>Brendan Gregg</td>
+</tr>
+<tr>
+<td>出版时间</td>
+<td>01 Jan 2019</td>
+</tr>
+<tr>
+<td>翻译时间</td>
+<td>11 Jan 2020</td>
+</tr>
+</tbody>
+</table>
+<p>之前开 2019 ShangHai KubeConf 听了几场 eBPF 的分享, 最近才开始深入研究, 故打算把研究 Linux performance 的大佬 Brendan Gregg 的文章<a href="http://www.brendangregg.com/blog/2019-01-01/learn-ebpf-tracing.html" target="_blank" rel="noopener noreffer">《Learn eBPF Tracing: Tutorial and Examples》</a> 作为 eBPF 入门翻译一遍, 希望对其他非英语母语的开发者有帮助。</p>
+<h3 id="译文">译文</h3>
+<p>在 2019 年的 Linux Plumber&rsquo;s 大会上至少有 24 场关于 eBPF 的讲座, eBPF 迅速地成为了炙手可热的技术。所以也许你也计划在新的一年里开始学习 eBPF!</p>
+<p>如今 eBPF 在一些主流技术中都有其身影, 如虚拟内核指令集(VKIS), 由于其继承自大名鼎鼎的  Berkeley Packet Filter (BPF) , 所以它有较多的用途，如: 网络性能分析, 防火墙, 安全追踪, 设备驱动等。这些基于 eBPF 的比如一些性能追踪的产品， 在网上也不乏教程好文档。说到「追踪」，我们常认为是一些性能分析和一些提供更多观察点的工具。你可能也已经用过其中的一些工具，如 <strong>tcpdump</strong>, <strong>strace</strong> 和其他的一些 tracer</p>
+<p>在这篇文章里我会介绍 eBPF 追踪, 并针对初学者, 稍有经验的人以及一些老手在内容上做些简单划分便于阅读。总的来说分为以下内容:</p>
+<ul>
+<li>初学者: 运行 <code>bcc</code> 工具</li>
+<li>稍有经验: 开发 <code>bpftrace</code> 工具</li>
+<li>老手: 开发 <code>bcc</code> 工具, 为 <code>bcc&amp;bpftrace</code> 提 PR</li>
+</ul>
+<h3 id="初学者">初学者</h3>
+<h4 id="1-什么是-ebpf-bcc-bpftrace-和-iovisor">1. 什么是 eBPF, bcc, bpftrace 和 iovisor?</h4>
+<p>eBPF 对于 Linux 而言相当于 JavaScript 对于 HTML 的作用, 即相比于一个静态的 HTML 网站, JavaScript 能声明一些小的程序用于监听一些运行在浏览器虚拟内核上的一些用户事件如鼠标的点击等。所以有了 eBPF, 相比于一个固定的黑盒的 LInux 内核, 你也可以在用户态编写一些简单的脚本来获取一些内核事件如磁盘 I/O 等, 同样的, 这些事件也是运行在 Linux 安全内核虚拟机里。事实上呢, eBPF 比纯 JavaScript 更高级些, 它更相当于一个运行着 JavaScript 的 v8 虚拟机，且 eBPF 如今也已是 Linux 内核的一部分。</p>
+<p>直接在 eBPF 中编写代码是非常难得, 就像你要直接写些 v8 虚拟机二进制代码一样。实际上也没啥人直接写 v8 代码, 大家都是直接写更友好的 JavaScript 或者一个基于 JavaScript 的上层框架(jQuery, Angular,  React 等)。</p>
+<p>这件事在 eBPF 也一样, 人们不会直接写内核代码, 而是通过 eBPF 框架编写一些上层代码。拿性能追踪来说，主要用的是 <code>bcc</code> 和 <code>bpftrace</code> 。这两个工具并不在 内核代码中, 它们独立于 GitHub 上另一个 Linux 基金会的项目叫 <code>iovisor</code></p>
+<h4 id="2-ebpf-性能追踪的简单例子">2. eBPF 性能追踪的简单例子</h4>
+<p>先介绍一个基于 eBPF 的工具, <code>tcplife</code></p>
+<p><code>tcplife</code> 可以展示出完整生命周期的 TCP sessions, 并且可以看到进程 id (PID), 进程命令名 (COMM), 发送和接受的字节数以及 TCP 连接的持续时间 (单位是 ms), 如图:</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://blog-1251445337.cos.ap-chengdu.myqcloud.com/ebpf-5.png"
+        data-srcset="https://blog-1251445337.cos.ap-chengdu.myqcloud.com/ebpf-5.png, https://blog-1251445337.cos.ap-chengdu.myqcloud.com/ebpf-5.png 1.5x, https://blog-1251445337.cos.ap-chengdu.myqcloud.com/ebpf-5.png 2x"
+        data-sizes="auto"
+        alt="https://blog-1251445337.cos.ap-chengdu.myqcloud.com/ebpf-5.png"
+        title="image-20200112151502737" /></p>
+<p>需要注意的是 eBPF 并没有开放给用户可以通过旧的内核技术来重写 TCP 生命周期的入口，不过假如哪天开放了, 这样的入口也会带来一些性能上的额外开销,一些内核安全问题等等,所以我们永远不会使用这样的工具。eBPF 给工具带来的特性应该是可实践的, 便捷的，安全的。拿 <code>tcplife</code> 举个例子, 它并不会追踪每一个包, 这样会带来很多额外的开销，相反的，eBPF 只会追踪 TCP 生命周期的事件, 这些时间并不会这么频繁, 从而给系统带来的开销会低得多, 我们也可以从容地让这个工具 7x24 小时地在生产环境运行。</p>
+<h4 id="3-怎么使用-ebpf-呢">3. 怎么使用 eBPF 呢?</h4>
+<p>对于新手来说, 可以说是从 <code>bcc</code> 开始使用, 具体教程可以参照<a href="https://github.com/iovisor/bcc/blob/master/INSTALL.md" target="_blank" rel="noopener noreffer">这篇文章</a></p>
+<p>在 Ubuntu 系统上, 可以简单地这么安装</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://blog-1251445337.cos.ap-chengdu.myqcloud.com/ebpf-4.png"
+        data-srcset="https://blog-1251445337.cos.ap-chengdu.myqcloud.com/ebpf-4.png, https://blog-1251445337.cos.ap-chengdu.myqcloud.com/ebpf-4.png 1.5x, https://blog-1251445337.cos.ap-chengdu.myqcloud.com/ebpf-4.png 2x"
+        data-sizes="auto"
+        alt="https://blog-1251445337.cos.ap-chengdu.myqcloud.com/ebpf-4.png"
+        title="image-20200112154032819" /></p>
+<p>我呢是通过运行 <code>opensnoop</code> 来测试 <code>bcc</code> 是否 work 的, 所以如果你也这么搞过, 那么恭喜你, 你也用过 eBPF 啦！</p>
+<p>如今一些公司如 Netflix 和 Facebook 已经默认在所有服务器上安装了 <code>bcc</code> 所以也许你也可以开始这么搞。</p>
+<h4 id="4-新手教程">4. 新手教程</h4>
+<p>如果你想直接学习 <code>bcc</code> 那么也可以看看<a href="https://github.com/iovisor/bcc/blob/master/docs/tutorial.md" target="_blank" rel="noopener noreffer">这篇教程</a>, 这是一个对于新手来学习 eBPF 性能追踪极好的出发点。</p>
+<p>作为新手呢, 你不需要一开始就写些 eBPF 代码。<code>bcc</code> 有接近 70 多个衍生工具你都可以直接使用。这篇教程也会带你逐步过一遍以下 11 个趴(part):</p>
+<ul>
+<li>execsnoop</li>
+<li>opensnoop</li>
+<li>ext4slower (or btrfs*, xfs*, zfs*)</li>
+<li>biolatency</li>
+<li>biosnoop</li>
+<li>cachestat</li>
+<li>tcpconnect</li>
+<li>tcpaccept</li>
+<li>tcpretrans</li>
+<li>runqlat</li>
+<li>profile</li>
+</ul>
+<p>一旦上述内容你都尝试过后, 你可能就会有了一个全局性的概念:</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://blog-1251445337.cos.ap-chengdu.myqcloud.com/ebpf-3.png"
+        data-srcset="https://blog-1251445337.cos.ap-chengdu.myqcloud.com/ebpf-3.png, https://blog-1251445337.cos.ap-chengdu.myqcloud.com/ebpf-3.png 1.5x, https://blog-1251445337.cos.ap-chengdu.myqcloud.com/ebpf-3.png 2x"
+        data-sizes="auto"
+        alt="https://blog-1251445337.cos.ap-chengdu.myqcloud.com/ebpf-3.png"
+        title="image-20200112155332639" /></p>
+<p>网上已经有过很多较为完整的 man pages 和示例来介绍这十一个趴(part)了。在官方 repo (bcc/tools) 中的示例文件 <code>*_example.txt</code> 展示了上述概念的具体释义，比如 <a href="https://github.com/iovisor/bcc/blob/master/tools/biolatency_example.txt" target="_blank" rel="noopener noreffer">biolatency_example.txt</a>. 中你可以了解到如何用 bcc 来追踪 block I/O 时延, repo 中也有很多我写的示例文件, man pages 和具体工具，满打满算估摸着有 50 多篇 blog 了吧</p>
+<p>不过目前还欠缺的是在生产环境中的一些示例。因为这些 blog 绝大多数是我在 eBPF 刚诞生不久，我们并没在生产环境中运行而只在测试实例上跑，所以大部分示例都是在一定场景下构造的。不久后也许我们会再新加些生产环境的示例，而这部分也需要大家的帮助，比如当你使用一个 eBPF 工具解决了某些生产环境问题时, 可以考虑留些现场和截图，并且提些 PR 加到示例文件中。</p>
+<p>###稍有经验</p>
+<p>这一章节的假设读者应该都已经使用过 <code>bcc</code> 及其他各种相关工具了, 如果你对二次开发 eBPF 工具感兴趣的话, 那么最佳的入手点就在于先尝试从 <code>bcc</code> 切换到 <code>bpftrace</code> , 这是一个更高级更易入门的语言。但 <code>bpftrace</code> 也有不足之处, 它不像 <code>bcc</code> 那样支持自定化, 所以大概率你可能最终使用完仍然会切换回 <code>bcc</code></p>
+<p>想要深入了解 <code>bpftrace</code> 的话可以参考<a href="https://github.com/iovisor/bpftrace/blob/master/INSTALL.md" target="_blank" rel="noopener noreffer">这篇文章</a> , 这是一个相对较新的项目, 所以在我写这篇文章时可能这个工具并没有被成熟的引入各个 Linux 包管理系统，不过在未来，应该可能通过类似 <code>apt-get install bpftrace</code> 或类似的方式来安装, 目前只能通过编译源码包安装。</p>
+<h4 id="1-bpftrace-教程">1. bpftrace 教程</h4>
+<p>我也写了另一个教程会教你如何通过单行命令玩转 bpftrace</p>
+<ul>
+<li><a href="https://github.com/iovisor/bpftrace/blob/master/docs/tutorial_one_liners.md" target="_blank" rel="noopener noreffer">bpftrace One-Liners Tutorial</a></li>
+</ul>
+<p>这个教程分为 12 章节来逐步叫你学习 <code>bpftrace</code> ， 一个简单示例如下:</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://blog-1251445337.cos.ap-chengdu.myqcloud.com/ebpf-2.png"
+        data-srcset="https://blog-1251445337.cos.ap-chengdu.myqcloud.com/ebpf-2.png, https://blog-1251445337.cos.ap-chengdu.myqcloud.com/ebpf-2.png 1.5x, https://blog-1251445337.cos.ap-chengdu.myqcloud.com/ebpf-2.png 2x"
+        data-sizes="auto"
+        alt="https://blog-1251445337.cos.ap-chengdu.myqcloud.com/ebpf-2.png"
+        title="image-20200112172025509" /></p>
+<p>这句命令会找出所有打开系统调用追踪点的 PID 和文件路径</p>
+<h4 id="2-bpftrace-参考指南">2. bpftrace 参考指南</h4>
+<p>想了解更多有关 bpftrace 的话，可以参考我的这篇文章</p>
+<ul>
+<li><a href="https://github.com/iovisor/bpftrace/blob/master/docs/reference_guide.md" target="_blank" rel="noopener noreffer">bpftrace Reference Guide</a></li>
+</ul>
+<p>你可以从中了解到有关 bpftrace 语法，探针和一些内置组件。</p>
+<h4 id="3-bpftrace-示例">3. bpftrace 示例</h4>
+<p>bpftrace repo 中有近 20 个工具，你可以简单参考</p>
+<ul>
+<li><a href="https://github.com/iovisor/bpftrace/tree/master/tools" target="_blank" rel="noopener noreffer">bpftrace Tools</a></li>
+</ul>
+<p>比如其中用于追踪 block I/O 时延的脚本</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://blog-1251445337.cos.ap-chengdu.myqcloud.com/ebpf-1.png"
+        data-srcset="https://blog-1251445337.cos.ap-chengdu.myqcloud.com/ebpf-1.png, https://blog-1251445337.cos.ap-chengdu.myqcloud.com/ebpf-1.png 1.5x, https://blog-1251445337.cos.ap-chengdu.myqcloud.com/ebpf-1.png 2x"
+        data-sizes="auto"
+        alt="https://blog-1251445337.cos.ap-chengdu.myqcloud.com/ebpf-1.png"
+        title="image-20200112172931029" /></p>
+<p>如同 <code>bcc</code>, 这些工具也有详尽的 man pages 和示例, 比如 <a href="https://github.com/iovisor/bpftrace/blob/master/tools/biolatency_example.txt" target="_blank" rel="noopener noreffer">biolatency_example.txt</a></p>
+<h3 id="老鸟">老鸟</h3>
+<h4 id="1-开发-bcc">1. 开发 bcc</h4>
+<p>这儿是我整理的一些关于开发及二次开发 <code>bcc</code> 的相关文档:</p>
+<ul>
+<li><a href="https://github.com/iovisor/bcc/blob/master/docs/tutorial_bcc_python_developer.md" target="_blank" rel="noopener noreffer">bcc Python Developer Tutorial</a></li>
+<li><a href="https://github.com/iovisor/bcc/blob/master/docs/reference_guide.md" target="_blank" rel="noopener noreffer">bcc Reference Guide</a></li>
+</ul>
+<p>在 <code>bcc/tools/</code> 目录下有很多 <code>*.py</code> 文件可供学习, 这些 py 文件大约可以分成两部分:</p>
+<ul>
+<li>BPF 内核 C 代码的 Python 实现(或 lua, C++ 实现)</li>
+<li>Python 的一些 BPF 用户态工具</li>
+</ul>
+<p>开发 bcc 工具确实是需要成熟的技术的，因为这可能会涉及到一些细碎的内核问题或应用底层问题</p>
+<h4 id="2-提贡献">2. 提贡献</h4>
+<p>我们非常欢迎以下贡献</p>
+<ul>
+<li>提交 bcc issues</li>
+<li>提交 bpftrace issues</li>
+</ul>
+<p>对于 bpftrace, 有个 <a href="https://github.com/iovisor/bpftrace/blob/master/docs/internals_development.md" target="_blank" rel="noopener noreffer">bpftrace Internals Development Guide</a> 教程, 如果你正在写些 llvm IR 的代码, 那么这部分的开发对你是个挺大的挑战&hellip;&hellip;</p>
+<p>当然, 提贡献这部分也可以涉及内核 eBPF (aka BPF) 的引擎。</p>
+<p>如果你浏览过 <code>bcc</code> 和 <code>bpftrace</code> 的 issues 的话, 你会看到很多优化相关的请求，诸如  <a href="https://github.com/iovisor/bpftrace/issues?q=is%3Aissue&#43;is%3Aopen&#43;label%3Akernel" target="_blank" rel="noopener noreffer">bpftrace kernel tag</a> 等等。此外，持续关注 <a href="https://www.spinics.net/lists/netdev/" target="_blank" rel="noopener noreffer">netdev</a>  邮件列表来料及到最新的内核 BPF 开发也是需要做的，这部分通常有些会在下一个 release 中 merge 到 Linux 主分支上。</p>
+<p>此外，除了编写代码，你也可以写些测试，包构建，博客或者演讲分享来帮助我们。</p>
+<h3 id="总结">总结</h3>
+<p>eBPF 确实做了很多事情。在这篇文章里我只是简单介绍了如何学习 eBPF 性能分析和追踪，总的来说是以下内容</p>
+<ul>
+<li>初学者: 把 <code>bcc</code> 工具跑起来</li>
+<li>稍有经验: 开发 <code>bpftrace</code> 工具</li>
+<li>老鸟: 开发 <code>bcc</code> 工具, 对 <code>bcc</code> &amp; <code>bpftrace</code> 做贡献</li>
+</ul>
+<p>同时在这个页面 <strong><a href="http://www.brendangregg.com/ebpf.html" target="_blank" rel="noopener noreffer">eBPF Tracing Tools</a></strong>  有这篇文章更详细的内容, 其中涉及细节较多, 感兴趣的话可以仔细阅读。</p>
+<p>祝你好运！</p>
+</div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>Updated on 2020-07-14&nbsp;<a class="git-hash" href="https://github.com/dillonzq/LoveIt/commit/0b8dc806dec6578f1ff9edd4106e8e937b3406a4" target="_blank" title="commit by Lexus Lee(lexuscyborg103@gmail.com) 0b8dc806dec6578f1ff9edd4106e8e937b3406a4: init hugo source codes">
+                                    <i class="fas fa-hashtag fa-fw"></i>0b8dc80</a></span>
+            </div>
+            <div class="post-info-license"></div>
+        </div>
+        <div class="post-info-line">
+            <div class="post-info-md"><span>
+                            <a class="link-to-markdown" href="/ebpf-leanring1/index.md" target="_blank">Read Markdown</a>
+                        </span></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="Share on Twitter" data-sharer="twitter" data-url="https://example.com/ebpf-leanring1/" data-title="eBPF learning 01" data-via="lexuscyborg103" data-hashtags="Linux,eBPF"><i class="fab fa-twitter fa-fw"></i></a><a href="javascript:void(0);" title="Share on Reddit" data-sharer="reddit" data-url="https://example.com/ebpf-leanring1/"><i class="fab fa-reddit fa-fw"></i></a><a href="javascript:void(0);" title="Share on 微博" data-sharer="weibo" data-url="https://example.com/ebpf-leanring1/" data-title="eBPF learning 01" data-ralateuid="thehackercat"><i class="fab fa-weibo fa-fw"></i></a><a href="javascript:void(0);" title="Share on Evernote" data-sharer="evernote" data-url="https://example.com/ebpf-leanring1/" data-title="eBPF learning 01"><i class="fab fa-evernote fa-fw"></i></a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw"></i>&nbsp;<a href="/tags/linux/">Linux</a>,&nbsp;<a href="/tags/ebpf/">eBPF</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">Back</a></span>&nbsp;|&nbsp;<span><a href="/">Home</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/dont-cry-aphrodite/" class="prev" rel="prev" title="阿芙罗狄忒你不要哭泣"><i class="fas fa-angle-left fa-fw"></i>阿芙罗狄忒你不要哭泣</a>
+            <a href="/alert-convergence/" class="next" rel="next" title="告警收敛设计">告警收敛设计<i class="fas fa-angle-right fa-fw"></i></a></div>
+</div>
+<div id="comments"><div id="valine" class="comment"></div><noscript>
+                Please enable JavaScript to view the comments powered by <a href="https://valine.js.org/">Valine</a>.
+            </noscript></div></article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line">Powered by <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.73.0">Hugo</a> | Theme - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.2.10"><i class="far fa-kiss-wink-heart fa-fw"></i> LoveIt</a>
+                </div><div class="footer-line"><i class="far fa-copyright fa-fw"></i><span itemprop="copyrightYear">2019 - 2020</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/" target="_blank">LexusLee</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="Back to Top">
+                <i class="fas fa-arrow-up fa-fw"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="View Comments">
+                <i class="fas fa-comment fa-fw"></i>
+            </a>
+        </div><link rel="stylesheet" href="/lib/valine/valine.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery.js@1.2.0/dist/css/lightgallery.min.css"><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/valine@1.4.14/dist/Valine.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/smooth-scroll@16.1.3/dist/smooth-scroll.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/autocomplete.js@0.37.1/dist/autocomplete.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/algoliasearch@4.2.0/dist/algoliasearch-lite.umd.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lazysizes@5.2.2/lazysizes.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lightgallery.js@1.2.0/dist/js/lightgallery.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lg-thumbnail.js@1.2.0/dist/lg-thumbnail.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lg-zoom.js@1.2.0/dist/lg-zoom.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/clipboard@2.0.6/dist/clipboard.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sharer.js@0.4.0/sharer.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"Copy to clipboard","maxShownLines":10},"comment":{"valine":{"appId":"QGzwQXOqs5JOhN4RGPOkR2mR-MdYXbMMI","appKey":"WBmoGyJtbqUswvfLh6L8iEBr","avatar":"mp","el":"#valine","emojiCDN":"https://cdn.jsdelivr.net/npm/emoji-datasource-google@5.0.1/img/google/64/","emojiMaps":{"100":"1f4af.png","alien":"1f47d.png","anger":"1f4a2.png","angry":"1f620.png","anguished":"1f627.png","astonished":"1f632.png","black_heart":"1f5a4.png","blue_heart":"1f499.png","blush":"1f60a.png","bomb":"1f4a3.png","boom":"1f4a5.png","broken_heart":"1f494.png","brown_heart":"1f90e.png","clown_face":"1f921.png","cold_face":"1f976.png","cold_sweat":"1f630.png","confounded":"1f616.png","confused":"1f615.png","cry":"1f622.png","crying_cat_face":"1f63f.png","cupid":"1f498.png","dash":"1f4a8.png","disappointed":"1f61e.png","disappointed_relieved":"1f625.png","dizzy":"1f4ab.png","dizzy_face":"1f635.png","drooling_face":"1f924.png","exploding_head":"1f92f.png","expressionless":"1f611.png","face_vomiting":"1f92e.png","face_with_cowboy_hat":"1f920.png","face_with_hand_over_mouth":"1f92d.png","face_with_head_bandage":"1f915.png","face_with_monocle":"1f9d0.png","face_with_raised_eyebrow":"1f928.png","face_with_rolling_eyes":"1f644.png","face_with_symbols_on_mouth":"1f92c.png","face_with_thermometer":"1f912.png","fearful":"1f628.png","flushed":"1f633.png","frowning":"1f626.png","ghost":"1f47b.png","gift_heart":"1f49d.png","green_heart":"1f49a.png","grimacing":"1f62c.png","grin":"1f601.png","grinning":"1f600.png","hankey":"1f4a9.png","hear_no_evil":"1f649.png","heart":"2764-fe0f.png","heart_decoration":"1f49f.png","heart_eyes":"1f60d.png","heart_eyes_cat":"1f63b.png","heartbeat":"1f493.png","heartpulse":"1f497.png","heavy_heart_exclamation_mark_ornament":"2763-fe0f.png","hole":"1f573-fe0f.png","hot_face":"1f975.png","hugging_face":"1f917.png","hushed":"1f62f.png","imp":"1f47f.png","innocent":"1f607.png","japanese_goblin":"1f47a.png","japanese_ogre":"1f479.png","joy":"1f602.png","joy_cat":"1f639.png","kiss":"1f48b.png","kissing":"1f617.png","kissing_cat":"1f63d.png","kissing_closed_eyes":"1f61a.png","kissing_heart":"1f618.png","kissing_smiling_eyes":"1f619.png","laughing":"1f606.png","left_speech_bubble":"1f5e8-fe0f.png","love_letter":"1f48c.png","lying_face":"1f925.png","mask":"1f637.png","money_mouth_face":"1f911.png","nauseated_face":"1f922.png","nerd_face":"1f913.png","neutral_face":"1f610.png","no_mouth":"1f636.png","open_mouth":"1f62e.png","orange_heart":"1f9e1.png","partying_face":"1f973.png","pensive":"1f614.png","persevere":"1f623.png","pleading_face":"1f97a.png","pouting_cat":"1f63e.png","purple_heart":"1f49c.png","rage":"1f621.png","relaxed":"263a-fe0f.png","relieved":"1f60c.png","revolving_hearts":"1f49e.png","right_anger_bubble":"1f5ef-fe0f.png","robot_face":"1f916.png","rolling_on_the_floor_laughing":"1f923.png","scream":"1f631.png","scream_cat":"1f640.png","see_no_evil":"1f648.png","shushing_face":"1f92b.png","skull":"1f480.png","skull_and_crossbones":"2620-fe0f.png","sleeping":"1f634.png","sleepy":"1f62a.png","slightly_frowning_face":"1f641.png","slightly_smiling_face":"1f642.png","smile":"1f604.png","smile_cat":"1f638.png","smiley":"1f603.png","smiley_cat":"1f63a.png","smiling_face_with_3_hearts":"1f970.png","smiling_imp":"1f608.png","smirk":"1f60f.png","smirk_cat":"1f63c.png","sneezing_face":"1f927.png","sob":"1f62d.png","space_invader":"1f47e.png","sparkling_heart":"1f496.png","speak_no_evil":"1f64a.png","speech_balloon":"1f4ac.png","star-struck":"1f929.png","stuck_out_tongue":"1f61b.png","stuck_out_tongue_closed_eyes":"1f61d.png","stuck_out_tongue_winking_eye":"1f61c.png","sunglasses":"1f60e.png","sweat":"1f613.png","sweat_drops":"1f4a6.png","sweat_smile":"1f605.png","thinking_face":"1f914.png","thought_balloon":"1f4ad.png","tired_face":"1f62b.png","triumph":"1f624.png","two_hearts":"1f495.png","unamused":"1f612.png","upside_down_face":"1f643.png","weary":"1f629.png","white_frowning_face":"2639-fe0f.png","white_heart":"1f90d.png","wink":"1f609.png","woozy_face":"1f974.png","worried":"1f61f.png","yawning_face":"1f971.png","yellow_heart":"1f49b.png","yum":"1f60b.png","zany_face":"1f92a.png","zipper_mouth_face":"1f910.png","zzz":"1f4a4.png"},"enableQQ":false,"highlight":true,"lang":"en","pageSize":10,"placeholder":"Your comment ...","recordIP":true,"serverURLs":"https://leancloud.hugoloveit.com","visitor":true}},"lightGallery":{"actualSize":false,"exThumbImage":"data-thumbnail","hideBarsDelay":2000,"selector":".lightgallery","speed":400,"thumbContHeight":80,"thumbWidth":80,"thumbnail":true},"search":{"algoliaAppID":"PASDMWALPK","algoliaIndex":"index.en","algoliaSearchKey":"b42948e51daaa93df92381c8e2ac0f93","highlightTag":"em","maxResultLength":10,"noResultsFound":"No results found","snippetLength":30,"type":"algolia"}};</script><script type="text/javascript" src="/js/theme.min.js"></script></body>
+</html>

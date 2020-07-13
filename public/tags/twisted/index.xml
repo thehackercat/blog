@@ -1,0 +1,16 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title>Twisted - Tag - LexusLee&#39;s blog</title>
+        <link>https://example.com/tags/twisted/</link>
+        <description>Twisted - Tag - LexusLee&#39;s blog</description>
+        <generator>Hugo -- gohugo.io</generator><language>en</language><managingEditor>lexuscyborg103@gmail.com (LexusLee)</managingEditor>
+            <webMaster>lexuscyborg103@gmail.com (LexusLee)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Mon, 04 Jul 2016 04:01:33 &#43;0800</lastBuildDate><atom:link href="https://example.com/tags/twisted/" rel="self" type="application/rss+xml" /><item>
+    <title>Twisted&#43;gevent 异步&#43;协程服务器开发</title>
+    <link>https://example.com/rpc-server/</link>
+    <pubDate>Mon, 04 Jul 2016 04:01:33 &#43;0800</pubDate>
+    <author>Author</author>
+    <guid>https://example.com/rpc-server/</guid>
+    <description><![CDATA[<h2 id="背景">背景</h2>
+<p>最近接触到用 Twisted 来写个 RPC 服务器，对高并发、性能和大量长连接时的稳定性方面有要求，所以应该在 Twisted 的基础上再造些轮子，最后考虑用 Twisted + gevent 来实现 「异步+协程」的部分。</p>]]></description>
+</item></channel>
+</rss>

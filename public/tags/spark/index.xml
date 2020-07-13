@@ -1,0 +1,16 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title>Spark - Tag - LexusLee&#39;s blog</title>
+        <link>https://example.com/tags/spark/</link>
+        <description>Spark - Tag - LexusLee&#39;s blog</description>
+        <generator>Hugo -- gohugo.io</generator><language>en</language><managingEditor>lexuscyborg103@gmail.com (LexusLee)</managingEditor>
+            <webMaster>lexuscyborg103@gmail.com (LexusLee)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Tue, 09 May 2017 14:00:41 &#43;0000</lastBuildDate><atom:link href="https://example.com/tags/spark/" rel="self" type="application/rss+xml" /><item>
+    <title>PySpark 词频统计搜索引擎的设计思路</title>
+    <link>https://example.com/spark-search-engine/</link>
+    <pubDate>Tue, 09 May 2017 14:00:41 &#43;0000</pubDate>
+    <author>Author</author>
+    <guid>https://example.com/spark-search-engine/</guid>
+    <description><![CDATA[<h2 id="pyspark-词频统计搜索引擎的设计思路">PySpark 词频统计搜索引擎的设计思路</h2>
+<p>记录下我的思路</p>]]></description>
+</item></channel>
+</rss>

@@ -1,0 +1,17 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title>Terminal - Tag - LexusLee&#39;s blog</title>
+        <link>https://example.com/tags/terminal/</link>
+        <description>Terminal - Tag - LexusLee&#39;s blog</description>
+        <generator>Hugo -- gohugo.io</generator><language>en</language><managingEditor>lexuscyborg103@gmail.com (LexusLee)</managingEditor>
+            <webMaster>lexuscyborg103@gmail.com (LexusLee)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Thu, 30 Mar 2017 15:29:19 &#43;0000</lastBuildDate><atom:link href="https://example.com/tags/terminal/" rel="self" type="application/rss+xml" /><item>
+    <title>终端配置总结</title>
+    <link>https://example.com/terminal-config/</link>
+    <pubDate>Thu, 30 Mar 2017 15:29:19 &#43;0000</pubDate>
+    <author>Author</author>
+    <guid>https://example.com/terminal-config/</guid>
+    <description><![CDATA[<h2 id="终端配置总结">终端配置总结</h2>
+<h3 id="背景">背景</h3>
+<p>最近公司新购置了好几台 Linux 服务器然后配置一些服务的时候很不习惯，估计是我平时自己的 zsh + oh-my-zsh 用多了，故想整理下 .bash_rc 和 .zshrc 我个人的一些配置，这些配置包含了一些 alias 快捷命令和命令行系统配置，可以让终端变得快捷易用，今晚再写个 shell 脚本实现快速修改 .bash_rc 的配置。</p>]]></description>
+</item></channel>
+</rss>

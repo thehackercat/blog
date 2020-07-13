@@ -1,0 +1,46 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title>Linux - Category - LexusLee&#39;s blog</title>
+        <link>https://example.com/categories/linux/</link>
+        <description>Linux - Category - LexusLee&#39;s blog</description>
+        <generator>Hugo -- gohugo.io</generator><language>en</language><managingEditor>lexuscyborg103@gmail.com (LexusLee)</managingEditor>
+            <webMaster>lexuscyborg103@gmail.com (LexusLee)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Mon, 13 Jan 2020 18:26:09 &#43;0000</lastBuildDate><atom:link href="https://example.com/categories/linux/" rel="self" type="application/rss+xml" /><item>
+    <title>eBPF learning 01</title>
+    <link>https://example.com/ebpf-leanring1/</link>
+    <pubDate>Mon, 13 Jan 2020 18:26:09 &#43;0000</pubDate>
+    <author>Author</author>
+    <guid>https://example.com/ebpf-leanring1/</guid>
+    <description><![CDATA[(译) eBPF Tracing 简明教程与示例 背景    原文链接 http://www.brendangregg.com/blog/2019-01-01/learn-ebpf-tracing.html     原文作者 Brendan Gregg   出版时间 01 Jan 2019   翻译时间 11 Jan 2020    之前开 2019 ShangHai KubeConf 听了几场 eBPF 的分享, 最近才开始深入研究, 故打算把研究 Linux performance 的大佬 Brendan Gregg 的文章《Learn eBPF Tracing: Tutorial and Examples》 作为 eBPF 入门翻译一遍, 希望对其他非英语母语的开发者有帮助。
+译文 在 2019 年的 Linux Plumber&rsquo;s 大会上至少有 24 场关于 eBPF 的讲座, eBPF 迅速地成为了炙手可热的技术。所以也许你也计划在新的一年里开始学习 eBPF!]]></description>
+</item><item>
+    <title>记一次 postgresql 斯嘉丽约翰逊攻击的排查</title>
+    <link>https://example.com/scarllet-sql-attack/</link>
+    <pubDate>Sat, 11 Aug 2018 22:49:52 &#43;0000</pubDate>
+    <author>Author</author>
+    <guid>https://example.com/scarllet-sql-attack/</guid>
+    <description><![CDATA[<h3 id="背景">背景</h3>
+<p>今天下午连续收到了腾讯云 CPU overload 报警</p>
+<p></p>
+<p>登服务器一看, 有个 postgres 账户跑的进程把 CPU 占满了，进程名特别奇怪。</p>
+<p></p>]]></description>
+</item><item>
+    <title>关于关闭 Socket 的一些坑</title>
+    <link>https://example.com/tcp-close-socket/</link>
+    <pubDate>Wed, 06 Sep 2017 20:36:51 &#43;0000</pubDate>
+    <author>Author</author>
+    <guid>https://example.com/tcp-close-socket/</guid>
+    <description><![CDATA[<h2 id="关于关闭-socket-的一些坑">关于关闭 Socket 的一些坑</h2>
+<div style="text-align: right">LexusLee</div>
+<h3 id="背景">背景</h3>
+<p>最近踩到一个 &ldquo;Socket 连接持续处于 Fin_Wait2 和 Close_Wait 状态无法关闭&rdquo; 的坑中。起因是在维护大量连接时调用 <code>socket.close()</code> 时，看到部分连接并没有正常关闭，而是从 <code>ESTABLISHED</code> 的状态变成 <code>FIN_WAIT2</code> 并且连接状态没有后续迁移，而对端的连接状态则是从 <code>ESTABLISHED</code> 变成了 <code>CLOSE_WAIT</code> 。</p>]]></description>
+</item><item>
+    <title>终端配置总结</title>
+    <link>https://example.com/terminal-config/</link>
+    <pubDate>Thu, 30 Mar 2017 15:29:19 &#43;0000</pubDate>
+    <author>Author</author>
+    <guid>https://example.com/terminal-config/</guid>
+    <description><![CDATA[<h2 id="终端配置总结">终端配置总结</h2>
+<h3 id="背景">背景</h3>
+<p>最近公司新购置了好几台 Linux 服务器然后配置一些服务的时候很不习惯，估计是我平时自己的 zsh + oh-my-zsh 用多了，故想整理下 .bash_rc 和 .zshrc 我个人的一些配置，这些配置包含了一些 alias 快捷命令和命令行系统配置，可以让终端变得快捷易用，今晚再写个 shell 脚本实现快速修改 .bash_rc 的配置。</p>]]></description>
+</item></channel>
+</rss>

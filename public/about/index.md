@@ -1,13 +1,5 @@
----
-title: "About Me"
-date: 2019-08-02T11:04:49+08:00
-draft: false
+# About Me
 
-lightgallery: true
-
-math:
-  enable: true
----
 
 > It's the morning breeze that caresses your face.
 >
@@ -54,3 +46,4 @@ You can share in the comments, or contact me by :(fas fa-share-square fa-fw): [e
 * Contact with aliens once. 👽
 * Been to Sicily.
 * See the aurora borealis once.
+

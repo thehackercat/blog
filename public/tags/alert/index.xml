@@ -1,0 +1,18 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title>Alert - Tag - LexusLee&#39;s blog</title>
+        <link>https://example.com/tags/alert/</link>
+        <description>Alert - Tag - LexusLee&#39;s blog</description>
+        <generator>Hugo -- gohugo.io</generator><language>en</language><managingEditor>lexuscyborg103@gmail.com (LexusLee)</managingEditor>
+            <webMaster>lexuscyborg103@gmail.com (LexusLee)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Tue, 07 Jul 2020 22:30:07 &#43;0000</lastBuildDate><atom:link href="https://example.com/tags/alert/" rel="self" type="application/rss+xml" /><item>
+    <title>告警收敛设计</title>
+    <link>https://example.com/alert-convergence/</link>
+    <pubDate>Tue, 07 Jul 2020 22:30:07 &#43;0000</pubDate>
+    <author>Author</author>
+    <guid>https://example.com/alert-convergence/</guid>
+    <description><![CDATA[背景 最近在豆瓣做面向开发者的 op 报警系统, 最头疼的是下列几种情况
+ 脉冲型报警 单个原因引起的报警发散 多个报警为同个诱因  由于目前现有的一些告警系统都强依赖后面的监控 agent/cmdb , 比如 open-falcon/prometheus 虽然都支持了告警收敛这一套, 但要从豆瓣的 statsd+icinga 迁移到 alertManager 需要折腾一阵。而我实际只想要一个中间轻量的 alert exporter 去做告警聚合/收敛.
+所以我期望实现下列 feature:
+ 对于告警可配置梯度, 比如 apperr &gt; 50, 则立马报警不做 retry, 并且 notify_interval 为 1 分钟; 对于 50 &gt; apperr &gt; 20 则有3次 retry, retry 周期为 1 分钟, 报警周期为2分钟. 对于 apperr &lt; 1 则 retry 5 次, retry 周期 3 分钟, 报警周期 5 分钟. 告警配置中可用 与|或|非 的方式进行组合告警,告警收敛. 如  1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18  [rules] apperr - script: xxx - label: http, service, statsd, codeerr - warning_threshold: 0.]]></description>
+</item></channel>
+</rss>

@@ -1,0 +1,18 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title>Productivity - Tag - LexusLee&#39;s blog</title>
+        <link>https://example.com/tags/productivity/</link>
+        <description>Productivity - Tag - LexusLee&#39;s blog</description>
+        <generator>Hugo -- gohugo.io</generator><language>en</language><managingEditor>lexuscyborg103@gmail.com (LexusLee)</managingEditor>
+            <webMaster>lexuscyborg103@gmail.com (LexusLee)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Sat, 08 Jul 2017 11:34:12 &#43;0000</lastBuildDate><atom:link href="https://example.com/tags/productivity/" rel="self" type="application/rss+xml" /><item>
+    <title>Awesome Windows Apps</title>
+    <link>https://example.com/awesome-windows-apps/</link>
+    <pubDate>Sat, 08 Jul 2017 11:34:12 &#43;0000</pubDate>
+    <author>Author</author>
+    <guid>https://example.com/awesome-windows-apps/</guid>
+    <description><![CDATA[<div style="text-align: right">LexusLee</div>
+<h3 id="背景">背景</h3>
+<p>很久不用 Windows 开发，最近刚入职开发环境在 Windows 上，故列举了一下我自己开发机上安装的一些实用 app ，方便以后直接按清单上整个世界。</p>
+<p>也算是一波安利了 ：D</p>]]></description>
+</item></channel>
+</rss>
