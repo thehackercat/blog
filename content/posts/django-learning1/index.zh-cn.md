@@ -4,7 +4,7 @@ title: " Django 学习笔记1-- URLconf "
 date: 2015-11-14 20:12:37 +0800
 comments: true
 draft: false
-categories: ["Code", "Python"]
+categories: ["Coding"]
 tags: ["Python", "Django"]
 lightgallery: true
 ---

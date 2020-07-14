@@ -4,8 +4,8 @@ date: 2016-03-29 15:43:36 +0800
 comments: true
 weight: 5
 draft: false
-categories: ["Code", "Python"]
-tags: ["Python", "Django", "REST"]
+categories: ["Coding"]
+tags: ["Python", "Django", "RESTful"]
 lightgallery: true
 ---
 ## Django REST Framework 快速上手

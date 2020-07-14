@@ -5,7 +5,7 @@ date: 2016-04-03 02:01:33 +0800
 comments: true
 weight: 5
 draft: false
-categories: ["Code", "Python"]
+categories: ["Coding"]
 tags: ["Python", "Django", "RESTful"]
 lightgallery: true
 ---

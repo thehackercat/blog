@@ -5,7 +5,7 @@ tags: App
 comments: true
 weight: 5
 draft: false
-categories: ["Productivity"]
+categories: ["Product"]
 tags: ["Productivity", "Awesome"]
 lightgallery: true
 ---

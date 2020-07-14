@@ -4,7 +4,7 @@ date: 2017-03-30 15:29:19
 comments: true
 weight: 5
 draft: false
-categories: ["Linux", "Code"]
+categories: ["Coding"]
 tags: ["Linux", "Config", "Terminal"]
 lightgallery: true
 ---

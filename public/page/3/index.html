@@ -18,9 +18,7 @@
 <meta name="twitter:title" content="LexusLee&#39;s blog"/>
 <meta name="twitter:description" content="LexusLee personal blog, recording things you people wouldn&#39;t believe. Like attack ships on fire off the shoulder of Orion, c-beams glitter in the dark near the Tannhauser Gate."/>
 <meta name="application-name" content="Nice to meet you">
-<meta name="apple-mobile-web-app-title" content="Nice to meet you"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
-        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://example.com/" /><link rel="alternate" href="/index.xml" type="application/rss+xml" title="LexusLee&#39;s blog">
+<meta name="apple-mobile-web-app-title" content="Nice to meet you"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="icon" href="/assets/images/favicon.ico"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://example.com/" /><link rel="alternate" href="/index.xml" type="application/rss+xml" title="LexusLee&#39;s blog">
     <link rel="feed" href="/index.xml" type="application/rss+xml" title="LexusLee&#39;s blog"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/normalize.css@8.0.1/normalize.min.css"><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.13.0/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.7.2/animate.min.css"><script type="application/ld+json">
     {
         "@context": "http://schema.org",
@@ -108,7 +106,7 @@
         title="/images/avatar.png" /></a></div><h1 class="home-title">LexusLee's blog</h1><h2 class="home-subtitle"><div id="id-1" class="typeit"></div></h2><div class="links"><a href="https://github.com/thehackercat" title="GitHub" target="_blank" rel="noopener noreffer me"><i class="fab fa-github-alt fa-fw"></i></a><a href="https://linkedin.com/in/lingzhi-li-997a64b7" title="LinkedIn" target="_blank" rel="noopener noreffer me"><i class="fab fa-linkedin fa-fw"></i></a><a href="https://twitter.com/lexuscyborg103" title="Twitter" target="_blank" rel="noopener noreffer me"><i class="fab fa-twitter fa-fw"></i></a><a href="https://www.instagram.com/thehackercat" title="Instagram" target="_blank" rel="noopener noreffer me"><i class="fab fa-instagram fa-fw"></i></a><a href="https://t.me/thehackercat" title="Telegram" target="_blank" rel="noopener noreffer me"><i class="fab fa-telegram-plane fa-fw"></i></a><a href="https://www.reddit.com/user/thehackercat" title="Reddit" target="_blank" rel="noopener noreffer me"><i class="fab fa-reddit fa-fw"></i></a><a href="https://weibo.com/thehackercat" title="微博" target="_blank" rel="noopener noreffer me"><i class="fab fa-weibo fa-fw"></i></a><a href="https://www.douban.com/people/thehackercat" title="豆瓣" target="_blank" rel="noopener noreffer me"><i data-svg-src="https://cdn.jsdelivr.net/npm/simple-icons@2.14.0/icons/douban.svg"></i></a><a href="mailto:lexuscyborg103@gmail.com" title="Email" rel=" me"><i class="far fa-envelope fa-fw"></i></a><a href="/index.xml" title="RSS" target="_blank" rel="noopener noreffer me"><i class="fas fa-rss fa-fw"></i></a></div></div>
 <article class="single summary" itemscope itemtype="http://schema.org/Article"><h1 class="single-title" itemprop="name headline">
         <a href="/service-fallback/">坦率地讲 服务熔断 &amp; 服务降级</a>
-    </h1><div class="post-meta"><span class="post-author"><a href="/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw"></i>LexusLee</a></span>&nbsp;<span class="post-publish">published on <time datetime="2018-02-01">2018-02-01</time></span>&nbsp;<span class="post-category">included in <a href="/categories/architecture/"><i class="far fa-folder fa-fw"></i>Architecture</a>&nbsp;<a href="/categories/code/"><i class="far fa-folder fa-fw"></i>Code</a></span></div><div class="content"><h2 id="坦率地讲-服务熔断--服务降级">坦率地讲 服务熔断 &amp; 服务降级</h2>
+    </h1><div class="post-meta"><span class="post-author"><a href="/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw"></i>LexusLee</a></span>&nbsp;<span class="post-publish">published on <time datetime="2018-02-01">2018-02-01</time></span>&nbsp;<span class="post-category">included in <a href="/categories/coding/"><i class="far fa-folder fa-fw"></i>Coding</a></span></div><div class="content"><h2 id="坦率地讲-服务熔断--服务降级">坦率地讲 服务熔断 &amp; 服务降级</h2>
 <h3 id="背景">背景</h3>
 <p>之前遇到个问题，发现一个系统如果拆分了太多业务类服务，或者依赖于大量的第三方服务，就很容易因为某个服务的故障导致整个系统不可用，比如</p>
 <ul>
@@ -119,7 +117,7 @@
                 <i class="fas fa-tags fa-fw"></i>&nbsp;<a href="/tags/service/">Service</a>,&nbsp;<a href="/tags/architecture/">Architecture</a>,&nbsp;<a href="/tags/linux/">Linux</a></div></div>
 </article><article class="single summary" itemscope itemtype="http://schema.org/Article"><h1 class="single-title" itemprop="name headline">
         <a href="/workflow-design/">浅谈 Workflow 设计</a>
-    </h1><div class="post-meta"><span class="post-author"><a href="/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw"></i>LexusLee</a></span>&nbsp;<span class="post-publish">published on <time datetime="2017-12-03">2017-12-03</time></span>&nbsp;<span class="post-category">included in <a href="/categories/code/"><i class="far fa-folder fa-fw"></i>Code</a>&nbsp;<a href="/categories/python/"><i class="far fa-folder fa-fw"></i>Python</a></span></div><div class="content">浅谈 Workflow 设计 LexusLee 背景 最近刚接触到 workflow 相关的东西，之前都没有造过这方面的轮子，所以看了一些框架总结了一下我认为的好的 Workflow 的设计应该是怎样的。
+    </h1><div class="post-meta"><span class="post-author"><a href="/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw"></i>LexusLee</a></span>&nbsp;<span class="post-publish">published on <time datetime="2017-12-03">2017-12-03</time></span>&nbsp;<span class="post-category">included in <a href="/categories/coding/"><i class="far fa-folder fa-fw"></i>Coding</a></span></div><div class="content">浅谈 Workflow 设计 LexusLee 背景 最近刚接触到 workflow 相关的东西，之前都没有造过这方面的轮子，所以看了一些框架总结了一下我认为的好的 Workflow 的设计应该是怎样的。
 什么是 Workflow ? Workflow 是一些可重复执行的事件按特定的顺序&amp;路径组合成的事件流，这个组成的事件流通常是为了满足某一个流程较长的任务。
 这些事件通常是不可再被细分，是具有原子性的。每个原子事件可能包含执行任务、文档或数据。这些事件按照提前声明好的规则组合起来就成了一个 Workflow .
 e.g. 如上图所示，Workflow 类似软件工程中的流程图，指定了每个节点可能出现的路径分支，节点执行的事情以及节点的终结状态。
@@ -130,7 +128,7 @@ e.g. 如上图所示，Workflow 类似软件工程中的流程图，指定了每
                 <i class="fas fa-tags fa-fw"></i>&nbsp;<a href="/tags/python/">Python</a>,&nbsp;<a href="/tags/workflow/">Workflow</a></div></div>
 </article><article class="single summary" itemscope itemtype="http://schema.org/Article"><h1 class="single-title" itemprop="name headline">
         <a href="/girl-in-the-sunny-place/">《向阳处的她》浩介先生终于有猫啦！</a>
-    </h1><div class="post-meta"><span class="post-author"><a href="/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw"></i>LexusLee</a></span>&nbsp;<span class="post-publish">published on <time datetime="2017-09-25">2017-09-25</time></span>&nbsp;<span class="post-category">included in <a href="/categories/gossip/"><i class="far fa-folder fa-fw"></i>Gossip</a></span></div><div class="content"><h2 id="向阳处的她浩介先生终于有猫啦">《向阳处的她》浩介先生终于有猫啦！</h2>
+    </h1><div class="post-meta"><span class="post-author"><a href="/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw"></i>LexusLee</a></span>&nbsp;<span class="post-publish">published on <time datetime="2017-09-25">2017-09-25</time></span>&nbsp;<span class="post-category">included in <a href="/categories/movie/"><i class="far fa-folder fa-fw"></i>Movie</a></span></div><div class="content"><h2 id="向阳处的她浩介先生终于有猫啦">《向阳处的她》浩介先生终于有猫啦！</h2>
 <p>有一年的搞笑诺贝尔物理学奖颁给了课题：</p>
 <p>「一只猫能同时处于固体状态和液体状态吗？」</p>
 <p>通过第三人称视角研究了猫的各种形态，《向阳处的她》这部电影就给研究了一个狠狠的耳光。</p></div><div class="post-footer">
@@ -138,7 +136,7 @@ e.g. 如上图所示，Workflow 类似软件工程中的流程图，指定了每
                 <i class="fas fa-tags fa-fw"></i>&nbsp;<a href="/tags/gossip/">Gossip</a>,&nbsp;<a href="/tags/movie/">Movie</a></div></div>
 </article><article class="single summary" itemscope itemtype="http://schema.org/Article"><h1 class="single-title" itemprop="name headline">
         <a href="/tcp-close-socket/">关于关闭 Socket 的一些坑</a>
-    </h1><div class="post-meta"><span class="post-author"><a href="/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw"></i>LexusLee</a></span>&nbsp;<span class="post-publish">published on <time datetime="2017-09-06">2017-09-06</time></span>&nbsp;<span class="post-category">included in <a href="/categories/linux/"><i class="far fa-folder fa-fw"></i>Linux</a>&nbsp;<a href="/categories/code/"><i class="far fa-folder fa-fw"></i>Code</a></span></div><div class="content"><h2 id="关于关闭-socket-的一些坑">关于关闭 Socket 的一些坑</h2>
+    </h1><div class="post-meta"><span class="post-author"><a href="/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw"></i>LexusLee</a></span>&nbsp;<span class="post-publish">published on <time datetime="2017-09-06">2017-09-06</time></span>&nbsp;<span class="post-category">included in <a href="/categories/coding/"><i class="far fa-folder fa-fw"></i>Coding</a></span></div><div class="content"><h2 id="关于关闭-socket-的一些坑">关于关闭 Socket 的一些坑</h2>
 <div style="text-align: right">LexusLee</div>
 <h3 id="背景">背景</h3>
 <p>最近踩到一个 &ldquo;Socket 连接持续处于 Fin_Wait2 和 Close_Wait 状态无法关闭&rdquo; 的坑中。起因是在维护大量连接时调用 <code>socket.close()</code> 时，看到部分连接并没有正常关闭，而是从 <code>ESTABLISHED</code> 的状态变成 <code>FIN_WAIT2</code> 并且连接状态没有后续迁移，而对端的连接状态则是从 <code>ESTABLISHED</code> 变成了 <code>CLOSE_WAIT</code> 。</p></div><div class="post-footer">
@@ -153,7 +151,7 @@ e.g. 如上图所示，Workflow 类似软件工程中的流程图，指定了每
                 <i class="fas fa-tags fa-fw"></i>&nbsp;<a href="/tags/icon/">Icon</a>,&nbsp;<a href="/tags/sketch/">Sketch</a></div></div>
 </article><article class="single summary" itemscope itemtype="http://schema.org/Article"><h1 class="single-title" itemprop="name headline">
         <a href="/awesome-windows-apps/">Awesome Windows Apps</a>
-    </h1><div class="post-meta"><span class="post-author"><a href="/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw"></i>LexusLee</a></span>&nbsp;<span class="post-publish">published on <time datetime="2017-07-08">2017-07-08</time></span>&nbsp;<span class="post-category">included in <a href="/categories/productivity/"><i class="far fa-folder fa-fw"></i>Productivity</a></span></div><div class="content"><div style="text-align: right">LexusLee</div>
+    </h1><div class="post-meta"><span class="post-author"><a href="/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw"></i>LexusLee</a></span>&nbsp;<span class="post-publish">published on <time datetime="2017-07-08">2017-07-08</time></span>&nbsp;<span class="post-category">included in <a href="/categories/product/"><i class="far fa-folder fa-fw"></i>Product</a></span></div><div class="content"><div style="text-align: right">LexusLee</div>
 <h3 id="背景">背景</h3>
 <p>很久不用 Windows 开发，最近刚入职开发环境在 Windows 上，故列举了一下我自己开发机上安装的一些实用 app ，方便以后直接按清单上整个世界。</p>
 <p>也算是一波安利了 ：D</p></div><div class="post-footer">
@@ -187,8 +185,7 @@ e.g. 如上图所示，Workflow 类似软件工程中的流程图，指定了每
                     </span>
                 </li></ul></div></div>
             </main><footer class="footer">
-        <div class="footer-container"><div class="footer-line">Powered by <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.73.0">Hugo</a> | Theme - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.2.10"><i class="far fa-kiss-wink-heart fa-fw"></i> LoveIt</a>
-                </div><div class="footer-line"><i class="far fa-copyright fa-fw"></i><span itemprop="copyrightYear">2019 - 2020</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/" target="_blank">LexusLee</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        <div class="footer-container"><div class="footer-line"><i class="far fa-copyright fa-fw"></i><span itemprop="copyrightYear">2015 - 2020</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/" target="_blank">LexusLee</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
         </div>
     </footer></div>
 

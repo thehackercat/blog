@@ -4,8 +4,8 @@ date: 2015-12-07 14:12:24 +0800
 comments: true
 weight: 5
 draft: false
-categories: ["Code", "Python"]
-tags: ["Python", "Syntactic sugar"]
+categories: ["Coding"]
+tags: ["Python"]
 lightgallery: true
 ---
 最近在写 Python+Django 的时候发现，有时候封装 API 的时候经常会遗失一些重复的装饰信息，但是直接封装到方法里是比较差劲的写法，因为有多个模块可能同时需要这些装饰信息，所以我希望使用一种可以迭代的装饰器。于是我在 [Stack Overflow](http://stackoverflow.com/questions/739654/how-can-i-make-a-chain-of-function-decorators-in-python/1594484#1594484) 上找到了相应的解答。下面以这篇解答为引写下我理解 Python decorator 的思路过程。

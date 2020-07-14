@@ -4,8 +4,8 @@ date: 2017-04-26 03:33:27
 comments: true
 weight: 5
 draft: false
-categories: ["Code", "Python"]
-tags: ["Python", "Whoosh", "Jieba"]
+categories: ["Coding"]
+tags: ["Python", "Whoosh"]
 lightgallery: true
 ---
 

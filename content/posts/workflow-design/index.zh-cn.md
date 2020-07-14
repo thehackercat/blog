@@ -4,7 +4,7 @@ date: 2017-12-03 22:30:07
 comments: true
 weight: 5
 draft: false
-categories: ["Code", "Python"]
+categories: ["Coding"]
 tags: ["Python", "Workflow"]
 lightgallery: true
 ---

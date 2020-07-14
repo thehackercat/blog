@@ -3,7 +3,7 @@ title: PySpark 词频统计搜索引擎的设计思路
 date: 2017-05-09 14:00:41
 weight: 5
 draft: false
-categories: ["Code", "Architecture"]
+categories: ["Coding"]
 tags: ["Spark", "Architecture"]
 lightgallery: true
 ---

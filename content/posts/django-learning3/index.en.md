@@ -4,7 +4,7 @@ title: " Django 学习笔记3-- Models "
 date: 2015-11-21 13:17:57 +0800
 comments: true
 draft: false
-categories: ["Code", "Python"]
+categories: ["Coding"]
 tags: ["Python", "Django"]
 lightgallery: true
 ---

@@ -4,7 +4,7 @@ date: 2018-02-01 19:03:25
 comment: true
 weight: 5
 draft: false
-categories: ["Architecture", "Code"]
+categories: ["Coding"]
 tags: ["Service", "Architecture", "Linux"]
 lightgallery: true
 thumbnail: https://www.atulhost.com/wp-content/uploads/2016/12/material-design-wallpaper-1.jpg

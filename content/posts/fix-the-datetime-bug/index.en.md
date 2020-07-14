@@ -4,7 +4,7 @@ title: "使用Octopress搭建静态博客"
 date: 2015-11-09 11:25:00+08:00
 comments: true
 tags: ["Octopress"]
-categories: ["Code"]
+categories: ["Coding"]
 draft: false
 lightgallery: true
 ---

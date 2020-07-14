@@ -4,7 +4,7 @@ date: 2018-09-14 19:10:46
 comment: true
 weight: 5
 draft: false
-categories: ["Code", "Kubernetes"]
+categories: ["Coding"]
 tags: ["Golang", "Kubernetes", "Linux"]
 lightgallery: true
 thumbnail: http://fullbit.ca/wp-content/uploads/2018/02/kubernetes-logo1-e1525258419775.png

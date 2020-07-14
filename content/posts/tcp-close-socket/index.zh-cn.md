@@ -5,7 +5,7 @@ date: 2017-09-06 20:36:51
 comments: true
 weight: 5
 draft: false
-categories: ["Linux", "Code"]
+categories: ["Coding"]
 tags: ["TCP", "Linux"]
 lightgallery: true
 ---

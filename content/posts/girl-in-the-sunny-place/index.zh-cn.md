@@ -3,7 +3,7 @@ title: 《向阳处的她》浩介先生终于有猫啦！
 date: 2017-09-25 01:45:45
 weight: 5
 draft: false
-categories: ["Gossip"]
+categories: ["Movie"]
 tags: ["Gossip", "Movie"]
 lightgallery: true
 thumbnail: http://img2.a0bi.com/upload/gw/movie/20151218/2154920242.jpg

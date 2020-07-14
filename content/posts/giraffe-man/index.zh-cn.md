@@ -3,8 +3,8 @@ weight: 5
 title: "长颈鹿侠"
 date: 2015-05-16 02:01:33 +0800
 comments: true
-categories: ["gossip"]
-tags: ["gossip", "superhero"]
+categories: ["Gossip"]
+tags: ["Gossip", "Superhero"]
 draft: false
 lightgallery: true
 ---

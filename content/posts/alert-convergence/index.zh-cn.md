@@ -4,7 +4,7 @@ date: 2020-07-07 22:30:07
 comments: true
 weight: 5
 draft: false
-categories: ["Code", "Architecture"]
+categories: ["Coding"]
 tags: ["Architecture", "Alert"]
 lightgallery: true
 ---

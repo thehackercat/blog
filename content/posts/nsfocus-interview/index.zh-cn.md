@@ -5,7 +5,7 @@ comments: true
 weight: 5
 draft: false
 categories: ["Interview"]
-tags: ["Interview", "Code"]
+tags: ["Interview"]
 lightgallery: true
 ---
 ## 背景

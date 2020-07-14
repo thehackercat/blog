@@ -5,8 +5,8 @@ tags: "Linux"
 comment: true
 weight: 5
 draft: false
-categories: ["Security", "Linux", "Code"]
-tags: ["Security", "Linux", "Postgresql"]
+categories: ["Coding"]
+tags: ["Security", "Linux"]
 lightgallery: true
 thumbnail: http://image.knowing.asia/53d15464-67d2-4225-b98e-91bbdd132af7/72d33b84950ef1a25d3a74f60ab83873.png
 ---

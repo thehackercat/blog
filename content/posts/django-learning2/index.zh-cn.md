@@ -4,7 +4,7 @@ title: " Django 学习笔记2-- Templates "
 date: 2015-11-16 15:15:55 +0800
 comments: true
 draft: false
-categories: ["Code", "Python"]
+categories: ["Coding"]
 tags: ["Python", "Django"]
 lightgallery: true
 ---

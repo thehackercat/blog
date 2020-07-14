@@ -3,7 +3,7 @@ title: Talk about Kubernetes cronJob controller
 date: 2019-12-14 13:57:32
 weight: 5
 draft: false
-categories: ["Code", "Kubernetes"]
+categories: ["Coding"]
 tags: ["Golang", "Kubernetes", "Linux"]
 lightgallery: true
 comments: true

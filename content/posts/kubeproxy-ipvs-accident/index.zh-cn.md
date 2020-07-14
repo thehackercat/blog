@@ -4,7 +4,7 @@ date: 2019-04-29 19:10:46
 comment: true
 weight: 5
 draft: false
-categories: ["Code", "Kubernetes"]
+categories: ["Coding"]
 tags: ["Iptables", "Kubernetes", "Linux"]
 lightgallery: true
 ---

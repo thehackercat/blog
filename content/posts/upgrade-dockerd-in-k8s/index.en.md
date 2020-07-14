@@ -4,7 +4,7 @@ date: 2020-07-10 19:10:46
 comment: true
 weight: 5
 draft: false
-categories: ["Code", "Kubernetes"]
+categories: ["Coding"]
 tags: ["Kubernetes", "Docker"]
 lightgallery: true
 thumbnail: http://fullbit.ca/wp-content/uploads/2018/02/kubernetes-logo1-e1525258419775.png

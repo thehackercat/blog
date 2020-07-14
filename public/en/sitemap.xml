@@ -380,14 +380,14 @@
                     hreflang="en"
                     href="https://example.com/categories/"
                     /></url><url>
-            <loc>https://example.com/categories/code/</loc><lastmod>2020-07-14T02:57:28&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority><xhtml:link
+            <loc>https://example.com/categories/coding/</loc><lastmod>2020-07-14T02:57:28&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority><xhtml:link
                         rel="alternate"
                         hreflang="zh-cn"
-                        href="https://example.com/zh-cn/categories/code/"
+                        href="https://example.com/zh-cn/categories/coding/"
                         /><xhtml:link
                     rel="alternate"
                     hreflang="en"
-                    href="https://example.com/categories/code/"
+                    href="https://example.com/categories/coding/"
                     /></url><url>
             <loc>https://example.com/tags/docker/</loc><lastmod>2020-07-14T02:57:28&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority><xhtml:link
                         rel="alternate"
@@ -406,15 +406,6 @@
                     rel="alternate"
                     hreflang="en"
                     href="https://example.com/tags/kubernetes/"
-                    /></url><url>
-            <loc>https://example.com/categories/kubernetes/</loc><lastmod>2020-07-14T02:57:28&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority><xhtml:link
-                        rel="alternate"
-                        hreflang="zh-cn"
-                        href="https://example.com/zh-cn/categories/kubernetes/"
-                        /><xhtml:link
-                    rel="alternate"
-                    hreflang="en"
-                    href="https://example.com/categories/kubernetes/"
                     /></url><url>
             <loc>https://example.com/</loc><lastmod>2020-07-14T02:57:28&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority><xhtml:link
                         rel="alternate"
@@ -461,15 +452,6 @@
                     hreflang="en"
                     href="https://example.com/tags/architecture/"
                     /></url><url>
-            <loc>https://example.com/categories/architecture/</loc><lastmod>2020-07-14T02:57:28&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority><xhtml:link
-                        rel="alternate"
-                        hreflang="zh-cn"
-                        href="https://example.com/zh-cn/categories/architecture/"
-                        /><xhtml:link
-                    rel="alternate"
-                    hreflang="en"
-                    href="https://example.com/categories/architecture/"
-                    /></url><url>
             <loc>https://example.com/tags/ebpf/</loc><lastmod>2020-07-14T02:57:28&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority><xhtml:link
                         rel="alternate"
                         hreflang="zh-cn"
@@ -487,15 +469,6 @@
                     rel="alternate"
                     hreflang="en"
                     href="https://example.com/tags/linux/"
-                    /></url><url>
-            <loc>https://example.com/categories/linux/</loc><lastmod>2020-07-14T02:57:28&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority><xhtml:link
-                        rel="alternate"
-                        hreflang="zh-cn"
-                        href="https://example.com/zh-cn/categories/linux/"
-                        /><xhtml:link
-                    rel="alternate"
-                    hreflang="en"
-                    href="https://example.com/categories/linux/"
                     /></url><url>
             <loc>https://example.com/tags/gossip/</loc><lastmod>2020-07-14T02:57:28&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority><xhtml:link
                         rel="alternate"
@@ -551,7 +524,6 @@
                     hreflang="en"
                     href="https://example.com/tags/iptables/"
                     /></url><url>
-            <loc>https://example.com/tags/postgresql/</loc><lastmod>2020-07-14T02:57:28&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
             <loc>https://example.com/tags/security/</loc><lastmod>2020-07-14T02:57:28&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority><xhtml:link
                         rel="alternate"
                         hreflang="zh-cn"
@@ -560,15 +532,6 @@
                     rel="alternate"
                     hreflang="en"
                     href="https://example.com/tags/security/"
-                    /></url><url>
-            <loc>https://example.com/categories/security/</loc><lastmod>2020-07-14T02:57:28&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority><xhtml:link
-                        rel="alternate"
-                        hreflang="zh-cn"
-                        href="https://example.com/zh-cn/categories/security/"
-                        /><xhtml:link
-                    rel="alternate"
-                    hreflang="en"
-                    href="https://example.com/categories/security/"
                     /></url><url>
             <loc>https://example.com/tags/service/</loc><lastmod>2020-07-14T02:57:28&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority><xhtml:link
                         rel="alternate"
@@ -588,15 +551,6 @@
                     hreflang="en"
                     href="https://example.com/tags/python/"
                     /></url><url>
-            <loc>https://example.com/categories/python/</loc><lastmod>2020-07-14T02:57:28&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority><xhtml:link
-                        rel="alternate"
-                        hreflang="zh-cn"
-                        href="https://example.com/zh-cn/categories/python/"
-                        /><xhtml:link
-                    rel="alternate"
-                    hreflang="en"
-                    href="https://example.com/categories/python/"
-                    /></url><url>
             <loc>https://example.com/tags/workflow/</loc><lastmod>2020-07-14T02:57:28&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority><xhtml:link
                         rel="alternate"
                         hreflang="zh-cn"
@@ -614,6 +568,15 @@
                     rel="alternate"
                     hreflang="en"
                     href="https://example.com/tags/movie/"
+                    /></url><url>
+            <loc>https://example.com/categories/movie/</loc><lastmod>2020-07-14T02:57:28&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority><xhtml:link
+                        rel="alternate"
+                        hreflang="zh-cn"
+                        href="https://example.com/zh-cn/categories/movie/"
+                        /><xhtml:link
+                    rel="alternate"
+                    hreflang="en"
+                    href="https://example.com/categories/movie/"
                     /></url><url>
             <loc>https://example.com/tags/tcp/</loc><lastmod>2020-07-14T02:57:28&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority><xhtml:link
                         rel="alternate"
@@ -660,6 +623,15 @@
                     hreflang="en"
                     href="https://example.com/tags/awesome/"
                     /></url><url>
+            <loc>https://example.com/categories/product/</loc><lastmod>2020-07-14T02:57:28&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority><xhtml:link
+                        rel="alternate"
+                        hreflang="zh-cn"
+                        href="https://example.com/zh-cn/categories/product/"
+                        /><xhtml:link
+                    rel="alternate"
+                    hreflang="en"
+                    href="https://example.com/categories/product/"
+                    /></url><url>
             <loc>https://example.com/tags/productivity/</loc><lastmod>2020-07-14T02:57:28&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority><xhtml:link
                         rel="alternate"
                         hreflang="zh-cn"
@@ -669,15 +641,6 @@
                     hreflang="en"
                     href="https://example.com/tags/productivity/"
                     /></url><url>
-            <loc>https://example.com/categories/productivity/</loc><lastmod>2020-07-14T02:57:28&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority><xhtml:link
-                        rel="alternate"
-                        hreflang="zh-cn"
-                        href="https://example.com/zh-cn/categories/productivity/"
-                        /><xhtml:link
-                    rel="alternate"
-                    hreflang="en"
-                    href="https://example.com/categories/productivity/"
-                    /></url><url>
             <loc>https://example.com/tags/spark/</loc><lastmod>2020-07-14T02:57:28&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority><xhtml:link
                         rel="alternate"
                         hreflang="zh-cn"
@@ -686,15 +649,6 @@
                     rel="alternate"
                     hreflang="en"
                     href="https://example.com/tags/spark/"
-                    /></url><url>
-            <loc>https://example.com/tags/jieba/</loc><lastmod>2020-07-14T02:57:28&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority><xhtml:link
-                        rel="alternate"
-                        hreflang="zh-cn"
-                        href="https://example.com/zh-cn/tags/jieba/"
-                        /><xhtml:link
-                    rel="alternate"
-                    hreflang="en"
-                    href="https://example.com/tags/jieba/"
                     /></url><url>
             <loc>https://example.com/tags/whoosh/</loc><lastmod>2020-07-14T02:57:28&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority><xhtml:link
                         rel="alternate"
@@ -759,7 +713,6 @@
                     hreflang="en"
                     href="https://example.com/tags/restful/"
                     /></url><url>
-            <loc>https://example.com/tags/rest/</loc><lastmod>2020-07-14T02:57:28&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
             <loc>https://example.com/tags/nginx/</loc><lastmod>2020-07-14T02:57:28&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority><xhtml:link
                         rel="alternate"
                         hreflang="zh-cn"
@@ -768,15 +721,6 @@
                     rel="alternate"
                     hreflang="en"
                     href="https://example.com/tags/nginx/"
-                    /></url><url>
-            <loc>https://example.com/tags/code/</loc><lastmod>2020-07-14T02:57:28&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority><xhtml:link
-                        rel="alternate"
-                        hreflang="zh-cn"
-                        href="https://example.com/zh-cn/tags/code/"
-                        /><xhtml:link
-                    rel="alternate"
-                    hreflang="en"
-                    href="https://example.com/tags/code/"
                     /></url><url>
             <loc>https://example.com/tags/interview/</loc><lastmod>2020-07-14T02:57:28&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority><xhtml:link
                         rel="alternate"
@@ -795,15 +739,6 @@
                     rel="alternate"
                     hreflang="en"
                     href="https://example.com/categories/interview/"
-                    /></url><url>
-            <loc>https://example.com/tags/syntactic-sugar/</loc><lastmod>2020-07-14T02:57:28&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority><xhtml:link
-                        rel="alternate"
-                        hreflang="zh-cn"
-                        href="https://example.com/zh-cn/tags/syntactic-sugar/"
-                        /><xhtml:link
-                    rel="alternate"
-                    hreflang="en"
-                    href="https://example.com/tags/syntactic-sugar/"
                     /></url><url>
             <loc>https://example.com/tags/octopress/</loc><lastmod>2020-07-14T02:57:28&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority><xhtml:link
                         rel="alternate"

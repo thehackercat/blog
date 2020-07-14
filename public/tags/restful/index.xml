@@ -58,5 +58,15 @@
 所以我们就用这个「仿豆瓣电影 api 」来作为栗子开始教程吧！
 编辑 douban/models.py 文件并加入以下代码:
 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41  #!]]></description>
+</item><item>
+    <title>Django REST Framework 快速上手</title>
+    <link>https://example.com/django-rest-framework/</link>
+    <pubDate>Tue, 29 Mar 2016 15:43:36 &#43;0800</pubDate>
+    <author>Author</author>
+    <guid>https://example.com/django-rest-framework/</guid>
+    <description><![CDATA[<h2 id="django-rest-framework-快速上手">Django REST Framework 快速上手</h2>
+<h3 id="背景">背景</h3>
+<p>这几天正好在研究 RESTful 的方式来写 API，然后上手 Django REST 框架。</p>
+<p>Django REST Framework (以下简称 DRF )是一个轻量级的库，熟悉 Django 的话可以很容易的用它来构建 Web API。</p>]]></description>
 </item></channel>
 </rss>

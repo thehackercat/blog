@@ -4,7 +4,7 @@ date: 2015-12-08 15:08:35 +0800
 comments: true
 weight: 5
 draft: false
-categories: ["Code", "Python"]
+categories: ["Coding"]
 tags: ["Python", "Django"]
 lightgallery: true
 ---

@@ -4,7 +4,7 @@ title: "在 Octopress 中生成包含 liquid 语句的代码"
 date: 2015-11-20 16:32:12 +0800
 comments: true
 draft: false
-categories: ["Code"]
+categories: ["Coding"]
 tags: ["Octopress"]
 lightgallery: true
 ---

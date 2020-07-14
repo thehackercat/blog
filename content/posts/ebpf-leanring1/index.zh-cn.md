@@ -4,7 +4,7 @@ date: 2020-01-13 18:26:09
 comments: true
 weight: 5
 draft: false
-categories: ["Code", "Linux"]
+categories: ["Coding"]
 tags: ["Linux", "eBPF"]
 lightgallery: true
 ---
