@@ -103,7 +103,7 @@ enableEmoji = true
         # whether to omit favicon resource links
         noFavicon = false
         # modern SVG favicon to use in place of older style .png and .ico files
-        svgFavicon = "/assets/images/favicon.ico"
+        svgFavicon = "/images/favicon.ico"
         # Android browser theme color
         themeColor = "#ffffff"
         # Safari mask icon color
@@ -300,7 +300,7 @@ enableEmoji = true
         # 是否隐藏网站图标资源链接
         noFavicon = false
         # 更现代的 SVG 网站图标, 可替代旧的 .png 和 .ico 文件
-        svgFavicon = "/assets/images/favicon.ico"
+        svgFavicon = "/images/favicon.ico"
         # Android 浏览器主题色
         themeColor = "#ffffff"
         # Safari 图标颜色

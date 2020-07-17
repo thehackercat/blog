@@ -21,9 +21,11 @@ math:
 
 目前技术栈集中在云平台开发，主要用到的语言是 Python/Golang，Python 吸引我在于他语法简洁语法糖易用，常被诟病的Python速度慢也在 Python3.6 之后的async出现后逐渐改善.不过在处理 CPU bound 任务时表现比较差, 这部分 Golang 则更好地解决了.
 
+近来对 Golang/Kubernetes/Service Mesh 感兴趣, 尝试 Dive into it.
+
 在编程之外，我还喜欢刷些 Dribbble 、 Pinterest 等设计师论坛，对其中精妙的设计十分着迷，对交互设计也有极大的兴趣，感觉一个 app 是为人服务的，应该贴切人类的使用习惯并遵循人类优质的审美风格。
 
-在逛论坛之外，我还是这个星球上为数不多会说 :(fas fa-rocket fa-fw): [小黄人](https://en.wikipedia.org/wiki/Minions_(film))语的少年，喜欢荒诞却有逻辑的事务，眼里所有的风车，都是条巨龙。
+在逛论坛之外，我还是这个星球上 🪐 为数不多会说 :(fas fa-rocket fa-fw): [小黄人](https://en.wikipedia.org/wiki/Minions_(film))语的少年，喜欢荒诞却有逻辑的事务，眼里所有的风车，都是条巨龙。
 
 同时，我还是漫威巨粉，对一切超级英雄有着不切实际的幻想，喜欢追逐他们风中飘忽不定的脸。
 
