@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
-	<meta name="generator" content="Hugo 0.73.0" />
+	<meta name="generator" content="Hugo 0.79.1" />
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="robots" content="noodp" />
@@ -11,14 +11,14 @@
 <meta property="og:type" content="website" />
 <meta property="og:url" content="https://example.com/" />
 <meta property="og:image" content="https://example.com/logo.png"/>
-<meta property="og:updated_time" content="2020-07-14T02:57:28+08:00" />
+<meta property="og:updated_time" content="2020-12-25T14:02:16+08:00" />
 <meta name="twitter:card" content="summary_large_image"/>
 <meta name="twitter:image" content="https://example.com/logo.png"/>
 
 <meta name="twitter:title" content="LexusLee&#39;s blog"/>
 <meta name="twitter:description" content="LexusLee personal blog, recording things you people wouldn&#39;t believe. Like attack ships on fire off the shoulder of Orion, c-beams glitter in the dark near the Tannhauser Gate."/>
 <meta name="application-name" content="Nice to meet you">
-<meta name="apple-mobile-web-app-title" content="Nice to meet you"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="icon" href="/assets/images/favicon.ico"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://example.com/" /><link rel="alternate" href="/index.xml" type="application/rss+xml" title="LexusLee&#39;s blog">
+<meta name="apple-mobile-web-app-title" content="Nice to meet you"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="icon" href="/images/favicon.ico"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://example.com/" /><link rel="alternate" href="/index.xml" type="application/rss+xml" title="LexusLee&#39;s blog">
     <link rel="feed" href="/index.xml" type="application/rss+xml" title="LexusLee&#39;s blog"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/normalize.css@8.0.1/normalize.min.css"><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.13.0/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.7.2/animate.min.css"><script type="application/ld+json">
     {
         "@context": "http://schema.org",
@@ -105,6 +105,29 @@
         alt="/images/avatar.png"
         title="/images/avatar.png" /></a></div><h1 class="home-title">LexusLee's blog</h1><h2 class="home-subtitle"><div id="id-1" class="typeit"></div></h2><div class="links"><a href="https://github.com/thehackercat" title="GitHub" target="_blank" rel="noopener noreffer me"><i class="fab fa-github-alt fa-fw"></i></a><a href="https://linkedin.com/in/lingzhi-li-997a64b7" title="LinkedIn" target="_blank" rel="noopener noreffer me"><i class="fab fa-linkedin fa-fw"></i></a><a href="https://twitter.com/lexuscyborg103" title="Twitter" target="_blank" rel="noopener noreffer me"><i class="fab fa-twitter fa-fw"></i></a><a href="https://www.instagram.com/thehackercat" title="Instagram" target="_blank" rel="noopener noreffer me"><i class="fab fa-instagram fa-fw"></i></a><a href="https://t.me/thehackercat" title="Telegram" target="_blank" rel="noopener noreffer me"><i class="fab fa-telegram-plane fa-fw"></i></a><a href="https://www.reddit.com/user/thehackercat" title="Reddit" target="_blank" rel="noopener noreffer me"><i class="fab fa-reddit fa-fw"></i></a><a href="https://weibo.com/thehackercat" title="微博" target="_blank" rel="noopener noreffer me"><i class="fab fa-weibo fa-fw"></i></a><a href="https://www.douban.com/people/thehackercat" title="豆瓣" target="_blank" rel="noopener noreffer me"><i data-svg-src="https://cdn.jsdelivr.net/npm/simple-icons@2.14.0/icons/douban.svg"></i></a><a href="mailto:lexuscyborg103@gmail.com" title="Email" rel=" me"><i class="far fa-envelope fa-fw"></i></a><a href="/index.xml" title="RSS" target="_blank" rel="noopener noreffer me"><i class="fas fa-rss fa-fw"></i></a></div></div>
 <article class="single summary" itemscope itemtype="http://schema.org/Article"><h1 class="single-title" itemprop="name headline">
+        <a href="/scarllet-sql-attack/">记一次 postgresql 斯嘉丽约翰逊攻击的排查</a>
+    </h1><div class="post-meta"><span class="post-author"><a href="/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw"></i>LexusLee</a></span>&nbsp;<span class="post-publish">published on <time datetime="2018-08-11">2018-08-11</time></span>&nbsp;<span class="post-category">included in <a href="/categories/coding/"><i class="far fa-folder fa-fw"></i>Coding</a></span></div><div class="content"><h3 id="背景">背景</h3>
+<p>今天下午连续收到了腾讯云 CPU overload 报警</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="http://7xse6j.com1.z0.glb.clouddn.com/CPU%20Overload.png"
+        data-srcset="http://7xse6j.com1.z0.glb.clouddn.com/CPU%20Overload.png, http://7xse6j.com1.z0.glb.clouddn.com/CPU%20Overload.png 1.5x, http://7xse6j.com1.z0.glb.clouddn.com/CPU%20Overload.png 2x"
+        data-sizes="auto"
+        alt="http://7xse6j.com1.z0.glb.clouddn.com/CPU%20Overload.png"
+        title="CPU Usage" /></p>
+<p>登服务器一看, 有个 postgres 账户跑的进程把 CPU 占满了，进程名特别奇怪。</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="http://7xse6j.com1.z0.glb.clouddn.com/htopinfo.png"
+        data-srcset="http://7xse6j.com1.z0.glb.clouddn.com/htopinfo.png, http://7xse6j.com1.z0.glb.clouddn.com/htopinfo.png 1.5x, http://7xse6j.com1.z0.glb.clouddn.com/htopinfo.png 2x"
+        data-sizes="auto"
+        alt="http://7xse6j.com1.z0.glb.clouddn.com/htopinfo.png"
+        title="Htop info" /></p></div><div class="post-footer">
+        <a href="/scarllet-sql-attack/">Read More</a><div class="post-tags">
+                <i class="fas fa-tags fa-fw"></i>&nbsp;<a href="/tags/security/">Security</a>,&nbsp;<a href="/tags/linux/">Linux</a></div></div>
+</article><article class="single summary" itemscope itemtype="http://schema.org/Article"><h1 class="single-title" itemprop="name headline">
         <a href="/service-fallback/">坦率地讲 服务熔断 &amp; 服务降级</a>
     </h1><div class="post-meta"><span class="post-author"><a href="/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw"></i>LexusLee</a></span>&nbsp;<span class="post-publish">published on <time datetime="2018-02-01">2018-02-01</time></span>&nbsp;<span class="post-category">included in <a href="/categories/coding/"><i class="far fa-folder fa-fw"></i>Coding</a></span></div><div class="content"><h2 id="坦率地讲-服务熔断--服务降级">坦率地讲 服务熔断 &amp; 服务降级</h2>
 <h3 id="背景">背景</h3>
@@ -146,17 +169,9 @@ e.g. 如上图所示，Workflow 类似软件工程中的流程图，指定了每
         <a href="/sketch-icon-understanding/">Sketch 锤子水箱图标仿制心得</a>
     </h1><div class="post-meta"><span class="post-author"><a href="/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw"></i>LexusLee</a></span>&nbsp;<span class="post-publish">published on <time datetime="2017-08-22">2017-08-22</time></span>&nbsp;<span class="post-category">included in <a href="/categories/design/"><i class="far fa-folder fa-fw"></i>Design</a></span></div><div class="content">Sketch 锤子水箱图标仿制心得 背景 第一次按照教程走了一遍，发现做出来的颜色、高光和饱和方面都很差，拟物化的感觉不是很明显。
 第二次修改心得 接着私信问了下大牛意见，再加上自己对比官方图，总结了几个修改点：
- 水箱外边框应该用深色来突显波纹的&quot;反光&rdquo; 水箱边框的外阴影应该用过饱和的颜色来突出在黑色幕布下的力度 水箱内圈应该再加一层内嵌阴影来表达拟物化的层次感 气泡的构造！！！越深的气泡饱和度应该越高而透明度应该越低，这样贴近整个水波纹的颜色，而在水面的气泡容易和被水面的底材颜色覆盖，所以应该多加一层外边框做高亮，所以气泡应该分两层处理，水底和水面 icon 的波纹扭曲程度应该更夸张些 本身水箱整体的颜色是冷色系偏暗，所以 icon 颜色上应该有反差，不应该用原来黑色的，而应该换成白色的  下面是第二次修改后的图，整体感觉拟物化的效果好了一些</div><div class="post-footer">
+ 水箱外边框应该用深色来突显波纹的&quot;反光&quot; 水箱边框的外阴影应该用过饱和的颜色来突出在黑色幕布下的力度 水箱内圈应该再加一层内嵌阴影来表达拟物化的层次感 气泡的构造！！！越深的气泡饱和度应该越高而透明度应该越低，这样贴近整个水波纹的颜色，而在水面的气泡容易和被水面的底材颜色覆盖，所以应该多加一层外边框做高亮，所以气泡应该分两层处理，水底和水面 icon 的波纹扭曲程度应该更夸张些 本身水箱整体的颜色是冷色系偏暗，所以 icon 颜色上应该有反差，不应该用原来黑色的，而应该换成白色的  下面是第二次修改后的图，整体感觉拟物化的效果好了一些</div><div class="post-footer">
         <a href="/sketch-icon-understanding/">Read More</a><div class="post-tags">
                 <i class="fas fa-tags fa-fw"></i>&nbsp;<a href="/tags/icon/">Icon</a>,&nbsp;<a href="/tags/sketch/">Sketch</a></div></div>
-</article><article class="single summary" itemscope itemtype="http://schema.org/Article"><h1 class="single-title" itemprop="name headline">
-        <a href="/awesome-windows-apps/">Awesome Windows Apps</a>
-    </h1><div class="post-meta"><span class="post-author"><a href="/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw"></i>LexusLee</a></span>&nbsp;<span class="post-publish">published on <time datetime="2017-07-08">2017-07-08</time></span>&nbsp;<span class="post-category">included in <a href="/categories/product/"><i class="far fa-folder fa-fw"></i>Product</a></span></div><div class="content"><div style="text-align: right">LexusLee</div>
-<h3 id="背景">背景</h3>
-<p>很久不用 Windows 开发，最近刚入职开发环境在 Windows 上，故列举了一下我自己开发机上安装的一些实用 app ，方便以后直接按清单上整个世界。</p>
-<p>也算是一波安利了 ：D</p></div><div class="post-footer">
-        <a href="/awesome-windows-apps/">Read More</a><div class="post-tags">
-                <i class="fas fa-tags fa-fw"></i>&nbsp;<a href="/tags/productivity/">Productivity</a>,&nbsp;<a href="/tags/awesome/">Awesome</a></div></div>
 </article><ul class="pagination"><li class="page-item ">
                     <span class="page-link">
                         <a href="/">1</a>

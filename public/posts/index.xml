@@ -4,7 +4,15 @@
         <link>https://example.com/posts/</link>
         <description>All Posts | LexusLee&#39;s blog</description>
         <generator>Hugo -- gohugo.io</generator><language>en</language><managingEditor>lexuscyborg103@gmail.com (LexusLee)</managingEditor>
-            <webMaster>lexuscyborg103@gmail.com (LexusLee)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Fri, 10 Jul 2020 19:10:46 &#43;0000</lastBuildDate><atom:link href="https://example.com/posts/" rel="self" type="application/rss+xml" /><item>
+            <webMaster>lexuscyborg103@gmail.com (LexusLee)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Fri, 25 Dec 2020 14:02:16 &#43;0800</lastBuildDate><atom:link href="https://example.com/posts/" rel="self" type="application/rss+xml" /><item>
+    <title>Awesome macOS apps list for developer</title>
+    <link>https://example.com/apps-liat-for-macbook/</link>
+    <pubDate>Fri, 25 Dec 2020 14:02:16 &#43;0800</pubDate>
+    <author>Author</author>
+    <guid>https://example.com/apps-liat-for-macbook/</guid>
+    <description><![CDATA[Enumerate the list of apps that need to be installed on my migrated work computer at the moment. I&rsquo;ll consider adding it to the sync tool later.
+Develop  Vscode Sublime Sourcetree Github Desktop Iterm2 Postman Cyberduck Docker  Command-line  oh-my-zsh homebrew homebrew cask tmux ack ag bat autojump job fselect  Prototype  draw.io desktop XMind Sketch  Database  Sequel Pro (for MySql) Navicat (for PostgreSql) Redis Manager  IM  Wechat Qiye Wechat Slack  浏览器  Chrome  Browser  Typora Notion  RSS  Leaf  Wallpaper  Iruve  System tools  CleanMyMac Dozer  Password  1Password  Music  NetEase Music Spotify  Video Player  IINA  Util Tool  Paste Yoink Beyond Compare Handshake Quicklook  GTD  Fantastical 2   ]]></description>
+</item><item>
     <title>升级 k8s 集群 docker</title>
     <link>https://example.com/upgrade-dockerd-in-k8s/</link>
     <pubDate>Fri, 10 Jul 2020 19:10:46 &#43;0000</pubDate>
@@ -138,16 +146,5 @@ Ref https://github.com/kubernetes/kubernetes/issues/75482#issuecomment-511476698
 粤菜馆子路上，
 肚子饿饿饿。
 2019/07/27]]></description>
-</item><item>
-    <title>记一次升级 kube-proxy ipvs 引发的线上故障</title>
-    <link>https://example.com/kubeproxy-ipvs-accident/</link>
-    <pubDate>Mon, 29 Apr 2019 19:10:46 &#43;0000</pubDate>
-    <author>Author</author>
-    <guid>https://example.com/kubeproxy-ipvs-accident/</guid>
-    <description><![CDATA[背景 最近在升级集群的 kube-prxoy 并开启 ipvs mode, 引发了一些线上故障
-替换原因 由于豆瓣的集群使用 calico + kube-proxy iptables mode + puppet iptable 脚本管理
-三个组件共同操作同一份 iptables, 容易出现 race condition 问题, 并且还会互相抢占 iptables 锁, 是个 Mutex unsafe 的操作, 不易于维护.
-故打算尽量减少操作 iptables 的部分, 替换成 ipvs
-事故回溯 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24  @400000005cbea9a81eaf9164 W0423 13:58:54.514773 14016 server.go:195] WARNING: all flags other than --config, --write-config-to, and --cleanup are deprecated.]]></description>
 </item></channel>
 </rss>

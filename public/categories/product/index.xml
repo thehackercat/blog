@@ -4,7 +4,15 @@
         <link>https://example.com/categories/product/</link>
         <description>Product - Category - LexusLee&#39;s blog</description>
         <generator>Hugo -- gohugo.io</generator><language>en</language><managingEditor>lexuscyborg103@gmail.com (LexusLee)</managingEditor>
-            <webMaster>lexuscyborg103@gmail.com (LexusLee)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Sat, 08 Jul 2017 11:34:12 &#43;0000</lastBuildDate><atom:link href="https://example.com/categories/product/" rel="self" type="application/rss+xml" /><item>
+            <webMaster>lexuscyborg103@gmail.com (LexusLee)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Fri, 25 Dec 2020 14:02:16 &#43;0800</lastBuildDate><atom:link href="https://example.com/categories/product/" rel="self" type="application/rss+xml" /><item>
+    <title>Awesome macOS apps list for developer</title>
+    <link>https://example.com/apps-liat-for-macbook/</link>
+    <pubDate>Fri, 25 Dec 2020 14:02:16 &#43;0800</pubDate>
+    <author>Author</author>
+    <guid>https://example.com/apps-liat-for-macbook/</guid>
+    <description><![CDATA[Enumerate the list of apps that need to be installed on my migrated work computer at the moment. I&rsquo;ll consider adding it to the sync tool later.
+Develop  Vscode Sublime Sourcetree Github Desktop Iterm2 Postman Cyberduck Docker  Command-line  oh-my-zsh homebrew homebrew cask tmux ack ag bat autojump job fselect  Prototype  draw.io desktop XMind Sketch  Database  Sequel Pro (for MySql) Navicat (for PostgreSql) Redis Manager  IM  Wechat Qiye Wechat Slack  浏览器  Chrome  Browser  Typora Notion  RSS  Leaf  Wallpaper  Iruve  System tools  CleanMyMac Dozer  Password  1Password  Music  NetEase Music Spotify  Video Player  IINA  Util Tool  Paste Yoink Beyond Compare Handshake Quicklook  GTD  Fantastical 2   ]]></description>
+</item><item>
     <title>Awesome Windows Apps</title>
     <link>https://example.com/awesome-windows-apps/</link>
     <pubDate>Sat, 08 Jul 2017 11:34:12 &#43;0000</pubDate>

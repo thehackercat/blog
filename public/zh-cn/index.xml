@@ -4,9 +4,16 @@
         <link>https://example.com/zh-cn/</link>
         <description>LexusLee personal blog, recording things you people wouldn&#39;t believe. Like attack ships on fire off the shoulder of Orion, c-beams glitter in the dark near the Tannhauser Gate.</description>
         <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>lexuscyborg103@gmail.com (LexusLee)</managingEditor>
-            <webMaster>lexuscyborg103@gmail.com (LexusLee)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Fri, 10 Jul 2020 19:10:46 &#43;0000</lastBuildDate>
+            <webMaster>lexuscyborg103@gmail.com (LexusLee)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Fri, 25 Dec 2020 14:02:16 &#43;0800</lastBuildDate>
             <atom:link href="https://example.com/zh-cn/index.xml" rel="self" type="application/rss+xml" />
         <item>
+    <title>一名开发的 Macbook 常用 app 整理</title>
+    <link>https://example.com/zh-cn/apps-liat-for-macbook/</link>
+    <pubDate>Fri, 25 Dec 2020 14:02:16 &#43;0800</pubDate>
+    <author>作者</author>
+    <guid>https://example.com/zh-cn/apps-liat-for-macbook/</guid>
+    <description><![CDATA[枚举目前我迁移工作电脑需要装的 app 清单。后续考虑加到同步工具里。 开发 Vscode Sublime Sourcetree Github Desktop Iterm2 Postman Cyberduck Docker 命令行 oh-my-zsh homebrew homebrew cask tmux ack ag bat autojump job fselect 画图 draw.io desktop XMind Sketch 数据库 Sequel Pro (for MySql) Navicat]]></description>
+</item><item>
     <title>升级 k8s 集群 docker</title>
     <link>https://example.com/zh-cn/upgrade-dockerd-in-k8s/</link>
     <pubDate>Fri, 10 Jul 2020 19:10:46 &#43;0000</pubDate>
@@ -69,12 +76,5 @@
     <author>作者</author>
     <guid>https://example.com/zh-cn/i-want-you-to-see-this-sky/</guid>
     <description><![CDATA[「你快看这朵云，舒张得恰巧。像刚出城堡骑着穿山甲的鹫鹰骑士，持着大枪冲向巨龙，刺破了一片天，天外的金光像流萤一样泄了出来」 刚在百老汇看完《旺]]></description>
-</item><item>
-    <title>记一次升级 kube-proxy ipvs 引发的线上故障</title>
-    <link>https://example.com/zh-cn/kubeproxy-ipvs-accident/</link>
-    <pubDate>Mon, 29 Apr 2019 19:10:46 &#43;0000</pubDate>
-    <author>作者</author>
-    <guid>https://example.com/zh-cn/kubeproxy-ipvs-accident/</guid>
-    <description><![CDATA[背景 最近在升级集群的 kube-prxoy 并开启 ipvs mode, 引发了一些线上故障 替换原因 由于豆瓣的集群使用 calico + kube-proxy iptables mode + puppet iptable 脚本管理 三个组件共同操作同一份 iptables, 容易出现 race condition 问题]]></description>
 </item></channel>
 </rss>

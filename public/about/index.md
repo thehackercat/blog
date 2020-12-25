@@ -13,9 +13,11 @@ I usually like to dive into technical forums HackerNews, Wooyun, InfoQ, etc., an
 
 Currently my technology stack is focusing on cloud platform development, basically Kubernetes stuffs. The main languages I used mostly are Python/Golang. What Python attracts me is it has simple syntax sugar and very easy to use, the most often criticized defect of Python, slow interpreter, is getting well After Python 3.6 async came along, it gradually improved. However, when dealing with CPU-bound tasks, Golang performs better, I found out.
 
+Diving into Golang/Kubernetes/Service Mesh recently.
+
 Also I have a strong passion for interaction design. I feel that an app is for people, and should be relevant to human habits and follow a high-quality human aesthetic.
 
-Outside of forums, I'm one of the few teenagers on the planet who speaks the language, :(fas fa-rocket fa-fw): [minions](https://en.wikipedia.org/wiki/Minions_(film)). likes absurd yet logical things, and sees all windmills as dragons.
+Outside of forums, I'm one of the few teenagers on this planet 🪐 who speaks the language, :(fas fa-rocket fa-fw): [minions](https://en.wikipedia.org/wiki/Minions_(film)) language. likes absurd yet logical things, and sees all windmills as dragons.
 
 At the same time, I'm also a huge fan of Marvel, with unrealistic visions of all things superhero and love chasing their faces in the wind.
 

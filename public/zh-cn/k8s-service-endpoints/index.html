@@ -15,7 +15,7 @@
 <meta property="og:url" content="https://example.com/zh-cn/k8s-service-endpoints/" />
 <meta property="og:image" content="https://example.com/logo.png"/>
 <meta property="article:published_time" content="2018-09-14T19:10:46+00:00" />
-<meta property="article:modified_time" content="2020-07-14T02:57:28+08:00" />
+<meta property="article:modified_time" content="2020-07-14T14:49:15+08:00" />
 <meta name="twitter:card" content="summary_large_image"/>
 <meta name="twitter:image" content="https://example.com/logo.png"/>
 
@@ -26,7 +26,7 @@
 不过其实我想知道的应该是 k8s 通信机制，它是怎么实现服务发现的，新建的 pod 是怎么感知到的，万一有些 pod 节点变更 vip 变了 k8s 是如何感知的。
 基于这个问题，做一下关于 k8s service&amp;kube-proxy 的分享。"/>
 <meta name="application-name" content="LexusLee&#39;s blog">
-<meta name="apple-mobile-web-app-title" content="LexusLee&#39;s blog"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="icon" href="/assets/images/favicon.ico"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://example.com/zh-cn/k8s-service-endpoints/" /><link rel="prev" href="https://example.com/zh-cn/scarllet-sql-attack/" /><link rel="next" href="https://example.com/zh-cn/kubeproxy-ipvs-accident/" /><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/normalize.css@8.0.1/normalize.min.css"><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.13.0/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.7.2/animate.min.css"><script type="application/ld+json">
+<meta name="apple-mobile-web-app-title" content="LexusLee&#39;s blog"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="icon" href="/images/favicon.ico"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://example.com/zh-cn/k8s-service-endpoints/" /><link rel="prev" href="https://example.com/zh-cn/scarllet-sql-attack/" /><link rel="next" href="https://example.com/zh-cn/kubeproxy-ipvs-accident/" /><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/normalize.css@8.0.1/normalize.min.css"><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.13.0/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.7.2/animate.min.css"><script type="application/ld+json">
     {
         "@context": "http://schema.org",
         "@type": "BlogPosting",
@@ -36,7 +36,7 @@
             "@type": "WebPage",
             "@id": "https:\/\/example.com\/zh-cn\/k8s-service-endpoints\/"
         },"image": ["https:\/\/example.com\/images\/Apple-Devices-Preview.png"],"genre": "posts","keywords": "Golang, Kubernetes, Linux","wordcount":  2448 ,
-        "url": "https:\/\/example.com\/zh-cn\/k8s-service-endpoints\/","datePublished": "2018-09-14T19:10:46+00:00","dateModified": "2020-07-14T02:57:28+08:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.","publisher": {
+        "url": "https:\/\/example.com\/zh-cn\/k8s-service-endpoints\/","datePublished": "2018-09-14T19:10:46+00:00","dateModified": "2020-07-14T14:49:15+08:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.","publisher": {
             "@type": "Organization",
             "name": "LexusLee","logo": {
                     "@type": "ImageObject",
@@ -174,29 +174,29 @@
 </span><span class="lnt">23
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="k">apiVersion</span><span class="p">:</span><span class="w">  </span>apps/v1<span class="w">
-</span><span class="w"></span><span class="k">kind</span><span class="p">:</span><span class="w"> </span>Deployment<span class="w">
-</span><span class="w"></span><span class="k">metadata</span><span class="p">:</span><span class="w">
-</span><span class="w">  </span><span class="k">name</span><span class="p">:</span><span class="w"> </span>service-test<span class="w">
-</span><span class="w"></span><span class="k">spec</span><span class="p">:</span><span class="w">
-</span><span class="w">  </span><span class="k">replicas</span><span class="p">:</span><span class="w"> </span><span class="m">4</span><span class="w">
-</span><span class="w">  </span><span class="k">selector</span><span class="p">:</span><span class="w">
-</span><span class="w">    </span><span class="k">matchLabels</span><span class="p">:</span><span class="w">
-</span><span class="w">      </span><span class="k">app</span><span class="p">:</span><span class="w"> </span>service_test_pod<span class="w">
-</span><span class="w">  </span><span class="k">template</span><span class="p">:</span><span class="w">
-</span><span class="w">    </span><span class="k">metadata</span><span class="p">:</span><span class="w">
-</span><span class="w">      </span><span class="k">labels</span><span class="p">:</span><span class="w">
-</span><span class="w">        </span><span class="k">app</span><span class="p">:</span><span class="w"> </span>service_test_pod<span class="w">
-</span><span class="w">    </span><span class="k">spec</span><span class="p">:</span><span class="w">
-</span><span class="w">      </span><span class="k">containers</span><span class="p">:</span><span class="w">
-</span><span class="w">      </span>- <span class="k">name</span><span class="p">:</span><span class="w"> </span>simple-http<span class="w">
-</span><span class="w">        </span><span class="k">image</span><span class="p">:</span><span class="w"> </span>python<span class="p">:</span><span class="m">2.7</span><span class="w">
-</span><span class="w">        </span><span class="k">imagePullPolicy</span><span class="p">:</span><span class="w"> </span>IfNotPresent<span class="w">
-</span><span class="w">        </span><span class="k">command</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&#34;/bin/bash&#34;</span><span class="p">]</span><span class="w">
-</span><span class="w">        </span><span class="k">args</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&#34;-c&#34;</span><span class="p">,</span><span class="w"> </span><span class="s2">&#34;echo \&#34;&lt;p&gt;Hello from $(hostname)&lt;/p&gt;\&#34; &gt; index.html; python -m SimpleHTTPServer 9999&#34;</span><span class="p">]</span><span class="w">
-</span><span class="w">        </span><span class="k">ports</span><span class="p">:</span><span class="w">
-</span><span class="w">        </span>- <span class="k">name</span><span class="p">:</span><span class="w"> </span>http<span class="w">
-</span><span class="w">          </span><span class="k">containerPort</span><span class="p">:</span><span class="w"> </span><span class="m">9999</span><span class="w">
+<pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="nt">apiVersion</span><span class="p">:</span><span class="w">  </span><span class="l">apps/v1</span><span class="w">
+</span><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">Deployment</span><span class="w">
+</span><span class="w"></span><span class="nt">metadata</span><span class="p">:</span><span class="w">
+</span><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">service-test</span><span class="w">
+</span><span class="w"></span><span class="nt">spec</span><span class="p">:</span><span class="w">
+</span><span class="w">  </span><span class="nt">replicas</span><span class="p">:</span><span class="w"> </span><span class="m">4</span><span class="w">
+</span><span class="w">  </span><span class="nt">selector</span><span class="p">:</span><span class="w">
+</span><span class="w">    </span><span class="nt">matchLabels</span><span class="p">:</span><span class="w">
+</span><span class="w">      </span><span class="nt">app</span><span class="p">:</span><span class="w"> </span><span class="l">service_test_pod</span><span class="w">
+</span><span class="w">  </span><span class="nt">template</span><span class="p">:</span><span class="w">
+</span><span class="w">    </span><span class="nt">metadata</span><span class="p">:</span><span class="w">
+</span><span class="w">      </span><span class="nt">labels</span><span class="p">:</span><span class="w">
+</span><span class="w">        </span><span class="nt">app</span><span class="p">:</span><span class="w"> </span><span class="l">service_test_pod</span><span class="w">
+</span><span class="w">    </span><span class="nt">spec</span><span class="p">:</span><span class="w">
+</span><span class="w">      </span><span class="nt">containers</span><span class="p">:</span><span class="w">
+</span><span class="w">      </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">simple-http</span><span class="w">
+</span><span class="w">        </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l">python:2.7</span><span class="w">
+</span><span class="w">        </span><span class="nt">imagePullPolicy</span><span class="p">:</span><span class="w"> </span><span class="l">IfNotPresent</span><span class="w">
+</span><span class="w">        </span><span class="nt">command</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&#34;/bin/bash&#34;</span><span class="p">]</span><span class="w">
+</span><span class="w">        </span><span class="nt">args</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&#34;-c&#34;</span><span class="p">,</span><span class="w"> </span><span class="s2">&#34;echo \&#34;&lt;p&gt;Hello from $(hostname)&lt;/p&gt;\&#34; &gt; index.html; python -m SimpleHTTPServer 9999&#34;</span><span class="p">]</span><span class="w">
+</span><span class="w">        </span><span class="nt">ports</span><span class="p">:</span><span class="w">
+</span><span class="w">        </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">http</span><span class="w">
+</span><span class="w">          </span><span class="nt">containerPort</span><span class="p">:</span><span class="w"> </span><span class="m">9999</span><span class="w">
 </span></code></pre></td></tr></table>
 </div>
 </div><p>可以看到启动了4个 pod</p>
@@ -622,8 +622,8 @@ Chain KUBE-SERVICES <span class="o">(</span><span class="m">2</span> references<
     <div class="post-info">
         <div class="post-info-line">
             <div class="post-info-mod">
-                <span>更新于 2020-07-14&nbsp;<a class="git-hash" href="https://github.com/dillonzq/LoveIt/commit/0b8dc806dec6578f1ff9edd4106e8e937b3406a4" target="_blank" title="commit by Lexus Lee(lexuscyborg103@gmail.com) 0b8dc806dec6578f1ff9edd4106e8e937b3406a4: init hugo source codes">
-                                    <i class="fas fa-hashtag fa-fw"></i>0b8dc80</a></span>
+                <span>更新于 2020-07-14&nbsp;<a class="git-hash" href="https://github.com/dillonzq/LoveIt/commit/b81712c312193334f02516f8688787468814ec3b" target="_blank" title="commit by Lexus Lee(lexuscyborg103@gmail.com) b81712c312193334f02516f8688787468814ec3b: update config.toml">
+                                    <i class="fas fa-hashtag fa-fw"></i>b81712c</a></span>
             </div>
             <div class="post-info-license"></div>
         </div>
