@@ -2,7 +2,7 @@
     xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
     xmlns:xhtml="http://www.w3.org/1999/xhtml"
     ><url>
-            <loc>https://example.com/zh-cn/apps-liat-for-macbook/</loc><lastmod>2020-12-25T14:02:16&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority><xhtml:link
+            <loc>https://example.com/zh-cn/apps-liat-for-macbook/</loc><lastmod>2020-12-25T14:50:02&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority><xhtml:link
                         rel="alternate"
                         hreflang="en"
                         href="https://example.com/apps-liat-for-macbook/"
@@ -118,6 +118,15 @@
                     rel="alternate"
                     hreflang="zh-cn"
                     href="https://example.com/zh-cn/scarllet-sql-attack/"
+                    /></url><url>
+            <loc>https://example.com/zh-cn/go-decorator/</loc><lastmod>2018-02-10T23:10:46&#43;00:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority><xhtml:link
+                        rel="alternate"
+                        hreflang="en"
+                        href="https://example.com/go-decorator/"
+                        /><xhtml:link
+                    rel="alternate"
+                    hreflang="zh-cn"
+                    href="https://example.com/zh-cn/go-decorator/"
                     /></url><url>
             <loc>https://example.com/zh-cn/service-fallback/</loc><lastmod>2020-07-14T14:49:15&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority><xhtml:link
                         rel="alternate"
@@ -380,7 +389,7 @@
                     hreflang="zh-cn"
                     href="https://example.com/zh-cn/little-prince-and-bear/"
                     /></url><url>
-            <loc>https://example.com/zh-cn/tags/awesome/</loc><lastmod>2020-12-25T14:02:16&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority><xhtml:link
+            <loc>https://example.com/zh-cn/tags/awesome/</loc><lastmod>2020-12-25T14:50:02&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority><xhtml:link
                         rel="alternate"
                         hreflang="en"
                         href="https://example.com/tags/awesome/"
@@ -389,7 +398,7 @@
                     hreflang="zh-cn"
                     href="https://example.com/zh-cn/tags/awesome/"
                     /></url><url>
-            <loc>https://example.com/zh-cn/categories/</loc><lastmod>2020-12-25T14:02:16&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority><xhtml:link
+            <loc>https://example.com/zh-cn/categories/</loc><lastmod>2020-12-25T14:50:02&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority><xhtml:link
                         rel="alternate"
                         hreflang="en"
                         href="https://example.com/categories/"
@@ -398,7 +407,7 @@
                     hreflang="zh-cn"
                     href="https://example.com/zh-cn/categories/"
                     /></url><url>
-            <loc>https://example.com/zh-cn/</loc><lastmod>2020-12-25T14:02:16&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority><xhtml:link
+            <loc>https://example.com/zh-cn/</loc><lastmod>2020-12-25T14:50:02&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority><xhtml:link
                         rel="alternate"
                         hreflang="en"
                         href="https://example.com/"
@@ -407,7 +416,7 @@
                     hreflang="zh-cn"
                     href="https://example.com/zh-cn/"
                     /></url><url>
-            <loc>https://example.com/zh-cn/posts/</loc><lastmod>2020-12-25T14:02:16&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority><xhtml:link
+            <loc>https://example.com/zh-cn/posts/</loc><lastmod>2020-12-25T14:50:02&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority><xhtml:link
                         rel="alternate"
                         hreflang="en"
                         href="https://example.com/posts/"
@@ -416,7 +425,7 @@
                     hreflang="zh-cn"
                     href="https://example.com/zh-cn/posts/"
                     /></url><url>
-            <loc>https://example.com/zh-cn/categories/product/</loc><lastmod>2020-12-25T14:02:16&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority><xhtml:link
+            <loc>https://example.com/zh-cn/categories/product/</loc><lastmod>2020-12-25T14:50:02&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority><xhtml:link
                         rel="alternate"
                         hreflang="en"
                         href="https://example.com/categories/product/"
@@ -425,7 +434,7 @@
                     hreflang="zh-cn"
                     href="https://example.com/zh-cn/categories/product/"
                     /></url><url>
-            <loc>https://example.com/zh-cn/tags/productivity/</loc><lastmod>2020-12-25T14:02:16&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority><xhtml:link
+            <loc>https://example.com/zh-cn/tags/productivity/</loc><lastmod>2020-12-25T14:50:02&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority><xhtml:link
                         rel="alternate"
                         hreflang="en"
                         href="https://example.com/tags/productivity/"
@@ -434,7 +443,7 @@
                     hreflang="zh-cn"
                     href="https://example.com/zh-cn/tags/productivity/"
                     /></url><url>
-            <loc>https://example.com/zh-cn/tags/</loc><lastmod>2020-12-25T14:02:16&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority><xhtml:link
+            <loc>https://example.com/zh-cn/tags/</loc><lastmod>2020-12-25T14:50:02&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority><xhtml:link
                         rel="alternate"
                         hreflang="en"
                         href="https://example.com/tags/"
