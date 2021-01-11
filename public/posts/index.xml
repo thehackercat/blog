@@ -4,7 +4,29 @@
         <link>https://example.com/posts/</link>
         <description>All Posts | LexusLee&#39;s blog</description>
         <generator>Hugo -- gohugo.io</generator><language>en</language><managingEditor>lexuscyborg103@gmail.com (LexusLee)</managingEditor>
-            <webMaster>lexuscyborg103@gmail.com (LexusLee)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Fri, 25 Dec 2020 14:02:16 &#43;0800</lastBuildDate><atom:link href="https://example.com/posts/" rel="self" type="application/rss+xml" /><item>
+            <webMaster>lexuscyborg103@gmail.com (LexusLee)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Sun, 10 Jan 2021 13:10:46 &#43;0000</lastBuildDate><atom:link href="https://example.com/posts/" rel="self" type="application/rss+xml" /><item>
+    <title>译《Autopilot: workload autoscaling at Google》</title>
+    <link>https://example.com/google-autopilot-scaling/</link>
+    <pubDate>Sun, 10 Jan 2021 13:10:46 &#43;0000</pubDate>
+    <author>Author</author>
+    <guid>https://example.com/google-autopilot-scaling/</guid>
+    <description><![CDATA[摘要 原文链接：https://dl.acm.org/doi/pdf/10.1145/3342195.3387524
+在许多公共和私有云系统中，用户需要指定资源量（CPU内核和RAM）的限制以为其工作负荷提供资源。 超出其限制的作业可能会受到限制或终止，从而导致最终用户请求的延迟或丢弃，因此人工操作人员针对这种问题出于谨慎考虑，会申请高于任务自身需要的配置。 从规模上讲，这将导致大量的资源浪费。
+为了解决这个问题，Google使用Autopilot自动配置资源，同时调整作业中的并发任务数（水平缩放）和单个任务的CPU /内存限制（垂直缩放）。 Autopilot与人工操作员遵循相同的原则：Autopilot的主要目标是减少松弛（slack）（申请资源和实际资源使用之间的差异），同时最大程度地降低因内存不足（OOM）错误或 由于CPU节流，其性能下降。 Autopilot将机器学习算法应用到有关作业先前执行情况的历史数据上，再加上一组经过微调的启发式方法来实现这一目标。 在实践中，Autopilot工作只有23％的松弛（slack），而手动管理工作只有46％的松弛（slack）。 此外，Autopilot将受OOM严重影响的工作数量减少了10倍。
+尽管有其优点，要确保Autopilot被广泛采用仍需付出巨大的努力，包括使尚未加入的客户容易看到潜在的建议，自动迁移某些类别的任务以及增加对自定义推荐器的支持。 在撰写本文时，Autopilot任务占Google资源使用的48％以上。
+ACM参考格式：
+Krzysztof Rzadca，Pawel Findeisen，Jacek Swiderski，Przemyslaw Zych，Przemyslaw Broniek，Jarek Kusmierek，Pawel Nowak，Beata Strack，Piotr Witusowski，Steven Hand和John Wilkes。 2020年。
+Autopilot：Google的工作负载自动缩放。 在第十五欧洲2020年4月27日至30日，计算机系统会议（EuroSys'20），希腊伊拉克利翁。 ACM，美国纽约，纽约，共16页。 https://doi. org/10.1145/3342195.3387524
+1 介绍 许多类型的公共云和私有云系统要求其用户声明在执行期间其工作负载将需要多少个实例以及每个实例所需的资源：在公共云平台中，用户需要选择他们需要租用虚拟机（VM）的类型和数量； 在Kubernetes集群中，用户可以设置Pod副本的数量和单个Pod的资源限制; 在Google中，我们要求用户指定所需的容器数量以及每个容器的资源限制。 这些限制使云基础架构能够提供足够的性能隔离，从而使云计算成为可能。
+但是限制（主要是）对用户造成了麻烦。 很难估计一个作业需要多少资源才能最佳运行：CPU功率，内存和同时运行的副本数的正确组合。 负载测试可以帮助找到初始估计值，但是随着资源需求随时间变化，这些建议将过时，因为许多最终用户服务工作具有每日或每周的负载模式，并且随着服务变得越来越流行，流量在更长的时间内发生变化 。 最后，处理给定负载所需的资源会随着基础软件或硬件堆栈的新功能，优化和更新而变化。如果CPU容量不足，超出请求的资源可能会导致性能下降，或者导致任务被杀死 内存不足（OOM）。 都不是好事。
+从调研结果看，理性的用户将故意高估其工作所需的资源，从而导致对物理资源的不良利用。 一项分析[26]对在一个Google集群[27]上执行的为期一个月的作业跟踪显示，平均内存利用率为50％； 对阿里巴巴YARN集群的另一项分析[23]显示任务的峰值内存利用率从未超过80％。
+针对配置资源的困难，一种常见的模式是采用水平自动缩放器，该缩放器通过监控终端用户流量或平均CPU利用率的变化添加或删除副本来缩放任务。 所有主要的云提供商（AWS，Azure和GCP）都提供水平自动扩展功能； 它在某些云中间件（如Kubernetes）中也可用。 较不常见的模式是使用垂直自动缩放来调整每个副本可用的资源量。 两种技术也可以组合。
+Autopilot是Google在其内部云上使用的主要自动缩放器。 它提供水平和垂直自动缩放。 本文重点介绍Autopilot的内存垂直扩展，因为这种情况鲜为人知。 论文：
+  描述下Autopilot，以及它用于垂直自动缩放的两个主要算法：第一个算法依赖于历史用量的指数平滑滑动窗口； 另一个是基于从强化学习中借用的思想的元学习，该算法运行滑动窗口算法的许多变体，并为每个任务选择历史数据表现最佳的算法。（译注：强化学习：依赖海量的训练，并且需要精准的奖励。成本较高且比较复杂。元学习：具备自学能力，能够充分利用过去的经验来指导未来的任务。被认为是实现通用人工智能的关键。）
+  通过Google的工作负载采样评估Autopilot算法的有效性；
+  讨论为使我们的集群广泛采用Autopilot而采取的步骤。
+  2 通过Borg管理云资源 Autopilot的目标和制约因素来自Google的Borg基础架构，并且针对Google的工作负载进行了调整。 我们在此处提供了两者的简要概述：有关Borg的更多详细信息，请参见[34]，有关工作负载的更多详细信息，请参见[26、27、31、35]。]]></description>
+</item><item>
     <title>Awesome macOS apps list for developer</title>
     <link>https://example.com/apps-liat-for-macbook/</link>
     <pubDate>Fri, 25 Dec 2020 14:02:16 &#43;0800</pubDate>
@@ -121,30 +143,5 @@ Ref https://github.com/kubernetes/kubernetes/issues/75482#issuecomment-511476698
 我好难过，感觉自己有个什么决断做不出来，生闷气的那天晚上，我走到了很远的地方，看了很久的天空，夜晚的光收敛进漫天的星云中，我多希望里面会泄出金光，那我一定把你叫出来，想那些金萤的东西包裹住我们。
 你知不知道，有时候我脑洞很大，整个故事的来龙去脉，悲欢离合，我都想明白了，只是我还不能狠下心去告诉你，你一直在我理想生活的构建里。我多想告诉你我的秘密，我想把我所有感官，所有体验都分享给你，我是一个时刻沸腾着的人，永远滋滋地响，翻腾不休。但一想到你，小心翼翼地，我就能平静下来。
 明天就是星期五了，我真怕你从此不再理我，希望你明天能开始理我，要不，你可以吃掉我。]]></description>
-</item><item>
-    <title>我想你也看到这朵云</title>
-    <link>https://example.com/i-want-you-to-see-this-sky/</link>
-    <pubDate>Sat, 27 Jul 2019 20:43:04 &#43;0000</pubDate>
-    <author>Author</author>
-    <guid>https://example.com/i-want-you-to-see-this-sky/</guid>
-    <description><![CDATA[「你快看这朵云，舒张得恰巧。像刚出城堡骑着穿山甲的鹫鹰骑士，持着大枪冲向巨龙，刺破了一片天，天外的金光像流萤一样泄了出来」
-刚在百老汇看完《旺角卡门》, 饿得五脊六兽, 急冲冲地想去家粤菜馆子点一碗炖鸡老汤。
-记得第一次聊起这部电影，是给你写信后的两三周，你也说王家卫的电影里从来不会讲这俩人是因为什么爱上的，却好像都是无缘无故就爱上了。只有状态，毫无因果。
-这难道不迷人吗，我天生爱这些没由头的东西，它们是弹丸偏离轨道击碎的窗户，只能听见其响，意识过来时，玻璃渣已碎了一地。这些难以琢磨的不期而至的碰撞，总是不经意地夺走你的时光，直到踩在玻璃渣上刺痛了脚才反应过来。
-但我仍然好奇在长久的一段时间后，阿娥会不会反应过来，那个藏起来的杯子，一直没有被找到。从此以往地，便是像每一天这样灰暗愁闷的日子，也得爱，也得焦心。她得有多难过。
-莱蒙托夫说「也许我爱的已不是你，而是对你付出的热情。就像是一座神庙，即使荒芜，仍然是祭坛。一座雕像，即使坍塌，仍然是神」
-我最近又陷入了这种状态，第一次知悉你要去北方，不免觉得北方那么冷，由不得任性，满脑子叮嘱你得穿秋裤。
-等我真正到了北方，才发现北方的冬天是下雪的，一点也不冷，有几片孤花趁着下雪天旺盛地生长，有猫咪对着窗台飘的雪花跳脚。我憋足了劲儿说，你们都盛开起来吧，把白茫茫一片裸露的大地撕裂，把沸腾的鲜血都撒在上面。约莫半载，雪地里开始飘出红色的花瓣，风却慢慢把这些玫瑰吹散，最后枯竭得像精卫填海，填不进白茫茫一片，精疲力竭。
-再后来，屋子搬来了年轻人，像所有青年才俊一样，卯住劲投身入热枕中。就像你当时走过的路，我总想着这些发自内心的不愉悦却要被汲汲营营的名誉、条条框框的规则、战战兢兢的人情所淹没，就感到无比的孤独。
-我看你像大部分的水滴一样，流入了那条大河里，川流地河水互相摩擦生热逐渐漫起水雾，那些浓浊的雾气徘徊在你我之间，我想它散开，因为我怕看不见你，我又想它永远在这，因为我怕看不见你。
-就像基因编辑里人们趋之若鹜地想要拼接自己的 DNA 移植上最优的属性，巴不得是个天生的六边形战士，流水工厂式的繁殖，一代一代商品化的高级人，予取予求地寻找另一位六边形战士，聚群成一类分不清的基因链，齐步行走着，像是动物世界里驼铃的迁移。我暗暗期望你不会是那个空茫的人之一，能有间隙从真实人生中探出头放空出来，去做些心怡的事儿，也期望之中有人能游到更加真实的、离得不远的一些去处，逃离这些日复一日消磨着人的远足。
-去粤菜馆子的路上，看着窗外，这座城市像上了发条一般运转，循规蹈矩，咿呀作响，日复一日地用同一种模式运营着所有公民。仿佛悬浮于城市上空仍有一台工业时代的冒着仙气的蒸汽机，张牙舞爪地喷射着火焰，热飒了熊猫侠。似乎北方的夏天远比冬天令人生厌得多，不知道你那儿今夜起风吗。
-起风了，就该有云，云卷云舒，然后再被风吹散。
-归途路上，又不禁胡思乱想，那时候听你说想看成都的云，巴不得把天空扯得稀碎，结果只剩下三三两两形单影只的几朵，经不起妄想。
-飘飘然地，在归途路上，遇见了它，像奔向风车的骑士，喜欢极了，我多想你也看到这朵云。
-于北京，
-粤菜馆子路上，
-肚子饿饿饿。
-2019/07/27]]></description>
 </item></channel>
 </rss>

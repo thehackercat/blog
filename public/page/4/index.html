@@ -11,7 +11,7 @@
 <meta property="og:type" content="website" />
 <meta property="og:url" content="https://example.com/" />
 <meta property="og:image" content="https://example.com/logo.png"/>
-<meta property="og:updated_time" content="2020-12-25T15:25:50+08:00" />
+<meta property="og:updated_time" content="2021-01-10T13:10:46+00:00" />
 <meta name="twitter:card" content="summary_large_image"/>
 <meta name="twitter:image" content="https://example.com/logo.png"/>
 
@@ -105,6 +105,14 @@
         alt="/images/avatar.png"
         title="/images/avatar.png" /></a></div><h1 class="home-title">LexusLee's blog</h1><h2 class="home-subtitle"><div id="id-1" class="typeit"></div></h2><div class="links"><a href="https://github.com/thehackercat" title="GitHub" target="_blank" rel="noopener noreffer me"><i class="fab fa-github-alt fa-fw"></i></a><a href="https://twitter.com/lexuscyborg103" title="Twitter" target="_blank" rel="noopener noreffer me"><i class="fab fa-twitter fa-fw"></i></a><a href="https://www.instagram.com/thehackercat" title="Instagram" target="_blank" rel="noopener noreffer me"><i class="fab fa-instagram fa-fw"></i></a><a href="https://t.me/thehackercat" title="Telegram" target="_blank" rel="noopener noreffer me"><i class="fab fa-telegram-plane fa-fw"></i></a><a href="https://www.douban.com/people/thehackercat" title="豆瓣" target="_blank" rel="noopener noreffer me"><i data-svg-src="https://cdn.jsdelivr.net/npm/simple-icons@2.14.0/icons/douban.svg"></i></a><a href="mailto:lexuscyborg103@gmail.com" title="Email" rel=" me"><i class="far fa-envelope fa-fw"></i></a><a href="/index.xml" title="RSS" target="_blank" rel="noopener noreffer me"><i class="fas fa-rss fa-fw"></i></a></div></div>
 <article class="single summary" itemscope itemtype="http://schema.org/Article"><h1 class="single-title" itemprop="name headline">
+        <a href="/tcp-close-socket/">关于关闭 Socket 的一些坑</a>
+    </h1><div class="post-meta"><span class="post-author"><a href="/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw"></i>LexusLee</a></span>&nbsp;<span class="post-publish">published on <time datetime="2017-09-06">2017-09-06</time></span>&nbsp;<span class="post-category">included in <a href="/categories/coding/"><i class="far fa-folder fa-fw"></i>Coding</a></span></div><div class="content"><h2 id="关于关闭-socket-的一些坑">关于关闭 Socket 的一些坑</h2>
+<div style="text-align: right">LexusLee</div>
+<h3 id="背景">背景</h3>
+<p>最近踩到一个 &ldquo;Socket 连接持续处于 Fin_Wait2 和 Close_Wait 状态无法关闭&rdquo; 的坑中。起因是在维护大量连接时调用 <code>socket.close()</code> 时，看到部分连接并没有正常关闭，而是从 <code>ESTABLISHED</code> 的状态变成 <code>FIN_WAIT2</code> 并且连接状态没有后续迁移，而对端的连接状态则是从 <code>ESTABLISHED</code> 变成了 <code>CLOSE_WAIT</code> 。</p></div><div class="post-footer">
+        <a href="/tcp-close-socket/">Read More</a><div class="post-tags">
+                <i class="fas fa-tags fa-fw"></i>&nbsp;<a href="/tags/tcp/">TCP</a>,&nbsp;<a href="/tags/linux/">Linux</a></div></div>
+</article><article class="single summary" itemscope itemtype="http://schema.org/Article"><h1 class="single-title" itemprop="name headline">
         <a href="/sketch-icon-understanding/">Sketch 锤子水箱图标仿制心得</a>
     </h1><div class="post-meta"><span class="post-author"><a href="/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw"></i>LexusLee</a></span>&nbsp;<span class="post-publish">published on <time datetime="2017-08-22">2017-08-22</time></span>&nbsp;<span class="post-category">included in <a href="/categories/design/"><i class="far fa-folder fa-fw"></i>Design</a></span></div><div class="content">Sketch 锤子水箱图标仿制心得 背景 第一次按照教程走了一遍，发现做出来的颜色、高光和饱和方面都很差，拟物化的感觉不是很明显。
 第二次修改心得 接着私信问了下大牛意见，再加上自己对比官方图，总结了几个修改点：
@@ -139,25 +147,6 @@
 <p>最近公司新购置了好几台 Linux 服务器然后配置一些服务的时候很不习惯，估计是我平时自己的 zsh + oh-my-zsh 用多了，故想整理下 .bash_rc 和 .zshrc 我个人的一些配置，这些配置包含了一些 alias 快捷命令和命令行系统配置，可以让终端变得快捷易用，今晚再写个 shell 脚本实现快速修改 .bash_rc 的配置。</p></div><div class="post-footer">
         <a href="/terminal-config/">Read More</a><div class="post-tags">
                 <i class="fas fa-tags fa-fw"></i>&nbsp;<a href="/tags/linux/">Linux</a>,&nbsp;<a href="/tags/config/">Config</a>,&nbsp;<a href="/tags/terminal/">Terminal</a></div></div>
-</article><article class="single summary" itemscope itemtype="http://schema.org/Article"><h1 class="single-title" itemprop="name headline">
-        <a href="/brain-log-system/">如何大脑有一套日志系统就好了</a>
-    </h1><div class="post-meta"><span class="post-author"><a href="/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw"></i>LexusLee</a></span>&nbsp;<span class="post-publish">published on <time datetime="2016-07-16">2016-07-16</time></span>&nbsp;<span class="post-category">included in <a href="/categories/gossip/"><i class="far fa-folder fa-fw"></i>Gossip</a></span></div><div class="content"><h2 id="如果大脑有一套日志系统就好了">如果大脑有一套日志系统就好了</h2>
-<p><img
-        class="lazyload"
-        src="/svg/loading.min.svg"
-        data-src="http://img31.mtime.cn/pi/2016/07/08/101238.71445696_1000X1000.jpg"
-        data-srcset="http://img31.mtime.cn/pi/2016/07/08/101238.71445696_1000X1000.jpg, http://img31.mtime.cn/pi/2016/07/08/101238.71445696_1000X1000.jpg 1.5x, http://img31.mtime.cn/pi/2016/07/08/101238.71445696_1000X1000.jpg 2x"
-        data-sizes="auto"
-        alt="http://img31.mtime.cn/pi/2016/07/08/101238.71445696_1000X1000.jpg"
-        title="大鱼海棠" /></p>
-<center>
-<iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=86 src="http://music.163.com/outchain/player?type=2&id=28285910&auto=1&height=66"></iframe>
-</center>
-<h3 id="背景">背景</h3>
-<p>最近很健忘，今天下午撸代码的时候，基本上每执行一个模块就要将调用函数、执行结果、友好信息等记录到日志系统里。</p>
-<p>然后我突然想到，如果生物的大脑有一套日志系统就好了!</p></div><div class="post-footer">
-        <a href="/brain-log-system/">Read More</a><div class="post-tags">
-                <i class="fas fa-tags fa-fw"></i>&nbsp;<a href="/tags/gossip/">Gossip</a></div></div>
 </article><ul class="pagination"><li class="page-item ">
                     <span class="page-link">
                         <a href="/">1</a>

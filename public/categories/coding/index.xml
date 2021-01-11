@@ -4,7 +4,29 @@
         <link>https://example.com/categories/coding/</link>
         <description>Coding - Category - LexusLee&#39;s blog</description>
         <generator>Hugo -- gohugo.io</generator><language>en</language><managingEditor>lexuscyborg103@gmail.com (LexusLee)</managingEditor>
-            <webMaster>lexuscyborg103@gmail.com (LexusLee)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Fri, 10 Jul 2020 19:10:46 &#43;0000</lastBuildDate><atom:link href="https://example.com/categories/coding/" rel="self" type="application/rss+xml" /><item>
+            <webMaster>lexuscyborg103@gmail.com (LexusLee)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Sun, 10 Jan 2021 13:10:46 &#43;0000</lastBuildDate><atom:link href="https://example.com/categories/coding/" rel="self" type="application/rss+xml" /><item>
+    <title>译《Autopilot: workload autoscaling at Google》</title>
+    <link>https://example.com/google-autopilot-scaling/</link>
+    <pubDate>Sun, 10 Jan 2021 13:10:46 &#43;0000</pubDate>
+    <author>Author</author>
+    <guid>https://example.com/google-autopilot-scaling/</guid>
+    <description><![CDATA[摘要 原文链接：https://dl.acm.org/doi/pdf/10.1145/3342195.3387524
+在许多公共和私有云系统中，用户需要指定资源量（CPU内核和RAM）的限制以为其工作负荷提供资源。 超出其限制的作业可能会受到限制或终止，从而导致最终用户请求的延迟或丢弃，因此人工操作人员针对这种问题出于谨慎考虑，会申请高于任务自身需要的配置。 从规模上讲，这将导致大量的资源浪费。
+为了解决这个问题，Google使用Autopilot自动配置资源，同时调整作业中的并发任务数（水平缩放）和单个任务的CPU /内存限制（垂直缩放）。 Autopilot与人工操作员遵循相同的原则：Autopilot的主要目标是减少松弛（slack）（申请资源和实际资源使用之间的差异），同时最大程度地降低因内存不足（OOM）错误或 由于CPU节流，其性能下降。 Autopilot将机器学习算法应用到有关作业先前执行情况的历史数据上，再加上一组经过微调的启发式方法来实现这一目标。 在实践中，Autopilot工作只有23％的松弛（slack），而手动管理工作只有46％的松弛（slack）。 此外，Autopilot将受OOM严重影响的工作数量减少了10倍。
+尽管有其优点，要确保Autopilot被广泛采用仍需付出巨大的努力，包括使尚未加入的客户容易看到潜在的建议，自动迁移某些类别的任务以及增加对自定义推荐器的支持。 在撰写本文时，Autopilot任务占Google资源使用的48％以上。
+ACM参考格式：
+Krzysztof Rzadca，Pawel Findeisen，Jacek Swiderski，Przemyslaw Zych，Przemyslaw Broniek，Jarek Kusmierek，Pawel Nowak，Beata Strack，Piotr Witusowski，Steven Hand和John Wilkes。 2020年。
+Autopilot：Google的工作负载自动缩放。 在第十五欧洲2020年4月27日至30日，计算机系统会议（EuroSys'20），希腊伊拉克利翁。 ACM，美国纽约，纽约，共16页。 https://doi. org/10.1145/3342195.3387524
+1 介绍 许多类型的公共云和私有云系统要求其用户声明在执行期间其工作负载将需要多少个实例以及每个实例所需的资源：在公共云平台中，用户需要选择他们需要租用虚拟机（VM）的类型和数量； 在Kubernetes集群中，用户可以设置Pod副本的数量和单个Pod的资源限制; 在Google中，我们要求用户指定所需的容器数量以及每个容器的资源限制。 这些限制使云基础架构能够提供足够的性能隔离，从而使云计算成为可能。
+但是限制（主要是）对用户造成了麻烦。 很难估计一个作业需要多少资源才能最佳运行：CPU功率，内存和同时运行的副本数的正确组合。 负载测试可以帮助找到初始估计值，但是随着资源需求随时间变化，这些建议将过时，因为许多最终用户服务工作具有每日或每周的负载模式，并且随着服务变得越来越流行，流量在更长的时间内发生变化 。 最后，处理给定负载所需的资源会随着基础软件或硬件堆栈的新功能，优化和更新而变化。如果CPU容量不足，超出请求的资源可能会导致性能下降，或者导致任务被杀死 内存不足（OOM）。 都不是好事。
+从调研结果看，理性的用户将故意高估其工作所需的资源，从而导致对物理资源的不良利用。 一项分析[26]对在一个Google集群[27]上执行的为期一个月的作业跟踪显示，平均内存利用率为50％； 对阿里巴巴YARN集群的另一项分析[23]显示任务的峰值内存利用率从未超过80％。
+针对配置资源的困难，一种常见的模式是采用水平自动缩放器，该缩放器通过监控终端用户流量或平均CPU利用率的变化添加或删除副本来缩放任务。 所有主要的云提供商（AWS，Azure和GCP）都提供水平自动扩展功能； 它在某些云中间件（如Kubernetes）中也可用。 较不常见的模式是使用垂直自动缩放来调整每个副本可用的资源量。 两种技术也可以组合。
+Autopilot是Google在其内部云上使用的主要自动缩放器。 它提供水平和垂直自动缩放。 本文重点介绍Autopilot的内存垂直扩展，因为这种情况鲜为人知。 论文：
+  描述下Autopilot，以及它用于垂直自动缩放的两个主要算法：第一个算法依赖于历史用量的指数平滑滑动窗口； 另一个是基于从强化学习中借用的思想的元学习，该算法运行滑动窗口算法的许多变体，并为每个任务选择历史数据表现最佳的算法。（译注：强化学习：依赖海量的训练，并且需要精准的奖励。成本较高且比较复杂。元学习：具备自学能力，能够充分利用过去的经验来指导未来的任务。被认为是实现通用人工智能的关键。）
+  通过Google的工作负载采样评估Autopilot算法的有效性；
+  讨论为使我们的集群广泛采用Autopilot而采取的步骤。
+  2 通过Borg管理云资源 Autopilot的目标和制约因素来自Google的Borg基础架构，并且针对Google的工作负载进行了调整。 我们在此处提供了两者的简要概述：有关Borg的更多详细信息，请参见[34]，有关工作负载的更多详细信息，请参见[26、27、31、35]。]]></description>
+</item><item>
     <title>升级 k8s 集群 docker</title>
     <link>https://example.com/upgrade-dockerd-in-k8s/</link>
     <pubDate>Fri, 10 Jul 2020 19:10:46 &#43;0000</pubDate>
@@ -100,18 +122,5 @@ Ref https://github.com/kubernetes/kubernetes/issues/75482#issuecomment-511476698
 <li>模块中使用了 Elastic Search 进行监控，但是 ES 突然挂了，相关的 api 的调用报错导致级联的服务全部阻塞，那么应该要有规避由 ES 调用 raise 出的异常或者调用超时而导致整个模块或整个系统崩溃的保护措施。</li>
 <li>使用 AWS 或 阿里云 的 ECS 服务来作为 micro-service 的载体，但是 ECS 服务故障或者过载了导致整个业务链无法正常进行，那么应有对应的降级或者限制调用频度的方案来进行保护。</li>
 </ul>]]></description>
-</item><item>
-    <title>浅谈 Workflow 设计</title>
-    <link>https://example.com/workflow-design/</link>
-    <pubDate>Sun, 03 Dec 2017 22:30:07 &#43;0000</pubDate>
-    <author>Author</author>
-    <guid>https://example.com/workflow-design/</guid>
-    <description><![CDATA[浅谈 Workflow 设计 LexusLee 背景 最近刚接触到 workflow 相关的东西，之前都没有造过这方面的轮子，所以看了一些框架总结了一下我认为的好的 Workflow 的设计应该是怎样的。
-什么是 Workflow ? Workflow 是一些可重复执行的事件按特定的顺序&amp;路径组合成的事件流，这个组成的事件流通常是为了满足某一个流程较长的任务。
-这些事件通常是不可再被细分，是具有原子性的。每个原子事件可能包含执行任务、文档或数据。这些事件按照提前声明好的规则组合起来就成了一个 Workflow .
-e.g. 如上图所示，Workflow 类似软件工程中的流程图，指定了每个节点可能出现的路径分支，节点执行的事情以及节点的终结状态。
-如何设计 Workflow ? 比较经典的 Workflow design pattern 应该满足以下几个元素：
- 路径覆盖 事件原子性 有效的状态迁移  路径覆盖 路径覆盖是和节点状态相关的，通常的节点状态有如下几种：
- Start —— 开始 jobs ，标明 workflow 起点 Maybe —— 表示这个任务可能会执行，但不一定会执行，它的执行依赖于一定条件，比如上层节点的输出 Likely —— 和 Maybe 节点类似，但是比它的优先级更高，是作为与 Maybe 节点共享父节点的默认路径节点 Future —— 表示 workflow 执行体认为该路径一定会到达的节点，Future 节点的任务在不被 cancel 的情况下一定会执行 Waiting —— 表示当前任务是个阻塞任务，还在执行中，需要等待执行完毕才能进入下个路径 Ready —— 表示 Waiting 节点的任务已执行完，作为 Waiting 节点的 handler Complete —— 表示整个 workflow 的 Jobs 已经全部执行完毕，为终结节点 Cancel —— 表示任务被明确终止了，在状态迁移过程中不作为最终状态  事件原子性 pass]]></description>
 </item></channel>
 </rss>
