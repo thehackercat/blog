@@ -11,7 +11,7 @@
 <meta property="og:type" content="website" />
 <meta property="og:url" content="https://example.com/" />
 <meta property="og:image" content="https://example.com/logo.png"/>
-<meta property="og:updated_time" content="2021-01-10T13:10:46+00:00" />
+<meta property="og:updated_time" content="2021-01-29T18:47:00+08:00" />
 <meta name="twitter:card" content="summary_large_image"/>
 <meta name="twitter:image" content="https://example.com/logo.png"/>
 
@@ -105,6 +105,15 @@
         alt="/images/avatar.png"
         title="/images/avatar.png" /></a></div><h1 class="home-title">LexusLee's blog</h1><h2 class="home-subtitle"><div id="id-1" class="typeit"></div></h2><div class="links"><a href="https://github.com/thehackercat" title="GitHub" target="_blank" rel="noopener noreffer me"><i class="fab fa-github-alt fa-fw"></i></a><a href="https://twitter.com/lexuscyborg103" title="Twitter" target="_blank" rel="noopener noreffer me"><i class="fab fa-twitter fa-fw"></i></a><a href="https://www.instagram.com/thehackercat" title="Instagram" target="_blank" rel="noopener noreffer me"><i class="fab fa-instagram fa-fw"></i></a><a href="https://t.me/thehackercat" title="Telegram" target="_blank" rel="noopener noreffer me"><i class="fab fa-telegram-plane fa-fw"></i></a><a href="https://www.douban.com/people/thehackercat" title="豆瓣" target="_blank" rel="noopener noreffer me"><i data-svg-src="https://cdn.jsdelivr.net/npm/simple-icons@2.14.0/icons/douban.svg"></i></a><a href="mailto:lexuscyborg103@gmail.com" title="Email" rel=" me"><i class="far fa-envelope fa-fw"></i></a><a href="/index.xml" title="RSS" target="_blank" rel="noopener noreffer me"><i class="fas fa-rss fa-fw"></i></a></div></div>
 <article class="single summary" itemscope itemtype="http://schema.org/Article"><h1 class="single-title" itemprop="name headline">
+        <a href="/kubeproxy-ipvs-accident/">记一次升级 kube-proxy ipvs 引发的线上故障</a>
+    </h1><div class="post-meta"><span class="post-author"><a href="/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw"></i>LexusLee</a></span>&nbsp;<span class="post-publish">published on <time datetime="2019-04-29">2019-04-29</time></span>&nbsp;<span class="post-category">included in <a href="/categories/coding/"><i class="far fa-folder fa-fw"></i>Coding</a></span></div><div class="content">背景 最近在升级集群的 kube-prxoy 并开启 ipvs mode, 引发了一些线上故障
+替换原因 由于豆瓣的集群使用 calico + kube-proxy iptables mode + puppet iptable 脚本管理
+三个组件共同操作同一份 iptables, 容易出现 race condition 问题, 并且还会互相抢占 iptables 锁, 是个 Mutex unsafe 的操作, 不易于维护.
+故打算尽量减少操作 iptables 的部分, 替换成 ipvs
+事故回溯 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24  @400000005cbea9a81eaf9164 W0423 13:58:54.514773 14016 server.go:195] WARNING: all flags other than --config, --write-config-to, and --cleanup are deprecated.</div><div class="post-footer">
+        <a href="/kubeproxy-ipvs-accident/">Read More</a><div class="post-tags">
+                <i class="fas fa-tags fa-fw"></i>&nbsp;<a href="/tags/iptables/">Iptables</a>,&nbsp;<a href="/tags/kubernetes/">Kubernetes</a>,&nbsp;<a href="/tags/linux/">Linux</a></div></div>
+</article><article class="single summary" itemscope itemtype="http://schema.org/Article"><h1 class="single-title" itemprop="name headline">
         <a href="/k8s-service-endpoints/">浅谈 k8s service&amp;kube-proxy</a>
     </h1><div class="post-meta"><span class="post-author"><a href="/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw"></i>LexusLee</a></span>&nbsp;<span class="post-publish">published on <time datetime="2018-09-14">2018-09-14</time></span>&nbsp;<span class="post-category">included in <a href="/categories/coding/"><i class="far fa-folder fa-fw"></i>Coding</a></span></div><div class="content"><div style="text-align: right;">Lexus Lee</div>
 <h3 id="背景">背景</h3>
@@ -165,14 +174,6 @@ e.g. 如上图所示，Workflow 类似软件工程中的流程图，指定了每
  Start —— 开始 jobs ，标明 workflow 起点 Maybe —— 表示这个任务可能会执行，但不一定会执行，它的执行依赖于一定条件，比如上层节点的输出 Likely —— 和 Maybe 节点类似，但是比它的优先级更高，是作为与 Maybe 节点共享父节点的默认路径节点 Future —— 表示 workflow 执行体认为该路径一定会到达的节点，Future 节点的任务在不被 cancel 的情况下一定会执行 Waiting —— 表示当前任务是个阻塞任务，还在执行中，需要等待执行完毕才能进入下个路径 Ready —— 表示 Waiting 节点的任务已执行完，作为 Waiting 节点的 handler Complete —— 表示整个 workflow 的 Jobs 已经全部执行完毕，为终结节点 Cancel —— 表示任务被明确终止了，在状态迁移过程中不作为最终状态  事件原子性 pass</div><div class="post-footer">
         <a href="/workflow-design/">Read More</a><div class="post-tags">
                 <i class="fas fa-tags fa-fw"></i>&nbsp;<a href="/tags/python/">Python</a>,&nbsp;<a href="/tags/workflow/">Workflow</a></div></div>
-</article><article class="single summary" itemscope itemtype="http://schema.org/Article"><h1 class="single-title" itemprop="name headline">
-        <a href="/girl-in-the-sunny-place/">《向阳处的她》浩介先生终于有猫啦！</a>
-    </h1><div class="post-meta"><span class="post-author"><a href="/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw"></i>LexusLee</a></span>&nbsp;<span class="post-publish">published on <time datetime="2017-09-25">2017-09-25</time></span>&nbsp;<span class="post-category">included in <a href="/categories/movie/"><i class="far fa-folder fa-fw"></i>Movie</a></span></div><div class="content"><h2 id="向阳处的她浩介先生终于有猫啦">《向阳处的她》浩介先生终于有猫啦！</h2>
-<p>有一年的搞笑诺贝尔物理学奖颁给了课题：</p>
-<p>「一只猫能同时处于固体状态和液体状态吗？」</p>
-<p>通过第三人称视角研究了猫的各种形态，《向阳处的她》这部电影就给研究了一个狠狠的耳光。</p></div><div class="post-footer">
-        <a href="/girl-in-the-sunny-place/">Read More</a><div class="post-tags">
-                <i class="fas fa-tags fa-fw"></i>&nbsp;<a href="/tags/gossip/">Gossip</a>,&nbsp;<a href="/tags/movie/">Movie</a></div></div>
 </article><ul class="pagination"><li class="page-item ">
                     <span class="page-link">
                         <a href="/">1</a>
