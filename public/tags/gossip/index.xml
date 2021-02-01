@@ -4,7 +4,26 @@
         <link>https://example.com/tags/gossip/</link>
         <description>Gossip - Tag - LexusLee&#39;s blog</description>
         <generator>Hugo -- gohugo.io</generator><language>en</language><managingEditor>lexuscyborg103@gmail.com (LexusLee)</managingEditor>
-            <webMaster>lexuscyborg103@gmail.com (LexusLee)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Fri, 29 Jan 2021 18:47:00 &#43;0800</lastBuildDate><atom:link href="https://example.com/tags/gossip/" rel="self" type="application/rss+xml" /><item>
+            <webMaster>lexuscyborg103@gmail.com (LexusLee)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Mon, 01 Feb 2021 13:30:46 &#43;0800</lastBuildDate><atom:link href="https://example.com/tags/gossip/" rel="self" type="application/rss+xml" /><item>
+    <title>云幕电影放映机</title>
+    <link>https://example.com/cloud-movie-projector/</link>
+    <pubDate>Mon, 01 Feb 2021 13:30:46 &#43;0800</pubDate>
+    <author>Author</author>
+    <guid>https://example.com/cloud-movie-projector/</guid>
+    <description><![CDATA[「难得出太阳的一天。
+北京的天总是阴沉沉的，有时候好像是要开启一场庭审，让我紧张得四肢发麻。
+二月的第一天，终于有了一些不同。
+敞亮的日光，透过大片鲜绿的树叶凶猛地穿透进来。
+一抬头，世界在光明刺眼的色调里猛涨。
+浑身暖洋洋。
+天上的云彩白的好像一个个凸出来的拳头。
+我希望它们沉下来，重重砸在我脸上。
+将我击碎打散，
+那下午便也不用上班。
+我给自己定了个目标，这一年里，要看够 1750 部电影。
+没想一个月过去了，只看到了 1518 部。
+要是电影可以投射在云层里，那我便天天都可以看电影了。]]></description>
+</item><item>
     <title>I hate people</title>
     <link>https://example.com/i-hate-people/</link>
     <pubDate>Fri, 29 Jan 2021 18:47:00 &#43;0800</pubDate>
@@ -172,16 +191,5 @@ But I love person.]]></description>
     <description><![CDATA[<p></p>
 <p><strong>从小，我就想做英雄大侠。</strong></p>
 <p><strong>长着翅膀，穿梭云雾间如探囊取物的那种。</strong></p>]]></description>
-</item><item>
-    <title>小王子与春天的熊</title>
-    <link>https://example.com/little-prince-and-bear/</link>
-    <pubDate>Thu, 02 Apr 2015 01:40:54 &#43;0800</pubDate>
-    <author>Author</author>
-    <guid>https://example.com/little-prince-and-bear/</guid>
-    <description><![CDATA[<p></p>
-<p>小王子的星球上忽然绽放了一朵娇艳的玫瑰花。</p>
-<p>在我没长牙前，我就知道，草是绿的，花是红的，眼泪是咸的，口水是黏的，漂亮阿姨上厕所是不能偷看的。</p>
-<p>在我长牙约莫拾几朵玫瑰花之后，我开始明白，玫瑰是不能摘的，春天是追不到的。</p>
-<p>只能追，不能到！</p>]]></description>
 </item></channel>
 </rss>
