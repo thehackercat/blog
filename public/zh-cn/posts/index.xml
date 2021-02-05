@@ -4,7 +4,14 @@
         <link>https://example.com/zh-cn/posts/</link>
         <description>所有文章 | LexusLee&#39;s blog</description>
         <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>lexuscyborg103@gmail.com (LexusLee)</managingEditor>
-            <webMaster>lexuscyborg103@gmail.com (LexusLee)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Mon, 01 Feb 2021 13:30:46 &#43;0800</lastBuildDate><atom:link href="https://example.com/zh-cn/posts/" rel="self" type="application/rss+xml" /><item>
+            <webMaster>lexuscyborg103@gmail.com (LexusLee)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Fri, 05 Feb 2021 10:29:05 &#43;0800</lastBuildDate><atom:link href="https://example.com/zh-cn/posts/" rel="self" type="application/rss+xml" /><item>
+    <title>译《Scuba: Diving into data at Facebook》</title>
+    <link>https://example.com/zh-cn/scuba-diving-into-data-at-facebook/</link>
+    <pubDate>Fri, 05 Feb 2021 10:29:05 &#43;0800</pubDate>
+    <author>作者</author>
+    <guid>https://example.com/zh-cn/scuba-diving-into-data-at-facebook/</guid>
+    <description><![CDATA[Scuba: Diving into Data at Facebook 原文链接: https://www.semanticscholar.org/paper/Scuba%3A-Diving-into-Data-at-Facebook-Abraham-Allen/0bce0735ef3ea01e02b73c98338727d519a71be4 概要 Facebook很重视性能监控。一些性能问题可能会影响超过10亿用户，所以我们跟踪了成千上万的服务器，每天上百P]]></description>
+</item><item>
     <title>云幕电影放映机</title>
     <link>https://example.com/zh-cn/cloud-movie-projector/</link>
     <pubDate>Mon, 01 Feb 2021 13:30:46 &#43;0800</pubDate>
@@ -67,12 +74,5 @@
     <author>作者</author>
     <guid>https://example.com/zh-cn/talk-about-k8s-cronjob/</guid>
     <description><![CDATA[背景 之前一段时间正好接触到 kubernetes cronjob, 在接入时遇上了在一定量级下 cronjob schedule delay 的问题, 故开始读了下代码, 发现了一些问题并试着调优了下 存在的问题 按生产环境实际]]></description>
-</item><item>
-    <title>你就是我的灵光</title>
-    <link>https://example.com/zh-cn/you-are-my-sunshine/</link>
-    <pubDate>Mon, 05 Aug 2019 21:54:03 &#43;0000</pubDate>
-    <author>作者</author>
-    <guid>https://example.com/zh-cn/you-are-my-sunshine/</guid>
-    <description><![CDATA[你像个琢磨不透的妖精。 前一天晚上我们一起打游戏到深夜，今天我却变成了冷漠的『这一位』 这么说，你是不是没那么喜欢我。 每每至此，我就又开始瞎想些]]></description>
 </item></channel>
 </rss>

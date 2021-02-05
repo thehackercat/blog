@@ -11,7 +11,7 @@
 <meta property="og:type" content="website" />
 <meta property="og:url" content="https://example.com/" />
 <meta property="og:image" content="https://example.com/logo.png"/>
-<meta property="og:updated_time" content="2021-02-01T13:30:46+08:00" />
+<meta property="og:updated_time" content="2021-02-05T10:29:05+08:00" />
 <meta name="twitter:card" content="summary_large_image"/>
 <meta name="twitter:image" content="https://example.com/logo.png"/>
 
@@ -105,8 +105,22 @@
         alt="/images/avatar.png"
         title="/images/avatar.png" /></a></div><h1 class="home-title">LexusLee's blog</h1><h2 class="home-subtitle"><div id="id-1" class="typeit"></div></h2><div class="links"><a href="https://github.com/thehackercat" title="GitHub" target="_blank" rel="noopener noreffer me"><i class="fab fa-github-alt fa-fw"></i></a><a href="https://twitter.com/lexuscyborg103" title="Twitter" target="_blank" rel="noopener noreffer me"><i class="fab fa-twitter fa-fw"></i></a><a href="https://www.instagram.com/thehackercat" title="Instagram" target="_blank" rel="noopener noreffer me"><i class="fab fa-instagram fa-fw"></i></a><a href="https://t.me/thehackercat" title="Telegram" target="_blank" rel="noopener noreffer me"><i class="fab fa-telegram-plane fa-fw"></i></a><a href="https://www.douban.com/people/thehackercat" title="豆瓣" target="_blank" rel="noopener noreffer me"><i data-svg-src="https://cdn.jsdelivr.net/npm/simple-icons@2.14.0/icons/douban.svg"></i></a><a href="mailto:lexuscyborg103@gmail.com" title="Email" rel=" me"><i class="far fa-envelope fa-fw"></i></a><a href="/index.xml" title="RSS" target="_blank" rel="noopener noreffer me"><i class="fas fa-rss fa-fw"></i></a></div></div>
 <article class="single summary" itemscope itemtype="http://schema.org/Article"><h1 class="single-title" itemprop="name headline">
+        <a href="/scuba-diving-into-data-at-facebook/">译《Scuba: Diving into data at Facebook》</a>
+    </h1><div class="post-meta"><span class="post-author"><a href="/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw"></i>LexusLee</a></span>&nbsp;<span class="post-publish">published on <time datetime="2021-02-05">2021-02-05</time></span>&nbsp;<span class="post-category">included in <a href="/categories/coding/"><i class="far fa-folder fa-fw"></i>Coding</a></span></div><div class="content">Scuba: Diving into Data at Facebook 原文链接: https://www.semanticscholar.org/paper/Scuba%3A-Diving-into-Data-at-Facebook-Abraham-Allen/0bce0735ef3ea01e02b73c98338727d519a71be4
+概要 Facebook很重视性能监控。一些性能问题可能会影响超过10亿用户，所以我们跟踪了成千上万的服务器，每天上百PB的网络流量，每天上百个代码变更，以及许多其他指标。我们对时延性的要求是，在事件发生后的一分钟内，如一个客户电话请求，一个提交了bug报告，一份新的代码变更, 能及时更新到图表，并在监控系统中展示出来。
+Scuba 是Facebook的数据管理系统，用于大部分的实时分析。Scuba 是一个快速的、可扩展的、分布式的、内存式的 Facebook 自研数据库。它目前吞吐率为每秒数百万行(事件)流入，并以同样的速度过期数据进行流出。Scuba 存储后端在数百台服务器上，每台服务器上的数据完全在内存中，每台服务器内存规格为 144 GB RAM。为了处理每个查询，Scuba 会从所有的数据中聚合服务器以处理每天处理近百万次查询。
+在 Facebook, Scuba 广泛应用于交互式、临时性的分析查询，这些查询运行在在一秒内完成对实时数据的处理。
+1. 介绍 在Facebook，无论是诊断性能回归还是衡量基础设施变化带来的影响，我们都希望用有效数据来衡量。Facebook基础设施团队依靠的是在实时数据监控以确保网站始终运行顺利。我们的需求包括能在非常短的延迟（通常在一分钟以内）从运行Facebook的网络服务器上查询到发生的事件。查询数据的灵活性和速度对于诊断出问题根因带来不少收益。识别问题的根本原因往往是由于各子系统之间复杂的依赖关系，很难在短时间内完成。然而，一旦出现了没有在几分钟或几小时未解决的问题。那 Facebook 的10亿用户就会变得不快乐，从而对 Facebook 整体发展不利。
+为了解决上述问题， 起初，我们依靠的是预先汇总的图表和一套精心管理、手工编码的脚本，通过MySQL数据库的形式管理数据。到了2011年，这个解决方案变得过于僵化和缓慢。它无法跟上不断增长的数据吞吐率和查询效率。而 Facebook内部的其他查询系统，比如Hive[20]和Peregrine[13]，在数据被提供给查询之前，查询数据被写入HDFS，有很长的（典型的一天）延迟，而查询本身需要几分钟的时间来运行。
+因此，我们建立了 Scuba，一个快速、可扩展、内存数据库。Scuba 是我们收集和分析来自各种系统的数据的方式的一个重大演变，正是这些系统保证了网站每天的正常运行。我们现在使用 Scuba 能对大多数实时的、结构化的人工数据进行分析。我们将在本文后面将 Scuba 与其他数据管理系统进行比较，但据我们了解，没有任何其他系统能像 Scuba 一样快速地吞吐数据并进行复杂的查询。
+如今，Scuba 运行在数百台服务器上，每台服务器有144 GB内存，在一个无共享架构的集群中。它在内存中为1000多个表存储了大约70TB的压缩数据，通过在所有服务器上随机分配每个表来分配内存。Scuba 每秒可处理数百万行。由于 Scuba 是内存绑定的，它能以同样的速度过期掉老数据。为了限制数据量，Scuba 允许行指定一个可选的采样率，这表明 Scuba 只包含原始事件的一小部分（通常是100分之一到100万分之一）。这种采样对于像 Facebook 客户端请求这样每秒发生数百万次的事件是十分必要的。采样可以是统一的，也可以是基于一些关键数据，比如用户ID等。Scuba在计算汇总时，会对采样率进行聚合补偿。
+除了提供一个 SQL 查询接口（对于一个 SQL 子集，包括分组和聚合，但不包括连接表），Scuba 提供了一个 GUI，可以生成时间序列图、饼图、列值分布，以及除文本选项之外的其他十几种数据的可视化。图1显示了一个时间序列图，在Scuba GUI中对页面流量进行了一周的比较。在后台，一个聚合树将每个查询分发到每个服务器，然后收集结果发回客户端。
+虽然 Scuba 是为了支持性能分析而建立的，但它很快就成为了在其他时间敏感数据上执行探索性查询的首选系统。Facebook的许多团队都在使用Scuba。
+ 移动开发团队使用 Scuba 来跟踪哪些用户在运行不同的移动设备、操作系统和Facebook应用的版本。 广告开发团队利用 Scuba 来监控人们对广告的印象、点击和收入的变化。当出现下降时，他们可以迅速将其缩小到特定的国家、广告类型或服务器集群，并确定根本问题。 SRE 团队过使用 Scuba观察服务器错误。当发生峰值时，他们可以精确地指出是否是由于特定端点中的错误、特定数据中心或服务器集群中的服务，或数据中心的部分物理问题。 错误报告监测每小时运行数千次查询，以寻找Facebook用户报告的错误数量高峰，按几十个人口统计维度（位置、年龄、好友数等）进行分组。  总的来说，用户会先提出高级别的汇总查询，以识别数据中的有趣现象，然后再深入挖掘（因此被称为Scuba），以找到感兴趣的基础数据点。在上述所有情况下，能够沿着多个维度对数据进行临时分解是至关重要的。</div><div class="post-footer">
+        <a href="/scuba-diving-into-data-at-facebook/">Read More</a></div>
+</article><article class="single summary" itemscope itemtype="http://schema.org/Article"><h1 class="single-title" itemprop="name headline">
         <a href="/cloud-movie-projector/">云幕电影放映机</a>
-    </h1><div class="post-meta"><span class="post-author"><a href="/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw"></i>LexusLee</a></span>&nbsp;<span class="post-publish">published on <time datetime="2021-02-01">2021-02-01</time></span>&nbsp;<span class="post-category">included in <a href="/categories/gossip/"><i class="far fa-folder fa-fw"></i>Gossip</a></span></div><div class="content">「难得出太阳的一天。
+    </h1><div class="post-meta"><span class="post-author"><a href="/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw"></i>LexusLee</a></span>&nbsp;<span class="post-publish">published on <time datetime="2021-02-01">2021-02-01</time></span>&nbsp;<span class="post-category">included in <a href="/categories/gossip/"><i class="far fa-folder fa-fw"></i>Gossip</a></span></div><div class="content">难得出太阳的一天。
 北京的天总是阴沉沉的，有时候好像是要开启一场庭审，让我紧张得四肢发麻。
 二月的第一天，终于有了一些不同。
 敞亮的日光，透过大片鲜绿的树叶凶猛地穿透进来。
@@ -197,14 +211,6 @@ Develop  Vscode Sublime Sourcetree Github Desktop Iterm2 Postman Cyberduck Docke
 Ref https://github.com/kubernetes/kubernetes/issues/75482#issuecomment-511476698</div><div class="post-footer">
         <a href="/upgrade-dockerd-in-k8s/">Read More</a><div class="post-tags">
                 <i class="fas fa-tags fa-fw"></i>&nbsp;<a href="/tags/kubernetes/">Kubernetes</a>,&nbsp;<a href="/tags/docker/">Docker</a></div></div>
-</article><article class="single summary" itemscope itemtype="http://schema.org/Article"><h1 class="single-title" itemprop="name headline">
-        <a href="/alert-convergence/">告警收敛设计</a>
-    </h1><div class="post-meta"><span class="post-author"><a href="/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw"></i>LexusLee</a></span>&nbsp;<span class="post-publish">published on <time datetime="2020-07-07">2020-07-07</time></span>&nbsp;<span class="post-category">included in <a href="/categories/coding/"><i class="far fa-folder fa-fw"></i>Coding</a></span></div><div class="content">背景 最近在豆瓣做面向开发者的 op 报警系统, 最头疼的是下列几种情况
- 脉冲型报警 单个原因引起的报警发散 多个报警为同个诱因  由于目前现有的一些告警系统都强依赖后面的监控 agent/cmdb , 比如 open-falcon/prometheus 虽然都支持了告警收敛这一套, 但要从豆瓣的 statsd+icinga 迁移到 alertManager 需要折腾一阵。而我实际只想要一个中间轻量的 alert exporter 去做告警聚合/收敛.
-所以我期望实现下列 feature:
- 对于告警可配置梯度, 比如 apperr &gt; 50, 则立马报警不做 retry, 并且 notify_interval 为 1 分钟; 对于 50 &gt; apperr &gt; 20 则有3次 retry, retry 周期为 1 分钟, 报警周期为2分钟. 对于 apperr &lt; 1 则 retry 5 次, retry 周期 3 分钟, 报警周期 5 分钟. 告警配置中可用 与|或|非 的方式进行组合告警,告警收敛. 如  1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18  [rules] apperr - script: xxx - label: http, service, statsd, codeerr - warning_threshold: 0.</div><div class="post-footer">
-        <a href="/alert-convergence/">Read More</a><div class="post-tags">
-                <i class="fas fa-tags fa-fw"></i>&nbsp;<a href="/tags/architecture/">Architecture</a>,&nbsp;<a href="/tags/alert/">Alert</a></div></div>
 </article><ul class="pagination"><li class="page-item active">
                     <span class="page-link">
                         <a href="/">1</a>

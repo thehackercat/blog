@@ -4,13 +4,30 @@
         <link>https://example.com/posts/</link>
         <description>All Posts | LexusLee&#39;s blog</description>
         <generator>Hugo -- gohugo.io</generator><language>en</language><managingEditor>lexuscyborg103@gmail.com (LexusLee)</managingEditor>
-            <webMaster>lexuscyborg103@gmail.com (LexusLee)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Mon, 01 Feb 2021 13:30:46 &#43;0800</lastBuildDate><atom:link href="https://example.com/posts/" rel="self" type="application/rss+xml" /><item>
+            <webMaster>lexuscyborg103@gmail.com (LexusLee)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Fri, 05 Feb 2021 10:29:05 &#43;0800</lastBuildDate><atom:link href="https://example.com/posts/" rel="self" type="application/rss+xml" /><item>
+    <title>译《Scuba: Diving into data at Facebook》</title>
+    <link>https://example.com/scuba-diving-into-data-at-facebook/</link>
+    <pubDate>Fri, 05 Feb 2021 10:29:05 &#43;0800</pubDate>
+    <author>Author</author>
+    <guid>https://example.com/scuba-diving-into-data-at-facebook/</guid>
+    <description><![CDATA[Scuba: Diving into Data at Facebook 原文链接: https://www.semanticscholar.org/paper/Scuba%3A-Diving-into-Data-at-Facebook-Abraham-Allen/0bce0735ef3ea01e02b73c98338727d519a71be4
+概要 Facebook很重视性能监控。一些性能问题可能会影响超过10亿用户，所以我们跟踪了成千上万的服务器，每天上百PB的网络流量，每天上百个代码变更，以及许多其他指标。我们对时延性的要求是，在事件发生后的一分钟内，如一个客户电话请求，一个提交了bug报告，一份新的代码变更, 能及时更新到图表，并在监控系统中展示出来。
+Scuba 是Facebook的数据管理系统，用于大部分的实时分析。Scuba 是一个快速的、可扩展的、分布式的、内存式的 Facebook 自研数据库。它目前吞吐率为每秒数百万行(事件)流入，并以同样的速度过期数据进行流出。Scuba 存储后端在数百台服务器上，每台服务器上的数据完全在内存中，每台服务器内存规格为 144 GB RAM。为了处理每个查询，Scuba 会从所有的数据中聚合服务器以处理每天处理近百万次查询。
+在 Facebook, Scuba 广泛应用于交互式、临时性的分析查询，这些查询运行在在一秒内完成对实时数据的处理。
+1. 介绍 在Facebook，无论是诊断性能回归还是衡量基础设施变化带来的影响，我们都希望用有效数据来衡量。Facebook基础设施团队依靠的是在实时数据监控以确保网站始终运行顺利。我们的需求包括能在非常短的延迟（通常在一分钟以内）从运行Facebook的网络服务器上查询到发生的事件。查询数据的灵活性和速度对于诊断出问题根因带来不少收益。识别问题的根本原因往往是由于各子系统之间复杂的依赖关系，很难在短时间内完成。然而，一旦出现了没有在几分钟或几小时未解决的问题。那 Facebook 的10亿用户就会变得不快乐，从而对 Facebook 整体发展不利。
+为了解决上述问题， 起初，我们依靠的是预先汇总的图表和一套精心管理、手工编码的脚本，通过MySQL数据库的形式管理数据。到了2011年，这个解决方案变得过于僵化和缓慢。它无法跟上不断增长的数据吞吐率和查询效率。而 Facebook内部的其他查询系统，比如Hive[20]和Peregrine[13]，在数据被提供给查询之前，查询数据被写入HDFS，有很长的（典型的一天）延迟，而查询本身需要几分钟的时间来运行。
+因此，我们建立了 Scuba，一个快速、可扩展、内存数据库。Scuba 是我们收集和分析来自各种系统的数据的方式的一个重大演变，正是这些系统保证了网站每天的正常运行。我们现在使用 Scuba 能对大多数实时的、结构化的人工数据进行分析。我们将在本文后面将 Scuba 与其他数据管理系统进行比较，但据我们了解，没有任何其他系统能像 Scuba 一样快速地吞吐数据并进行复杂的查询。
+如今，Scuba 运行在数百台服务器上，每台服务器有144 GB内存，在一个无共享架构的集群中。它在内存中为1000多个表存储了大约70TB的压缩数据，通过在所有服务器上随机分配每个表来分配内存。Scuba 每秒可处理数百万行。由于 Scuba 是内存绑定的，它能以同样的速度过期掉老数据。为了限制数据量，Scuba 允许行指定一个可选的采样率，这表明 Scuba 只包含原始事件的一小部分（通常是100分之一到100万分之一）。这种采样对于像 Facebook 客户端请求这样每秒发生数百万次的事件是十分必要的。采样可以是统一的，也可以是基于一些关键数据，比如用户ID等。Scuba在计算汇总时，会对采样率进行聚合补偿。
+除了提供一个 SQL 查询接口（对于一个 SQL 子集，包括分组和聚合，但不包括连接表），Scuba 提供了一个 GUI，可以生成时间序列图、饼图、列值分布，以及除文本选项之外的其他十几种数据的可视化。图1显示了一个时间序列图，在Scuba GUI中对页面流量进行了一周的比较。在后台，一个聚合树将每个查询分发到每个服务器，然后收集结果发回客户端。
+虽然 Scuba 是为了支持性能分析而建立的，但它很快就成为了在其他时间敏感数据上执行探索性查询的首选系统。Facebook的许多团队都在使用Scuba。
+ 移动开发团队使用 Scuba 来跟踪哪些用户在运行不同的移动设备、操作系统和Facebook应用的版本。 广告开发团队利用 Scuba 来监控人们对广告的印象、点击和收入的变化。当出现下降时，他们可以迅速将其缩小到特定的国家、广告类型或服务器集群，并确定根本问题。 SRE 团队过使用 Scuba观察服务器错误。当发生峰值时，他们可以精确地指出是否是由于特定端点中的错误、特定数据中心或服务器集群中的服务，或数据中心的部分物理问题。 错误报告监测每小时运行数千次查询，以寻找Facebook用户报告的错误数量高峰，按几十个人口统计维度（位置、年龄、好友数等）进行分组。  总的来说，用户会先提出高级别的汇总查询，以识别数据中的有趣现象，然后再深入挖掘（因此被称为Scuba），以找到感兴趣的基础数据点。在上述所有情况下，能够沿着多个维度对数据进行临时分解是至关重要的。]]></description>
+</item><item>
     <title>云幕电影放映机</title>
     <link>https://example.com/cloud-movie-projector/</link>
     <pubDate>Mon, 01 Feb 2021 13:30:46 &#43;0800</pubDate>
     <author>Author</author>
     <guid>https://example.com/cloud-movie-projector/</guid>
-    <description><![CDATA[「难得出太阳的一天。
+    <description><![CDATA[难得出太阳的一天。
 北京的天总是阴沉沉的，有时候好像是要开启一场庭审，让我紧张得四肢发麻。
 二月的第一天，终于有了一些不同。
 敞亮的日光，透过大片鲜绿的树叶凶猛地穿透进来。
@@ -151,25 +168,5 @@ Ref https://github.com/kubernetes/kubernetes/issues/75482#issuecomment-511476698
 代码解读 出于分析上述问题的目的, 读了下 cronjob controller 的代码, 代码量不多, 可能由于没上 GA 的原因, 整个 controllor 代码的设计也比较过程式, 不会像其他组件用到一些比如 Informer, refractor之类的组件读起来相对晦涩
 下面开始解读下 release1.17 分支的 k8s cronjob controller 代码
  Controller struct  1 2 3 4 5 6 7  type Controller struct { kubeClient clientset.]]></description>
-</item><item>
-    <title>你就是我的灵光</title>
-    <link>https://example.com/you-are-my-sunshine/</link>
-    <pubDate>Mon, 05 Aug 2019 21:54:03 &#43;0000</pubDate>
-    <author>Author</author>
-    <guid>https://example.com/you-are-my-sunshine/</guid>
-    <description><![CDATA[你像个琢磨不透的妖精。
-前一天晚上我们一起打游戏到深夜，今天我却变成了冷漠的『这一位』 这么说，你是不是没那么喜欢我。
-每每至此，我就又开始瞎想些我们分离的日子。
-我知道多疑是深植在我们的根性里，我对你却如此猜忌，我真是个坏家伙。
-昨天看书抄了一句话
-「对于见面我看得较重，对于分别我看得较轻，这是人生取巧之一法，否则聚少离多，悲哀多于欢乐，一生只好负着无尽痛苦的债了。」
-我却把别离看得很重，有时甚至有些宿命的情调，会觉得终有一天我们会分别，我害怕那天的到来。却又觉得这样揪着伫念的心，想必很会让你担心吧。所以总试着做些改变，我想着只要我们真正相爱，哪怕一天，一小时，那我可千万不能把我的苦难流露给你，我想看着你笑，特别想。
-今晚回家路上，见着一位小孩在卖盐水菠萝，周围散着飞蝇，狗叫和蝉鸣热闹得扎耳。可是都与你无关，顿时对菠萝失去的兴趣。
-到家时甚是沮丧，像是被一种抑郁缠绕其中，唯独想着你，写起日记来，才感觉所有的温情开始流到笔端。
-你说，今夜何时我才能听见你的声音。
-今天我和室友们说，我已经很久没有做梦了，像是被盗梦人收割走了灵光。
-我骗了他们，昨夜我又梦到了你，梦见我变成了聊斋志异里的促织，趴在你臂上，挠得你痒痒的。
-我不太愿意去想这意味着什么，醒来时只觉得心理暖洋洋的，这股暖流正逐渐透过我的细胞壁溢到空气里，我多想与你分享这间空气。
-希望你不要介意，那我一定说个不停。]]></description>
 </item></channel>
 </rss>

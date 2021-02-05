@@ -11,7 +11,7 @@
 <meta property="og:type" content="website" />
 <meta property="og:url" content="https://example.com/" />
 <meta property="og:image" content="https://example.com/logo.png"/>
-<meta property="og:updated_time" content="2021-02-01T13:30:46+08:00" />
+<meta property="og:updated_time" content="2021-02-05T10:29:05+08:00" />
 <meta name="twitter:card" content="summary_large_image"/>
 <meta name="twitter:image" content="https://example.com/logo.png"/>
 
@@ -105,6 +105,15 @@
         alt="/images/avatar.png"
         title="/images/avatar.png" /></a></div><h1 class="home-title">LexusLee's blog</h1><h2 class="home-subtitle"><div id="id-1" class="typeit"></div></h2><div class="links"><a href="https://github.com/thehackercat" title="GitHub" target="_blank" rel="noopener noreffer me"><i class="fab fa-github-alt fa-fw"></i></a><a href="https://twitter.com/lexuscyborg103" title="Twitter" target="_blank" rel="noopener noreffer me"><i class="fab fa-twitter fa-fw"></i></a><a href="https://www.instagram.com/thehackercat" title="Instagram" target="_blank" rel="noopener noreffer me"><i class="fab fa-instagram fa-fw"></i></a><a href="https://t.me/thehackercat" title="Telegram" target="_blank" rel="noopener noreffer me"><i class="fab fa-telegram-plane fa-fw"></i></a><a href="https://www.douban.com/people/thehackercat" title="豆瓣" target="_blank" rel="noopener noreffer me"><i data-svg-src="https://cdn.jsdelivr.net/npm/simple-icons@2.14.0/icons/douban.svg"></i></a><a href="mailto:lexuscyborg103@gmail.com" title="Email" rel=" me"><i class="far fa-envelope fa-fw"></i></a><a href="/index.xml" title="RSS" target="_blank" rel="noopener noreffer me"><i class="fas fa-rss fa-fw"></i></a></div></div>
 <article class="single summary" itemscope itemtype="http://schema.org/Article"><h1 class="single-title" itemprop="name headline">
+        <a href="/drf-tutorial-4/">Django REST Framework 4-验证和授权</a>
+    </h1><div class="post-meta"><span class="post-author"><a href="/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw"></i>LexusLee</a></span>&nbsp;<span class="post-publish">published on <time datetime="2016-04-04">2016-04-04</time></span>&nbsp;<span class="post-category">included in <a href="/categories/coding/"><i class="far fa-folder fa-fw"></i>Coding</a></span></div><div class="content">验证与授权 目前来看，我们的 API 并没有权限上的限制(即任何人都可以编辑或删除我们的 Movies )，这不是我们想要的。所以我们需要在 API 上做些限制以确保:
+ Movies 与 Users 关联起来。 只有授权了的用户才能创建新的 Movies。 只有 Movies 的创建者才可以更新或删除它。 未授权的用户只能进行查看。  在 models 中增加以下信息 我们先把之前注释掉的
+1 2 3 4 5 6 7  director = models.ForeignKey(&#39;celebrity&#39;, related_name=&#39;Movies&#39;) class celebrity(models.Model): name = models.CharField(max_length=100, blank=True, default=&#39;&#39;) age = models.IntegerField() gender = models.CharField(choices=GENDER_CHOICES, default=&#39;male&#39;, max_length=20)   关联导演类的注释解开，来看看多张表在生成的 api 里的关联性。
+接着在 models.py 中的 Movies 类中加入以下代码来确定 Movies 的创建者:
+1  owner = models.ForeignKey(&#39;auth.User&#39;, related_name=&#39;Movies&#39;)   最后 models.</div><div class="post-footer">
+        <a href="/drf-tutorial-4/">Read More</a><div class="post-tags">
+                <i class="fas fa-tags fa-fw"></i>&nbsp;<a href="/tags/python/">Python</a>,&nbsp;<a href="/tags/django/">Django</a>,&nbsp;<a href="/tags/restful/">RESTful</a></div></div>
+</article><article class="single summary" itemscope itemtype="http://schema.org/Article"><h1 class="single-title" itemprop="name headline">
         <a href="/drf-tutorial-3/">Django REST Framework 3-基于类的视图</a>
     </h1><div class="post-meta"><span class="post-author"><a href="/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw"></i>LexusLee</a></span>&nbsp;<span class="post-publish">published on <time datetime="2016-04-03">2016-04-03</time></span>&nbsp;<span class="post-category">included in <a href="/categories/coding/"><i class="far fa-folder fa-fw"></i>Coding</a></span></div><div class="content">基于类的视图 基于类的视图比先前基于函数的视图的可重用性更强，可以更多快好省地 ( DRY )地写出简洁的代码。
 把 API 用基于类的视图的方式重写 编辑 douban/views.py 进行如下重写
@@ -143,12 +152,6 @@
 <p>公司要求用 Django 做些项目，之前按网上教程搭环境的时候就遇到很多问题，感觉有些教程都是有误的，今天用 uWSGI 开多线程的时候服务器报了 HTTP 500 的错( Internal Server Error )，然后就一直连不上去了。所以按<a href="http://uwsgi-docs.readthedocs.org/en/latest/tutorials/Django_and_nginx.html" target="_blank" rel="noopener noreffer">官网的教程</a>重新配置一遍，把出现的问题记录下来。</p></div><div class="post-footer">
         <a href="/nginx-uwsgi-django/">Read More</a><div class="post-tags">
                 <i class="fas fa-tags fa-fw"></i>&nbsp;<a href="/tags/python/">Python</a>,&nbsp;<a href="/tags/django/">Django</a>,&nbsp;<a href="/tags/nginx/">Nginx</a></div></div>
-</article><article class="single summary" itemscope itemtype="http://schema.org/Article"><h1 class="single-title" itemprop="name headline">
-        <a href="/nsfocus-interview/">绿盟 Web 后端实习面试心得</a>
-    </h1><div class="post-meta"><span class="post-author"><a href="/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw"></i>LexusLee</a></span>&nbsp;<span class="post-publish">published on <time datetime="2015-12-23">2015-12-23</time></span>&nbsp;<span class="post-category">included in <a href="/categories/interview/"><i class="far fa-folder fa-fw"></i>Interview</a></span></div><div class="content"><h2 id="背景">背景</h2>
-<p>12月23号下午2：00参加了绿盟的 Web 后端开发实习生的面试。考官是个胖哥哥，也是科大的，人很温柔和蔼。先问了一些数据结构与算法的问题，接着问了计算机网络的一些基础问题，最后考察了下 Web 开发的一些知识。总得来说题目不难，但是自己也发挥不好，原来以为有了几次面经，但是在现场还是紧张得不行。 (真是给自己的心理素质跪了 ：P)</p></div><div class="post-footer">
-        <a href="/nsfocus-interview/">Read More</a><div class="post-tags">
-                <i class="fas fa-tags fa-fw"></i>&nbsp;<a href="/tags/interview/">Interview</a></div></div>
 </article><ul class="pagination"><li class="page-item ">
                     <span class="page-link">
                         <a href="/">1</a>
