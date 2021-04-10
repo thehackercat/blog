@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1">
+        <title>Talk about Containerd - LexusLee&#39;s blog</title><meta name="Description" content="LexusLee personal blog, recording things you people wouldn&#39;t believe. Like attack ships on fire off the shoulder of Orion, c-beams glitter in the dark near the Tannhauser Gate."><meta property="og:title" content="Talk about Containerd" />
+<meta property="og:description" content="背景 最近看一些社区 issue 中正好接触到 containerd 源码, 早年大家基本都使用 docker/podman 这类容器上层包装, 包括我也是, 故对真正容器运行时的结构部分了解得不够深入, 最近 k8s 社区在 1.21 规划上计划从 kubelet 中移除 docker-shim 交互的逻辑, 大势上组件走上 containerd-shim, 故需要着手对容器运行时更深入了解.
+带着问题作为引入,
+容器底层还是对 Linux LXC 的交互, 那究竟 docker daemon 中是哪个组件来完成这一步的呢？
+1、背景知识 首先我们需要了解 Docker Daemon 生产出容器的过程.
+当前整个 Docker 调用链架构可以用下图来简单概括
+从 Docker 1.11 之后，Docker Daemon 被分成了多个模块以适应 OCI 标准。拆分之后，结构分成了以下几个部分：
+16年12月 Docker公司宣布将 containerd 从Docker Engine中分离，并捐赠到开源社区独立发展和运营。
+一个工业标准的容器运行时，注重简单、 健壮性、可移植性
+Docker本身其实已经被剥离干净了，只剩下 Docker 自身作为 cli 的一些特色功能了，真正容器的管控都在 containerd 里实现。
+在 17 年 docker重命名为moby, 从命名上逐渐脱离和 container 的关系, 而 Moby 更像是一个“乐高积木”，它包含了容器化的组件库 底层的构建、日志处理、卷管理、网络、镜像管理、containerd、SwarmKit等模块, 是个大杂烩." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://example.com/talk-about-containerd/" />
+<meta property="og:image" content="https://example.com/logo.png"/>
+<meta property="article:published_time" content="2021-04-10T15:04:09+08:00" />
+<meta property="article:modified_time" content="2021-04-10T15:04:09+08:00" />
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://example.com/logo.png"/>
+
+<meta name="twitter:title" content="Talk about Containerd"/>
+<meta name="twitter:description" content="背景 最近看一些社区 issue 中正好接触到 containerd 源码, 早年大家基本都使用 docker/podman 这类容器上层包装, 包括我也是, 故对真正容器运行时的结构部分了解得不够深入, 最近 k8s 社区在 1.21 规划上计划从 kubelet 中移除 docker-shim 交互的逻辑, 大势上组件走上 containerd-shim, 故需要着手对容器运行时更深入了解.
+带着问题作为引入,
+容器底层还是对 Linux LXC 的交互, 那究竟 docker daemon 中是哪个组件来完成这一步的呢？
+1、背景知识 首先我们需要了解 Docker Daemon 生产出容器的过程.
+当前整个 Docker 调用链架构可以用下图来简单概括
+从 Docker 1.11 之后，Docker Daemon 被分成了多个模块以适应 OCI 标准。拆分之后，结构分成了以下几个部分：
+16年12月 Docker公司宣布将 containerd 从Docker Engine中分离，并捐赠到开源社区独立发展和运营。
+一个工业标准的容器运行时，注重简单、 健壮性、可移植性
+Docker本身其实已经被剥离干净了，只剩下 Docker 自身作为 cli 的一些特色功能了，真正容器的管控都在 containerd 里实现。
+在 17 年 docker重命名为moby, 从命名上逐渐脱离和 container 的关系, 而 Moby 更像是一个“乐高积木”，它包含了容器化的组件库 底层的构建、日志处理、卷管理、网络、镜像管理、containerd、SwarmKit等模块, 是个大杂烩."/>
+<meta name="application-name" content="Nice to meet you">
+<meta name="apple-mobile-web-app-title" content="Nice to meet you"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="icon" href="/images/favicon.ico"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://example.com/talk-about-containerd/" /><link rel="prev" href="https://example.com/scuba-diving-into-data-at-facebook/" /><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/normalize.css@8.0.1/normalize.min.css"><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.13.0/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.7.2/animate.min.css"><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "Talk about Containerd",
+        "inLanguage": "en",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/example.com\/talk-about-containerd\/"
+        },"image": ["https:\/\/example.com\/images\/Apple-Devices-Preview.png"],"genre": "posts","keywords": "Docker, Kubernetes","wordcount":  256 ,
+        "url": "https:\/\/example.com\/talk-about-containerd\/","datePublished": "2021-04-10T15:04:09+08:00","dateModified": "2021-04-10T15:04:09+08:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.","publisher": {
+            "@type": "Organization",
+            "name": "LexusLee","logo": {
+                    "@type": "ImageObject",
+                    "url": "https:\/\/example.com\/images\/avatar.png",
+                    "width":  552 ,
+                    "height":  608 
+                }},"author": {
+                "@type": "Person",
+                "name": "LexusLee"
+            },"description": ""
+    }
+    </script></head>
+    <body header-desktop="fixed" header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="LexusLee&#39;s blog"><span class="header-title-pre"><i class='far fa-kiss-wink-heart fa-fw'></i></span>Nice to meet you</a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/posts/"> Posts </a><a class="menu-item" href="/tags/"> Tags </a><a class="menu-item" href="/categories/"> Categories </a><a class="menu-item" href="/categories/documentation/"> Docs </a><a class="menu-item" href="/about/"> About </a><a class="menu-item" href="https://github.com/thehackercat" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i>  </a><span class="menu-item delimiter"></span><a href="javascript:void(0);" class="menu-item language" title="Select Language">English<i class="fas fa-chevron-right fa-fw"></i>
+                        <select class="language-select" id="language-select-desktop" onchange="location = this.value;"><option value="/talk-about-containerd/" selected>English</option><option value="/zh-cn/talk-about-containerd/">简体中文</option></select>
+                    </a><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="Search">
+                            <i class="fas fa-search fa-fw"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="Clear">
+                            <i class="fas fa-times-circle fa-fw"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <i class="fas fa-spinner fa-fw fa-spin"></i>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                    <i class="fas fa-adjust fa-fw"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="LexusLee&#39;s blog"><span class="header-title-pre"><i class='far fa-kiss-wink-heart fa-fw'></i></span>Nice to meet you</a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-mobile">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="Search">
+                            <i class="fas fa-search fa-fw"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="Clear">
+                            <i class="fas fa-times-circle fa-fw"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <i class="fas fa-spinner fa-fw fa-spin"></i>
+                        </span>
+                    </div>
+                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                        Cancel
+                    </a>
+                </div><a class="menu-item" href="/posts/" title="">Posts</a><a class="menu-item" href="/tags/" title="">Tags</a><a class="menu-item" href="/categories/" title="">Categories</a><a class="menu-item" href="/categories/documentation/" title="">Docs</a><a class="menu-item" href="/about/" title="">About</a><a class="menu-item" href="https://github.com/thehackercat" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i></a><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                <i class="fas fa-adjust fa-fw"></i>
+            </a><a href="javascript:void(0);" class="menu-item" title="Select Language">English<i class="fas fa-chevron-right fa-fw"></i>
+                    <select class="language-select" onchange="location = this.value;"><option value="/talk-about-containerd/" selected>English</option><option value="/zh-cn/talk-about-containerd/">简体中文</option></select>
+                </a></div>
+    </div>
+</header>
+<div class="search-dropdown desktop">
+    <div id="search-dropdown-desktop"></div>
+</div>
+<div class="search-dropdown mobile">
+    <div id="search-dropdown-mobile"></div>
+</div>
+<main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">Contents</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animated flipInX">Talk about Containerd</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw"></i>LexusLee</a></span>&nbsp;<span class="post-category">included in <a href="/categories/coding/"><i class="far fa-folder fa-fw"></i>Coding</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw"></i>&nbsp;<time datetime="2021-04-10">2021-04-10</time>&nbsp;<i class="fas fa-pencil-alt fa-fw"></i>&nbsp;256 words&nbsp;
+                <i class="far fa-clock fa-fw"></i>&nbsp;2 minutes&nbsp;<span id="/talk-about-containerd/" class="leancloud_visitors" data-flag-title="Talk about Containerd">
+                        <i class="far fa-eye fa-fw"></i>&nbsp;<span class=leancloud-visitors-count></span>&nbsp;views
+                    </span>&nbsp;</div>
+        </div><div class="details toc" id="toc-static"  kept="">
+                <div class="details-summary toc-title">
+                    <span>Contents</span>
+                    <span><i class="details-icon fas fa-angle-right"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#背景">背景</a></li>
+    <li><a href="#1背景知识">1、背景知识</a></li>
+    <li><a href="#2生态架构">2、生态架构</a></li>
+    <li><a href="#3containerd-架构">3、containerd 架构</a>
+      <ul>
+        <li>
+          <ul>
+            <li><a href="#containerd-shim">containerd-shim</a></li>
+            <li><a href="#各个组件以插件的形式注册">各个组件以插件的形式注册</a></li>
+            <li><a href="#cri--runcontainerdcontainerdsock">cri  /run/containerd/containerd.sock</a></li>
+            <li><a href="#直接启动containerd和moby启动方式">直接启动containerd和moby启动方式</a></li>
+            <li><a href="#containerd-shim-容器生命周期管理">containerd-shim 容器生命周期管理</a></li>
+            <li><a href="#与oci组件的交互">与OCI组件的交互</a></li>
+            <li><a href="#docker-init">docker-init</a></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><h2 id="背景">背景</h2>
+<p>最近看一些社区 issue 中正好接触到 containerd 源码, 早年大家基本都使用 docker/podman 这类容器上层包装, 包括我也是, 故对真正容器运行时的结构部分了解得不够深入, 最近 k8s 社区在 1.21 规划上计划从 kubelet 中移除 docker-shim 交互的逻辑, 大势上组件走上 containerd-shim, 故需要着手对容器运行时更深入了解.</p>
+<p>带着问题作为引入,</p>
+<p>容器底层还是对 Linux LXC 的交互, 那究竟 docker daemon 中是哪个组件来完成这一步的呢？</p>
+<h2 id="1背景知识">1、背景知识</h2>
+<p>首先我们需要了解 Docker Daemon 生产出容器的过程.</p>
+<p>当前整个 Docker 调用链架构可以用下图来简单概括</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://miro.medium.com/max/1400/1*c3AiZFHuib7FUGyINzkEag.png"
+        data-srcset="https://miro.medium.com/max/1400/1*c3AiZFHuib7FUGyINzkEag.png, https://miro.medium.com/max/1400/1*c3AiZFHuib7FUGyINzkEag.png 1.5x, https://miro.medium.com/max/1400/1*c3AiZFHuib7FUGyINzkEag.png 2x"
+        data-sizes="auto"
+        alt="https://miro.medium.com/max/1400/1*c3AiZFHuib7FUGyINzkEag.png"
+        title="docker架构" /></p>
+<p>从 Docker 1.11 之后，Docker Daemon 被分成了多个模块以适应 OCI 标准。拆分之后，结构分成了以下几个部分：</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src=""
+        data-srcset=",  1.5x,  2x"
+        data-sizes="auto"
+        alt=""
+        title="" /></p>
+<p>16年12月 Docker公司宣布将 <a href="https://yq.aliyun.com/go/articleRenderRedirect?url=https%3A%2F%2FContainerD.io%2F" target="_blank" rel="noopener noreffer">containerd</a> 从Docker Engine中分离，并捐赠到开源社区独立发展和运营。</p>
+<p>一个工业标准的容器运行时，注重简单、 健壮性、可移植性</p>
+<p>Docker本身其实已经被剥离干净了，只剩下 Docker 自身作为 cli 的一些特色功能了，真正容器的管控都在 containerd 里实现。</p>
+<p>在 17 年 docker重命名为moby, 从命名上逐渐脱离和 container 的关系, 而 Moby 更像是一个“乐高积木”，它包含了容器化的组件库 底层的构建、日志处理、卷管理、网络、镜像管理、containerd、SwarmKit等模块, 是个大杂烩.</p>
+<p>19年2月containerd 正式从cncf社区毕业，成为继 <a href="https://kubernetes.io/" target="_blank" rel="noopener noreffer">Kubernetes</a>, <a href="https://prometheus.io/" target="_blank" rel="noopener noreffer">Prometheus</a>, <a href="https://envoyproxy.io/" target="_blank" rel="noopener noreffer">Envoy</a>, and <a href="https://coredns.io/" target="_blank" rel="noopener noreffer">CoreDNS</a> 之后第五个毕业项目。</p>
+<h2 id="2生态架构">2、生态架构</h2>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="http://cdn.zimug.com/Docker%E7%94%9F%E6%80%81%E7%B3%BB%E7%BB%9F%E5%85%A8%E8%A7%A3%E6%9E%90docker%E7%94%9F%E6%80%81%E7%B3%BB%E7%BB%9F.png"
+        data-srcset="http://cdn.zimug.com/Docker%E7%94%9F%E6%80%81%E7%B3%BB%E7%BB%9F%E5%85%A8%E8%A7%A3%E6%9E%90docker%E7%94%9F%E6%80%81%E7%B3%BB%E7%BB%9F.png, http://cdn.zimug.com/Docker%E7%94%9F%E6%80%81%E7%B3%BB%E7%BB%9F%E5%85%A8%E8%A7%A3%E6%9E%90docker%E7%94%9F%E6%80%81%E7%B3%BB%E7%BB%9F.png 1.5x, http://cdn.zimug.com/Docker%E7%94%9F%E6%80%81%E7%B3%BB%E7%BB%9F%E5%85%A8%E8%A7%A3%E6%9E%90docker%E7%94%9F%E6%80%81%E7%B3%BB%E7%BB%9F.png 2x"
+        data-sizes="auto"
+        alt="http://cdn.zimug.com/Docker%E7%94%9F%E6%80%81%E7%B3%BB%E7%BB%9F%E5%85%A8%E8%A7%A3%E6%9E%90docker%E7%94%9F%E6%80%81%E7%B3%BB%E7%BB%9F.png"
+        title="docker生态" /></p>
+<p>单看 docker 生态圈是非常庞大的, 故今天我们聚焦在运行时 containerd 生态架构上, 周边生态如下:</p>
+<ul>
+<li>OCI</li>
+<li>CRI</li>
+<li>kubelet</li>
+<li>dockerd
+<ul>
+<li>docker.sock (/var/run/docker.sock)</li>
+</ul>
+</li>
+<li>dockershim
+<ul>
+<li>dockershim.sock (/var/run/dockershim.sock)</li>
+</ul>
+</li>
+<li>containerd-cri
+<ul>
+<li>containerd.sock (/var/run/docker/containerd/containerd.sock|/run/containerd/containerd.sock)</li>
+</ul>
+</li>
+<li>containerd-shim</li>
+<li>Runc</li>
+<li>RunV</li>
+<li>Kata</li>
+<li>gVisor</li>
+</ul>
+<p>containerd 在容器生态中的角色, 作为容器运行时的扛把子</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://yqfile.alicdn.com/6ff06eb7bacf309994df662138197cbadfd49344.png"
+        data-srcset="https://yqfile.alicdn.com/6ff06eb7bacf309994df662138197cbadfd49344.png, https://yqfile.alicdn.com/6ff06eb7bacf309994df662138197cbadfd49344.png 1.5x, https://yqfile.alicdn.com/6ff06eb7bacf309994df662138197cbadfd49344.png 2x"
+        data-sizes="auto"
+        alt="https://yqfile.alicdn.com/6ff06eb7bacf309994df662138197cbadfd49344.png"
+        title="p" /></p>
+<h2 id="3containerd-架构">3、containerd 架构</h2>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="http://lexus-blog.test.upcdn.net/containerd/821618039890_.pic_hd.jpg"
+        data-srcset="http://lexus-blog.test.upcdn.net/containerd/821618039890_.pic_hd.jpg, http://lexus-blog.test.upcdn.net/containerd/821618039890_.pic_hd.jpg 1.5x, http://lexus-blog.test.upcdn.net/containerd/821618039890_.pic_hd.jpg 2x"
+        data-sizes="auto"
+        alt="http://lexus-blog.test.upcdn.net/containerd/821618039890_.pic_hd.jpg"
+        title="img" /></p>
+<p>简单来说分为:</p>
+<ul>
+<li>containerd-shim</li>
+<li>runC</li>
+<li>LXC 调用封装</li>
+</ul>
+<p>更细化为</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://images2018.cnblogs.com/blog/952033/201805/952033-20180520115610144-588472749.png"
+        data-srcset="https://images2018.cnblogs.com/blog/952033/201805/952033-20180520115610144-588472749.png, https://images2018.cnblogs.com/blog/952033/201805/952033-20180520115610144-588472749.png 1.5x, https://images2018.cnblogs.com/blog/952033/201805/952033-20180520115610144-588472749.png 2x"
+        data-sizes="auto"
+        alt="https://images2018.cnblogs.com/blog/952033/201805/952033-20180520115610144-588472749.png"
+        title="containerd-arch" /></p>
+<p>grpc 模块向上层提供服务接口，metrics 则提供监控数据(cgroup 相关数据)，两者均向上层提供服务。containerd 包含一个守护进程，该进程通过本地 UNIX 套接字暴露 grpc 接口。</p>
+<p>storage 部分负责镜像的存储、管理、拉取等metadata 管理容器及镜像的元数据，通过bootio存储在磁盘上task &ndash; 管理容器的逻辑结构，与 low-level 交互event &ndash; 对容器操作的事件，上层通过订阅可以知道发生了什么事情Runtimes &ndash; low-level runtime（对接 runC）</p>
+<h4 id="containerd-shim">containerd-shim</h4>
+<p>containerd-shim 是 containerd 的一个组件，主要是用于剥离 containerd 守护进程与容器进程。containerd 通过 shim 调用 runc 的包函数来启动容器.</p>
+<h4 id="各个组件以插件的形式注册">各个组件以插件的形式注册</h4>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://oscimg.oschina.net/oscnet/34d6fddfefcff0eb7fef5542709e9006c4a.jpg"
+        data-srcset="https://oscimg.oschina.net/oscnet/34d6fddfefcff0eb7fef5542709e9006c4a.jpg, https://oscimg.oschina.net/oscnet/34d6fddfefcff0eb7fef5542709e9006c4a.jpg 1.5x, https://oscimg.oschina.net/oscnet/34d6fddfefcff0eb7fef5542709e9006c4a.jpg 2x"
+        data-sizes="auto"
+        alt="https://oscimg.oschina.net/oscnet/34d6fddfefcff0eb7fef5542709e9006c4a.jpg"
+        title="plugin registry" /></p>
+<h4 id="cri--runcontainerdcontainerdsock">cri  /run/containerd/containerd.sock</h4>
+<ul>
+<li>containers/tasks/event/snapshots/namespace/tasks/image    /run/containerd/containerd.sock</li>
+<li>低内存环境   /run/containerd/containerd.sock.ttrpc</li>
+<li>debug /run/containerd/debug.sock   /debug/pprof</li>
+<li>metrics   metrics.sock   /v1/metrics</li>
+<li>bolt   元数据存储 和etcd底层使用相同结构</li>
+</ul>
+<h4 id="直接启动containerd和moby启动方式">直接启动containerd和moby启动方式</h4>
+<ul>
+<li>检测 /run/containerd/containerd.sock是否存在，判断是否启动containerd</li>
+<li>用supervisor启动containerd，直接二进制调用</li>
+</ul>
+<p><strong>#### 容器的 namespace</strong></p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://oscimg.oschina.net/oscnet/50bb0c5ab1e69aa56caf4fca07a05db3974.jpg"
+        data-srcset="https://oscimg.oschina.net/oscnet/50bb0c5ab1e69aa56caf4fca07a05db3974.jpg, https://oscimg.oschina.net/oscnet/50bb0c5ab1e69aa56caf4fca07a05db3974.jpg 1.5x, https://oscimg.oschina.net/oscnet/50bb0c5ab1e69aa56caf4fca07a05db3974.jpg 2x"
+        data-sizes="auto"
+        alt="https://oscimg.oschina.net/oscnet/50bb0c5ab1e69aa56caf4fca07a05db3974.jpg"
+        title="容器 namespace" /></p>
+<p>容器 ns 主要目的用于在 Linux 层面做 namespace 划分, 故拆分为一下3种主流 namespace.</p>
+<p>目前最常见的 namespace type 主要分下面两种:</p>
+<ul>
+<li>
+<p>io.kubernetes.cri.container-type</p>
+</li>
+<li>
+<p>io.kubernetes.docker.type</p>
+</li>
+</ul>
+<h4 id="containerd-shim-容器生命周期管理">containerd-shim 容器生命周期管理</h4>
+<ul>
+<li>允许 runc 在创建&amp;运行容器之后退出</li>
+<li>用 shim 作为容器的父进程，而不是直接用 containerd 作为容器的父进程，是为了防止这种情况：当 containerd 挂掉的时候，shim 还在，因此可以保证容器打开的文件描述符不会被关掉</li>
+<li>依靠 shim 来收集&amp;报告容器的退出状态，这样就不需要 containerd 来wait 子进程</li>
+</ul>
+<p>因此，使用 shim 的主要作用，就是将 containerd 和真实的容器（里的进程）解耦。</p>
+<p>而第一点，为什么要允许 runc 退出呢？ 因为，Go 编译出来的二进制文件，默认是静态链接，因此，如果一个机器上起N个容器，那么就会占用M*N的内存，其中M是一个 runc 所消耗的内存。 但是出于上面描述的原因又不想直接让 containerd 来做容器的父进程，因此，就需要一个比 runc 占内存更小的东西来作父进程，也就是 shim。</p>
+<p>shimv2 启动一个服务，复用</p>
+<h4 id="与oci组件的交互">与OCI组件的交互</h4>
+<p>runC 是标准化的产物，为了防止一家商业公司主导容器化标准，因此又成立了opencontainers 组织</p>
+<p>二进制直接调用</p>
+<p>更新 config.v2.json, hostconfig.json 文件</p>
+<p>k8s runtime class</p>
+<h4 id="docker-init">docker-init</h4>
+<p>UNIX系统中，1号进程是init进程，也是所有孤儿进程的父进程。而使用 docker 时，如果不加 &ndash;init 参数，容器中的1号进程 就是所给的ENTRYPOINT，例如下面例子中的 sh。而加上 &ndash;init 之后，1号进程就会是 <a href="https://github.com/krallin/tini" target="_blank" rel="noopener noreffer">tini</a>：</p>
+<p>docker-init 作用</p>
+<ul>
+<li>避免僵尸进程</li>
+<li>默认信号处理</li>
+</ul>
+</div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>Updated on 2021-04-10</span>
+            </div>
+            <div class="post-info-license"></div>
+        </div>
+        <div class="post-info-line">
+            <div class="post-info-md"><span>
+                            <a class="link-to-markdown" href="/talk-about-containerd/index.md" target="_blank">Read Markdown</a>
+                        </span></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="Share on Twitter" data-sharer="twitter" data-url="https://example.com/talk-about-containerd/" data-title="Talk about Containerd" data-via="lexuscyborg103" data-hashtags="Docker,Kubernetes"><i class="fab fa-twitter fa-fw"></i></a><a href="javascript:void(0);" title="Share on 微博" data-sharer="weibo" data-url="https://example.com/talk-about-containerd/" data-title="Talk about Containerd"><i class="fab fa-weibo fa-fw"></i></a><a href="javascript:void(0);" title="Share on Evernote" data-sharer="evernote" data-url="https://example.com/talk-about-containerd/" data-title="Talk about Containerd"><i class="fab fa-evernote fa-fw"></i></a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw"></i>&nbsp;<a href="/tags/docker/">Docker</a>,&nbsp;<a href="/tags/kubernetes/">Kubernetes</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">Back</a></span>&nbsp;|&nbsp;<span><a href="/">Home</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/scuba-diving-into-data-at-facebook/" class="prev" rel="prev" title="译《Scuba: Diving into data at Facebook》"><i class="fas fa-angle-left fa-fw"></i>译《Scuba: Diving into data at Facebook》</a></div>
+</div>
+<div id="comments"><div id="valine" class="comment"></div><noscript>
+                Please enable JavaScript to view the comments powered by <a href="https://valine.js.org/">Valine</a>.
+            </noscript></div></article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line"><i class="far fa-copyright fa-fw"></i><span itemprop="copyrightYear">2015 - 2021</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/" target="_blank">LexusLee</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="Back to Top">
+                <i class="fas fa-arrow-up fa-fw"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="View Comments">
+                <i class="fas fa-comment fa-fw"></i>
+            </a>
+        </div><link rel="stylesheet" href="/lib/valine/valine.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery.js@1.2.0/dist/css/lightgallery.min.css"><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/valine@1.4.14/dist/Valine.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/smooth-scroll@16.1.3/dist/smooth-scroll.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/autocomplete.js@0.37.1/dist/autocomplete.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/algoliasearch@4.2.0/dist/algoliasearch-lite.umd.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lazysizes@5.2.2/lazysizes.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lightgallery.js@1.2.0/dist/js/lightgallery.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lg-thumbnail.js@1.2.0/dist/lg-thumbnail.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lg-zoom.js@1.2.0/dist/lg-zoom.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/clipboard@2.0.6/dist/clipboard.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sharer.js@0.4.0/sharer.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"Copy to clipboard","maxShownLines":10},"comment":{"valine":{"appId":"QGzwQXOqs5JOhN4RGPOkR2mR-MdYXbMMI","appKey":"WBmoGyJtbqUswvfLh6L8iEBr","avatar":"mp","el":"#valine","emojiCDN":"https://cdn.jsdelivr.net/npm/emoji-datasource-google@5.0.1/img/google/64/","emojiMaps":{"100":"1f4af.png","alien":"1f47d.png","anger":"1f4a2.png","angry":"1f620.png","anguished":"1f627.png","astonished":"1f632.png","black_heart":"1f5a4.png","blue_heart":"1f499.png","blush":"1f60a.png","bomb":"1f4a3.png","boom":"1f4a5.png","broken_heart":"1f494.png","brown_heart":"1f90e.png","clown_face":"1f921.png","cold_face":"1f976.png","cold_sweat":"1f630.png","confounded":"1f616.png","confused":"1f615.png","cry":"1f622.png","crying_cat_face":"1f63f.png","cupid":"1f498.png","dash":"1f4a8.png","disappointed":"1f61e.png","disappointed_relieved":"1f625.png","dizzy":"1f4ab.png","dizzy_face":"1f635.png","drooling_face":"1f924.png","exploding_head":"1f92f.png","expressionless":"1f611.png","face_vomiting":"1f92e.png","face_with_cowboy_hat":"1f920.png","face_with_hand_over_mouth":"1f92d.png","face_with_head_bandage":"1f915.png","face_with_monocle":"1f9d0.png","face_with_raised_eyebrow":"1f928.png","face_with_rolling_eyes":"1f644.png","face_with_symbols_on_mouth":"1f92c.png","face_with_thermometer":"1f912.png","fearful":"1f628.png","flushed":"1f633.png","frowning":"1f626.png","ghost":"1f47b.png","gift_heart":"1f49d.png","green_heart":"1f49a.png","grimacing":"1f62c.png","grin":"1f601.png","grinning":"1f600.png","hankey":"1f4a9.png","hear_no_evil":"1f649.png","heart":"2764-fe0f.png","heart_decoration":"1f49f.png","heart_eyes":"1f60d.png","heart_eyes_cat":"1f63b.png","heartbeat":"1f493.png","heartpulse":"1f497.png","heavy_heart_exclamation_mark_ornament":"2763-fe0f.png","hole":"1f573-fe0f.png","hot_face":"1f975.png","hugging_face":"1f917.png","hushed":"1f62f.png","imp":"1f47f.png","innocent":"1f607.png","japanese_goblin":"1f47a.png","japanese_ogre":"1f479.png","joy":"1f602.png","joy_cat":"1f639.png","kiss":"1f48b.png","kissing":"1f617.png","kissing_cat":"1f63d.png","kissing_closed_eyes":"1f61a.png","kissing_heart":"1f618.png","kissing_smiling_eyes":"1f619.png","laughing":"1f606.png","left_speech_bubble":"1f5e8-fe0f.png","love_letter":"1f48c.png","lying_face":"1f925.png","mask":"1f637.png","money_mouth_face":"1f911.png","nauseated_face":"1f922.png","nerd_face":"1f913.png","neutral_face":"1f610.png","no_mouth":"1f636.png","open_mouth":"1f62e.png","orange_heart":"1f9e1.png","partying_face":"1f973.png","pensive":"1f614.png","persevere":"1f623.png","pleading_face":"1f97a.png","pouting_cat":"1f63e.png","purple_heart":"1f49c.png","rage":"1f621.png","relaxed":"263a-fe0f.png","relieved":"1f60c.png","revolving_hearts":"1f49e.png","right_anger_bubble":"1f5ef-fe0f.png","robot_face":"1f916.png","rolling_on_the_floor_laughing":"1f923.png","scream":"1f631.png","scream_cat":"1f640.png","see_no_evil":"1f648.png","shushing_face":"1f92b.png","skull":"1f480.png","skull_and_crossbones":"2620-fe0f.png","sleeping":"1f634.png","sleepy":"1f62a.png","slightly_frowning_face":"1f641.png","slightly_smiling_face":"1f642.png","smile":"1f604.png","smile_cat":"1f638.png","smiley":"1f603.png","smiley_cat":"1f63a.png","smiling_face_with_3_hearts":"1f970.png","smiling_imp":"1f608.png","smirk":"1f60f.png","smirk_cat":"1f63c.png","sneezing_face":"1f927.png","sob":"1f62d.png","space_invader":"1f47e.png","sparkling_heart":"1f496.png","speak_no_evil":"1f64a.png","speech_balloon":"1f4ac.png","star-struck":"1f929.png","stuck_out_tongue":"1f61b.png","stuck_out_tongue_closed_eyes":"1f61d.png","stuck_out_tongue_winking_eye":"1f61c.png","sunglasses":"1f60e.png","sweat":"1f613.png","sweat_drops":"1f4a6.png","sweat_smile":"1f605.png","thinking_face":"1f914.png","thought_balloon":"1f4ad.png","tired_face":"1f62b.png","triumph":"1f624.png","two_hearts":"1f495.png","unamused":"1f612.png","upside_down_face":"1f643.png","weary":"1f629.png","white_frowning_face":"2639-fe0f.png","white_heart":"1f90d.png","wink":"1f609.png","woozy_face":"1f974.png","worried":"1f61f.png","yawning_face":"1f971.png","yellow_heart":"1f49b.png","yum":"1f60b.png","zany_face":"1f92a.png","zipper_mouth_face":"1f910.png","zzz":"1f4a4.png"},"enableQQ":false,"highlight":true,"lang":"en","pageSize":10,"placeholder":"Your comment ...","recordIP":true,"serverURLs":"https://leancloud.hugoloveit.com","visitor":true}},"lightGallery":{"actualSize":false,"exThumbImage":"data-thumbnail","hideBarsDelay":2000,"selector":".lightgallery","speed":400,"thumbContHeight":80,"thumbWidth":80,"thumbnail":true},"search":{"algoliaAppID":"PASDMWALPK","algoliaIndex":"index.en","algoliaSearchKey":"b42948e51daaa93df92381c8e2ac0f93","highlightTag":"em","maxResultLength":10,"noResultsFound":"No results found","snippetLength":30,"type":"algolia"}};</script><script type="text/javascript" src="/js/theme.min.js"></script></body>
+</html>

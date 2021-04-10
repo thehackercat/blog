@@ -11,7 +11,7 @@
 <meta property="og:type" content="website" />
 <meta property="og:url" content="https://example.com/" />
 <meta property="og:image" content="https://example.com/logo.png"/>
-<meta property="og:updated_time" content="2021-02-05T10:29:05+08:00" />
+<meta property="og:updated_time" content="2021-04-10T15:04:09+08:00" />
 <meta name="twitter:card" content="summary_large_image"/>
 <meta name="twitter:image" content="https://example.com/logo.png"/>
 
@@ -105,6 +105,16 @@
         alt="/images/avatar.png"
         title="/images/avatar.png" /></a></div><h1 class="home-title">LexusLee's blog</h1><h2 class="home-subtitle"><div id="id-1" class="typeit"></div></h2><div class="links"><a href="https://github.com/thehackercat" title="GitHub" target="_blank" rel="noopener noreffer me"><i class="fab fa-github-alt fa-fw"></i></a><a href="https://twitter.com/lexuscyborg103" title="Twitter" target="_blank" rel="noopener noreffer me"><i class="fab fa-twitter fa-fw"></i></a><a href="https://www.instagram.com/thehackercat" title="Instagram" target="_blank" rel="noopener noreffer me"><i class="fab fa-instagram fa-fw"></i></a><a href="https://t.me/thehackercat" title="Telegram" target="_blank" rel="noopener noreffer me"><i class="fab fa-telegram-plane fa-fw"></i></a><a href="https://www.douban.com/people/thehackercat" title="豆瓣" target="_blank" rel="noopener noreffer me"><i data-svg-src="https://cdn.jsdelivr.net/npm/simple-icons@2.14.0/icons/douban.svg"></i></a><a href="mailto:lexuscyborg103@gmail.com" title="Email" rel=" me"><i class="far fa-envelope fa-fw"></i></a><a href="/index.xml" title="RSS" target="_blank" rel="noopener noreffer me"><i class="fas fa-rss fa-fw"></i></a></div></div>
 <article class="single summary" itemscope itemtype="http://schema.org/Article"><h1 class="single-title" itemprop="name headline">
+        <a href="/upgrade-dockerd-in-k8s/">升级 k8s 集群 docker</a>
+    </h1><div class="post-meta"><span class="post-author"><a href="/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw"></i>LexusLee</a></span>&nbsp;<span class="post-publish">published on <time datetime="2020-07-10">2020-07-10</time></span>&nbsp;<span class="post-category">included in <a href="/categories/coding/"><i class="far fa-folder fa-fw"></i>Coding</a></span></div><div class="content">背景 最近需要给 k8s 集群升级 docker, 预期升到 19.03.x.
+遇到一些问题, 记录下
+调试期间遇到的问题: 集群中的 ingress 是以 daemonsets 方式部署, 通过 node-selector 选择节点定死.
+而 kubectl drain node 并不 evict daemonset pods. 故在升级/重启 dockerd 期间会造成 ingress 短暂不可用. 而现有的 lb 的 health check 不能 cover 这一点, 仍会有流量打入.会导致升级期间 ingress 流量黑洞问题.
+并且 dockerd 拉起来后, 有些 daemonsets 由于 ingress 自身 livenessProbe 等原因在 dockerd 升级期间持续 crashLoopbackoff 了, 一个原因是仍然 mount 一份旧的 docker overlay. 在 delete pod 重启后恢复. 故需要一个手段在升级后重启 ingress pods.
+Ref https://github.com/kubernetes/kubernetes/issues/75482#issuecomment-511476698</div><div class="post-footer">
+        <a href="/upgrade-dockerd-in-k8s/">Read More</a><div class="post-tags">
+                <i class="fas fa-tags fa-fw"></i>&nbsp;<a href="/tags/kubernetes/">Kubernetes</a>,&nbsp;<a href="/tags/docker/">Docker</a></div></div>
+</article><article class="single summary" itemscope itemtype="http://schema.org/Article"><h1 class="single-title" itemprop="name headline">
         <a href="/alert-convergence/">告警收敛设计</a>
     </h1><div class="post-meta"><span class="post-author"><a href="/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw"></i>LexusLee</a></span>&nbsp;<span class="post-publish">published on <time datetime="2020-07-07">2020-07-07</time></span>&nbsp;<span class="post-category">included in <a href="/categories/coding/"><i class="far fa-folder fa-fw"></i>Coding</a></span></div><div class="content">背景 最近在豆瓣做面向开发者的 op 报警系统, 最头疼的是下列几种情况
  脉冲型报警 单个原因引起的报警发散 多个报警为同个诱因  由于目前现有的一些告警系统都强依赖后面的监控 agent/cmdb , 比如 open-falcon/prometheus 虽然都支持了告警收敛这一套, 但要从豆瓣的 statsd+icinga 迁移到 alertManager 需要折腾一阵。而我实际只想要一个中间轻量的 alert exporter 去做告警聚合/收敛.
@@ -157,18 +167,6 @@
 我不太愿意去想这意味着什么，醒来时只觉得心理暖洋洋的，这股暖流正逐渐透过我的细胞壁溢到空气里，我多想与你分享这间空气。
 希望你不要介意，那我一定说个不停。</div><div class="post-footer">
         <a href="/you-are-my-sunshine/">Read More</a><div class="post-tags">
-                <i class="fas fa-tags fa-fw"></i>&nbsp;<a href="/tags/gossip/">Gossip</a></div></div>
-</article><article class="single summary" itemscope itemtype="http://schema.org/Article"><h1 class="single-title" itemprop="name headline">
-        <a href="/badly-wanted/">请你不要吃掉我</a>
-    </h1><div class="post-meta"><span class="post-author"><a href="/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw"></i>LexusLee</a></span>&nbsp;<span class="post-publish">published on <time datetime="2019-08-02">2019-08-02</time></span>&nbsp;<span class="post-category">included in <a href="/categories/gossip/"><i class="far fa-folder fa-fw"></i>Gossip</a></span></div><div class="content">真想听一听见你的声音啊。
-今晚倘若再不能见着你，我准睡不着。
-已经三个夜晚你没有理我了，你是不是故意躲着我。
-今天是星期五，我一点都开心不起来，一想到不能像前几个周末一样宅在小屋子里看《乐队的夏天》，我的灵魂就像被汲取干了一般。
-我渴望见着你，我们打一架，把心里的不痛快都说出来，好不好。
-我又渴望抱抱你，这几天你是开心还是伤心呢，我全然不知。
-这几天下来，我逐渐开始认清自己，我实在是个坏人，你不要为我不安。
-啊你突然回来了，心跳好快，我不想写了，我有好多好多话跟你说，我看着你的眼睛，啥都说不出来，我想把你的美写下来，写不出，我想写诗，写雨，但满脑子想的都是你。</div><div class="post-footer">
-        <a href="/badly-wanted/">Read More</a><div class="post-tags">
                 <i class="fas fa-tags fa-fw"></i>&nbsp;<a href="/tags/gossip/">Gossip</a></div></div>
 </article><ul class="pagination"><li class="page-item ">
                     <span class="page-link">

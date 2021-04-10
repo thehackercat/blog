@@ -4,9 +4,25 @@
         <link>https://example.com/</link>
         <description>LexusLee personal blog, recording things you people wouldn&#39;t believe. Like attack ships on fire off the shoulder of Orion, c-beams glitter in the dark near the Tannhauser Gate.</description>
         <generator>Hugo -- gohugo.io</generator><language>en</language><managingEditor>lexuscyborg103@gmail.com (LexusLee)</managingEditor>
-            <webMaster>lexuscyborg103@gmail.com (LexusLee)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Fri, 05 Feb 2021 10:29:05 &#43;0800</lastBuildDate>
+            <webMaster>lexuscyborg103@gmail.com (LexusLee)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Sat, 10 Apr 2021 15:04:09 &#43;0800</lastBuildDate>
             <atom:link href="https://example.com/index.xml" rel="self" type="application/rss+xml" />
         <item>
+    <title>Talk about Containerd</title>
+    <link>https://example.com/talk-about-containerd/</link>
+    <pubDate>Sat, 10 Apr 2021 15:04:09 &#43;0800</pubDate>
+    <author>Author</author>
+    <guid>https://example.com/talk-about-containerd/</guid>
+    <description><![CDATA[背景 最近看一些社区 issue 中正好接触到 containerd 源码, 早年大家基本都使用 docker/podman 这类容器上层包装, 包括我也是, 故对真正容器运行时的结构部分了解得不够深入, 最近 k8s 社区在 1.21 规划上计划从 kubelet 中移除 docker-shim 交互的逻辑, 大势上组件走上 containerd-shim, 故需要着手对容器运行时更深入了解.
+带着问题作为引入,
+容器底层还是对 Linux LXC 的交互, 那究竟 docker daemon 中是哪个组件来完成这一步的呢？
+1、背景知识 首先我们需要了解 Docker Daemon 生产出容器的过程.
+当前整个 Docker 调用链架构可以用下图来简单概括
+从 Docker 1.11 之后，Docker Daemon 被分成了多个模块以适应 OCI 标准。拆分之后，结构分成了以下几个部分：
+16年12月 Docker公司宣布将 containerd 从Docker Engine中分离，并捐赠到开源社区独立发展和运营。
+一个工业标准的容器运行时，注重简单、 健壮性、可移植性
+Docker本身其实已经被剥离干净了，只剩下 Docker 自身作为 cli 的一些特色功能了，真正容器的管控都在 containerd 里实现。
+在 17 年 docker重命名为moby, 从命名上逐渐脱离和 container 的关系, 而 Moby 更像是一个“乐高积木”，它包含了容器化的组件库 底层的构建、日志处理、卷管理、网络、镜像管理、containerd、SwarmKit等模块, 是个大杂烩.]]></description>
+</item><item>
     <title>译《Scuba: Diving into data at Facebook》</title>
     <link>https://example.com/scuba-diving-into-data-at-facebook/</link>
     <pubDate>Fri, 05 Feb 2021 10:29:05 &#43;0800</pubDate>
@@ -159,16 +175,5 @@ Ref https://github.com/kubernetes/kubernetes/issues/75482#issuecomment-511476698
 所以，我还想看着你笑，看着你看电影时甜甜地睡着，你说，我哪能让你一个人生闷气呢。
 你说未来会有多少无生趣的毫不起眼的夜晚，我就跋涉到灯塔上，威胁妖精们把藏起来的光，投射下来。
 加油啊，阿芙罗狄忒。]]></description>
-</item><item>
-    <title>Talk about Kubernetes cronJob controller</title>
-    <link>https://example.com/talk-about-k8s-cronjob/</link>
-    <pubDate>Sat, 14 Dec 2019 13:57:32 &#43;0000</pubDate>
-    <author>Author</author>
-    <guid>https://example.com/talk-about-k8s-cronjob/</guid>
-    <description><![CDATA[背景 之前一段时间正好接触到 kubernetes cronjob, 在接入时遇上了在一定量级下 cronjob schedule delay 的问题, 故开始读了下代码, 发现了一些问题并试着调优了下
-存在的问题 按生产环境实际测试来看约 250-375 个 */1 * * * * 每分钟 interval 的 cronjob 就会产生 delay, cronjob 和 controller manager 没有异常 event 但新产生的 job 出现了延迟, 由于我们设置了 startingDeadlineSeconds 故累加起来的 delay 最终导致了 cron 任务严重滞后
-代码解读 出于分析上述问题的目的, 读了下 cronjob controller 的代码, 代码量不多, 可能由于没上 GA 的原因, 整个 controllor 代码的设计也比较过程式, 不会像其他组件用到一些比如 Informer, refractor之类的组件读起来相对晦涩
-下面开始解读下 release1.17 分支的 k8s cronjob controller 代码
- Controller struct  1 2 3 4 5 6 7  type Controller struct { kubeClient clientset.]]></description>
 </item></channel>
 </rss>

@@ -11,7 +11,7 @@
 <meta property="og:type" content="website" />
 <meta property="og:url" content="https://example.com/" />
 <meta property="og:image" content="https://example.com/logo.png"/>
-<meta property="og:updated_time" content="2021-02-05T10:29:05+08:00" />
+<meta property="og:updated_time" content="2021-04-10T15:04:09+08:00" />
 <meta name="twitter:card" content="summary_large_image"/>
 <meta name="twitter:image" content="https://example.com/logo.png"/>
 
@@ -105,6 +105,18 @@
         alt="/images/avatar.png"
         title="/images/avatar.png" /></a></div><h1 class="home-title">LexusLee's blog</h1><h2 class="home-subtitle"><div id="id-1" class="typeit"></div></h2><div class="links"><a href="https://github.com/thehackercat" title="GitHub" target="_blank" rel="noopener noreffer me"><i class="fab fa-github-alt fa-fw"></i></a><a href="https://twitter.com/lexuscyborg103" title="Twitter" target="_blank" rel="noopener noreffer me"><i class="fab fa-twitter fa-fw"></i></a><a href="https://www.instagram.com/thehackercat" title="Instagram" target="_blank" rel="noopener noreffer me"><i class="fab fa-instagram fa-fw"></i></a><a href="https://t.me/thehackercat" title="Telegram" target="_blank" rel="noopener noreffer me"><i class="fab fa-telegram-plane fa-fw"></i></a><a href="https://www.douban.com/people/thehackercat" title="豆瓣" target="_blank" rel="noopener noreffer me"><i data-svg-src="https://cdn.jsdelivr.net/npm/simple-icons@2.14.0/icons/douban.svg"></i></a><a href="mailto:lexuscyborg103@gmail.com" title="Email" rel=" me"><i class="far fa-envelope fa-fw"></i></a><a href="/index.xml" title="RSS" target="_blank" rel="noopener noreffer me"><i class="fas fa-rss fa-fw"></i></a></div></div>
 <article class="single summary" itemscope itemtype="http://schema.org/Article"><h1 class="single-title" itemprop="name headline">
+        <a href="/badly-wanted/">请你不要吃掉我</a>
+    </h1><div class="post-meta"><span class="post-author"><a href="/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw"></i>LexusLee</a></span>&nbsp;<span class="post-publish">published on <time datetime="2019-08-02">2019-08-02</time></span>&nbsp;<span class="post-category">included in <a href="/categories/gossip/"><i class="far fa-folder fa-fw"></i>Gossip</a></span></div><div class="content">真想听一听见你的声音啊。
+今晚倘若再不能见着你，我准睡不着。
+已经三个夜晚你没有理我了，你是不是故意躲着我。
+今天是星期五，我一点都开心不起来，一想到不能像前几个周末一样宅在小屋子里看《乐队的夏天》，我的灵魂就像被汲取干了一般。
+我渴望见着你，我们打一架，把心里的不痛快都说出来，好不好。
+我又渴望抱抱你，这几天你是开心还是伤心呢，我全然不知。
+这几天下来，我逐渐开始认清自己，我实在是个坏人，你不要为我不安。
+啊你突然回来了，心跳好快，我不想写了，我有好多好多话跟你说，我看着你的眼睛，啥都说不出来，我想把你的美写下来，写不出，我想写诗，写雨，但满脑子想的都是你。</div><div class="post-footer">
+        <a href="/badly-wanted/">Read More</a><div class="post-tags">
+                <i class="fas fa-tags fa-fw"></i>&nbsp;<a href="/tags/gossip/">Gossip</a></div></div>
+</article><article class="single summary" itemscope itemtype="http://schema.org/Article"><h1 class="single-title" itemprop="name headline">
         <a href="/cutanzi-panda/">大醋坛子熊猫侠</a>
     </h1><div class="post-meta"><span class="post-author"><a href="/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw"></i>LexusLee</a></span>&nbsp;<span class="post-publish">published on <time datetime="2019-08-01">2019-08-01</time></span>&nbsp;<span class="post-category">included in <a href="/categories/gossip/"><i class="far fa-folder fa-fw"></i>Gossip</a></span></div><div class="content">前天，我们吵架了，但主要是我一人暗暗生闷气。
 在此之前，我总认为自己已经是不依附于任何情感的，也鲜有真正让我生气的事儿。
@@ -185,13 +197,6 @@
         title="Htop info" /></p></div><div class="post-footer">
         <a href="/scarllet-sql-attack/">Read More</a><div class="post-tags">
                 <i class="fas fa-tags fa-fw"></i>&nbsp;<a href="/tags/security/">Security</a>,&nbsp;<a href="/tags/linux/">Linux</a></div></div>
-</article><article class="single summary" itemscope itemtype="http://schema.org/Article"><h1 class="single-title" itemprop="name headline">
-        <a href="/go-decorator/">Golang 实现装饰器</a>
-    </h1><div class="post-meta"><span class="post-author"><a href="/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw"></i>LexusLee</a></span>&nbsp;<span class="post-publish">published on <time datetime="2018-02-10">2018-02-10</time></span>&nbsp;<span class="post-category">included in <a href="/categories/coding/"><i class="far fa-folder fa-fw"></i>Coding</a></span></div><div class="content">Go 实现装饰器 类似于 Java 中的装饰器模式, 在 go 中也会有需要 patch 一个函数的需求.
-一个常见的场景就是比如计算某个函数耗时的 decorator, 那么利用 functional programming 思想. 在 go 中的实现如下:
-1 2 3 4 5 6 7 8  func timeSpent(inner func(n int) int) func(op int) int { return func(n int){ start := time.Now() ret := inner(n) fmt.Println(&#34;time spent: &#34;, time.Since(start).Seconds()) return ret } }   当然实际场景中可能更多需要的是一种 pipeline 装饰器的用法, 比如一个 http handler 需要进行 Auth 认证, 认证通过后需要进行耗时计算, 计算完耗时需要进行 statsd 打点. 那么对应的实现如下:</div><div class="post-footer">
-        <a href="/go-decorator/">Read More</a><div class="post-tags">
-                <i class="fas fa-tags fa-fw"></i>&nbsp;<a href="/tags/golang/">Golang</a></div></div>
 </article><ul class="pagination"><li class="page-item ">
                     <span class="page-link">
                         <a href="/">1</a>

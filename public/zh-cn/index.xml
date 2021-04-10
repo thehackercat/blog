@@ -4,9 +4,16 @@
         <link>https://example.com/zh-cn/</link>
         <description>LexusLee personal blog, recording things you people wouldn&#39;t believe. Like attack ships on fire off the shoulder of Orion, c-beams glitter in the dark near the Tannhauser Gate.</description>
         <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>lexuscyborg103@gmail.com (LexusLee)</managingEditor>
-            <webMaster>lexuscyborg103@gmail.com (LexusLee)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Fri, 05 Feb 2021 10:29:05 &#43;0800</lastBuildDate>
+            <webMaster>lexuscyborg103@gmail.com (LexusLee)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Sat, 10 Apr 2021 15:04:09 &#43;0800</lastBuildDate>
             <atom:link href="https://example.com/zh-cn/index.xml" rel="self" type="application/rss+xml" />
         <item>
+    <title>Talk about Containerd</title>
+    <link>https://example.com/zh-cn/talk-about-containerd/</link>
+    <pubDate>Sat, 10 Apr 2021 15:04:09 &#43;0800</pubDate>
+    <author>作者</author>
+    <guid>https://example.com/zh-cn/talk-about-containerd/</guid>
+    <description><![CDATA[背景 最近看一些社区 issue 中正好接触到 containerd 源码, 早年大家基本都使用 docker/podman 这类容器上层包装, 包括我也是, 故对真正容器运行时的结构部分了解得不够深入, 最近 k8s]]></description>
+</item><item>
     <title>译《Scuba: Diving into data at Facebook》</title>
     <link>https://example.com/zh-cn/scuba-diving-into-data-at-facebook/</link>
     <pubDate>Fri, 05 Feb 2021 10:29:05 &#43;0800</pubDate>
@@ -69,12 +76,5 @@
     <author>作者</author>
     <guid>https://example.com/zh-cn/dont-cry-aphrodite/</guid>
     <description><![CDATA[这些日子隐隐觉得你并不开心, 我十分自责, 总觉得是那天妖精们藏起了星星。 北京的天总是阴沉沉的，有时候好像是要开启一场庭审，让我紧张得四肢发麻，]]></description>
-</item><item>
-    <title>Talk about Kubernetes cronJob controller</title>
-    <link>https://example.com/zh-cn/talk-about-k8s-cronjob/</link>
-    <pubDate>Sat, 14 Dec 2019 13:57:32 &#43;0000</pubDate>
-    <author>作者</author>
-    <guid>https://example.com/zh-cn/talk-about-k8s-cronjob/</guid>
-    <description><![CDATA[背景 之前一段时间正好接触到 kubernetes cronjob, 在接入时遇上了在一定量级下 cronjob schedule delay 的问题, 故开始读了下代码, 发现了一些问题并试着调优了下 存在的问题 按生产环境实际]]></description>
 </item></channel>
 </rss>
