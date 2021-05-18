@@ -669,8 +669,8 @@ enableEmoji = true
       # Valine 评论系统设置 (https://github.com/xCss/Valine)
       [params.page.comment.valine]
         enable = true
-        appId = "4QITxqk85IOa2zkBBGoF8dbx-gzGzoHsz"
-        appKey = "e7EHAx3VuKRDexhXihkxr4Dn"
+        appId = "EJj1FVSLvAScgnyP43TnnWmO-MdYXbMMI"
+        appKey = "VRimSNRzzvgxGgT4D1qrLC1M"
         placeholder = "Say something..."
         avatar = "mp"
         meta= ""
@@ -680,7 +680,7 @@ enableEmoji = true
         recordIP = true
         highlight = true
         enableQQ = false
-        serverURLs = "http://lexuslee.me"
+        serverURLs = ""
         # emoji data file name, default is "google.yml"
         # ("apple.yml", "google.yml", "facebook.yml", "twitter.yml")
         # located in "themes/LoveIt/assets/data/emoji/" directory
