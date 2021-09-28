@@ -11,7 +11,7 @@
 <meta property="og:type" content="website" />
 <meta property="og:url" content="https://example.com/" />
 <meta property="og:image" content="https://example.com/logo.png"/>
-<meta property="og:updated_time" content="2021-04-10T16:09:56+08:00" />
+<meta property="og:updated_time" content="2021-09-28T19:51:32+08:00" />
 <meta name="twitter:card" content="summary_large_image"/>
 <meta name="twitter:image" content="https://example.com/logo.png"/>
 
@@ -105,6 +105,13 @@
         alt="/images/avatar.png"
         title="/images/avatar.png" /></a></div><h1 class="home-title">LexusLee's blog</h1><h2 class="home-subtitle"><div id="id-1" class="typeit"></div></h2><div class="links"><a href="https://github.com/thehackercat" title="GitHub" target="_blank" rel="noopener noreffer me"><i class="fab fa-github-alt fa-fw"></i></a><a href="https://twitter.com/lexuscyborg103" title="Twitter" target="_blank" rel="noopener noreffer me"><i class="fab fa-twitter fa-fw"></i></a><a href="https://www.instagram.com/thehackercat" title="Instagram" target="_blank" rel="noopener noreffer me"><i class="fab fa-instagram fa-fw"></i></a><a href="https://t.me/thehackercat" title="Telegram" target="_blank" rel="noopener noreffer me"><i class="fab fa-telegram-plane fa-fw"></i></a><a href="https://www.douban.com/people/thehackercat" title="豆瓣" target="_blank" rel="noopener noreffer me"><i data-svg-src="https://cdn.jsdelivr.net/npm/simple-icons@2.14.0/icons/douban.svg"></i></a><a href="mailto:lexuscyborg103@gmail.com" title="Email" rel=" me"><i class="far fa-envelope fa-fw"></i></a><a href="/index.xml" title="RSS" target="_blank" rel="noopener noreffer me"><i class="fas fa-rss fa-fw"></i></a></div></div>
 <article class="single summary" itemscope itemtype="http://schema.org/Article"><h1 class="single-title" itemprop="name headline">
+        <a href="/service-portrait-vpa-design/">基于服务画像的垂直伸缩系统建设思考</a>
+    </h1><div class="post-meta"><span class="post-author"><a href="/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw"></i>LexusLee</a></span>&nbsp;<span class="post-publish">published on <time datetime="2021-09-28">2021-09-28</time></span>&nbsp;<span class="post-category">included in <a href="/categories/coding/"><i class="far fa-folder fa-fw"></i>Coding</a></span></div><div class="content"><div style="text-align: right;">Lexus Lee</div>
+## 背景
+<p>近期公司开始做成本治理, 降本增效. 通过观察以往各业务线的资源规格配置, 不难发现有大量服务资源超配情况. 即服务实际资源开销远小于其声明的资源开销. 而这部分的超配直接导致集群的资源使用率较低. 通常形如下图</p></div><div class="post-footer">
+        <a href="/service-portrait-vpa-design/">Read More</a><div class="post-tags">
+                <i class="fas fa-tags fa-fw"></i>&nbsp;<a href="/tags/docker/">Docker</a>,&nbsp;<a href="/tags/kubernetes/">Kubernetes</a>,&nbsp;<a href="/tags/linux/">Linux</a></div></div>
+</article><article class="single summary" itemscope itemtype="http://schema.org/Article"><h1 class="single-title" itemprop="name headline">
         <a href="/talk-about-containerd/">Talk about Containerd</a>
     </h1><div class="post-meta"><span class="post-author"><a href="/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw"></i>LexusLee</a></span>&nbsp;<span class="post-publish">published on <time datetime="2021-04-10">2021-04-10</time></span>&nbsp;<span class="post-category">included in <a href="/categories/coding/"><i class="far fa-folder fa-fw"></i>Coding</a></span></div><div class="content">背景 最近看一些社区 issue 中正好接触到 containerd 源码, 早年大家基本都使用 docker/podman 这类容器上层包装, 包括我也是, 故对真正容器运行时的结构部分了解得不够深入, 最近 k8s 社区在 1.21 规划上计划从 kubelet 中移除 docker-shim 交互的逻辑, 大势上组件走上 containerd-shim, 故需要着手对容器运行时更深入了解.
 带着问题作为引入,
@@ -209,12 +216,6 @@ Autopilot是Google在其内部云上使用的主要自动缩放器。 它提供�
   2 通过Borg管理云资源 Autopilot的目标和制约因素来自Google的Borg基础架构，并且针对Google的工作负载进行了调整。 我们在此处提供了两者的简要概述：有关Borg的更多详细信息，请参见[34]，有关工作负载的更多详细信息，请参见[26、27、31、35]。</div><div class="post-footer">
         <a href="/google-autopilot-scaling/">Read More</a><div class="post-tags">
                 <i class="fas fa-tags fa-fw"></i>&nbsp;<a href="/tags/kubernetes/">Kubernetes</a></div></div>
-</article><article class="single summary" itemscope itemtype="http://schema.org/Article"><h1 class="single-title" itemprop="name headline">
-        <a href="/apps-liat-for-macbook/">Awesome macOS apps list for developer</a>
-    </h1><div class="post-meta"><span class="post-author"><a href="/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw"></i>LexusLee</a></span>&nbsp;<span class="post-publish">published on <time datetime="2020-12-25">2020-12-25</time></span>&nbsp;<span class="post-category">included in <a href="/categories/product/"><i class="far fa-folder fa-fw"></i>Product</a></span></div><div class="content">Enumerate the list of apps that need to be installed on my migrated work computer at the moment. I&rsquo;ll consider adding it to the sync tool later.
-Develop  Vscode Sublime Sourcetree Github Desktop Iterm2 Postman Cyberduck Docker  Command-line  oh-my-zsh homebrew homebrew cask tmux ack ag bat autojump job fselect  Prototype  draw.io desktop XMind Sketch  Database  Sequel Pro (for MySql) Navicat (for PostgreSql) Redis Manager  IM  Wechat Qiye Wechat Slack  浏览器  Chrome  Browser  Typora Notion  RSS  Leaf  Wallpaper  Iruve  System tools  CleanMyMac Dozer  Password  1Password  Music  NetEase Music Spotify  Video Player  IINA  Util Tool  Paste Yoink Beyond Compare Handshake Quicklook  GTD  Fantastical 2   </div><div class="post-footer">
-        <a href="/apps-liat-for-macbook/">Read More</a><div class="post-tags">
-                <i class="fas fa-tags fa-fw"></i>&nbsp;<a href="/tags/productivity/">Productivity</a>,&nbsp;<a href="/tags/awesome/">Awesome</a></div></div>
 </article><ul class="pagination"><li class="page-item active">
                     <span class="page-link">
                         <a href="/">1</a>
@@ -231,7 +232,7 @@ Develop  Vscode Sublime Sourcetree Github Desktop Iterm2 Postman Cyberduck Docke
                     <span class="page-link" aria-hidden="true">&hellip;</span>
                 </li><li class="page-item ">
                     <span class="page-link">
-                        <a href="/page/8/">8</a>
+                        <a href="/page/9/">9</a>
                     </span>
                 </li></ul></div></div>
             </main><footer class="footer">
