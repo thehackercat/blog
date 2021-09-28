@@ -4,9 +4,18 @@
         <link>https://example.com/zh-cn/</link>
         <description>LexusLee personal blog, recording things you people wouldn&#39;t believe. Like attack ships on fire off the shoulder of Orion, c-beams glitter in the dark near the Tannhauser Gate.</description>
         <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>lexuscyborg103@gmail.com (LexusLee)</managingEditor>
-            <webMaster>lexuscyborg103@gmail.com (LexusLee)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Sat, 10 Apr 2021 15:04:09 &#43;0800</lastBuildDate>
+            <webMaster>lexuscyborg103@gmail.com (LexusLee)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Tue, 28 Sep 2021 19:51:32 &#43;0800</lastBuildDate>
             <atom:link href="https://example.com/zh-cn/index.xml" rel="self" type="application/rss+xml" />
         <item>
+    <title>基于服务画像的垂直伸缩系统建设思考</title>
+    <link>https://example.com/zh-cn/service-portrait-vpa-design/</link>
+    <pubDate>Tue, 28 Sep 2021 19:51:32 &#43;0800</pubDate>
+    <author>作者</author>
+    <guid>https://example.com/zh-cn/service-portrait-vpa-design/</guid>
+    <description><![CDATA[<div style="text-align: right;">Lexus Lee</div>
+<h2 id="背景">背景</h2>
+<p>近期公司开始做成本治理, 降本增效. 通过观察以往各业务线的资源规格配置, 不难发现有大量服务资源超配情况. 即服务实际资源开销远小于其声明的资源开销. 而这部分的超配直接导致集群的资源使用率较低. 通常形如下图</p>]]></description>
+</item><item>
     <title>Talk about Containerd</title>
     <link>https://example.com/zh-cn/talk-about-containerd/</link>
     <pubDate>Sat, 10 Apr 2021 15:04:09 &#43;0800</pubDate>
@@ -69,12 +78,5 @@
     <author>作者</author>
     <guid>https://example.com/zh-cn/ebpf-leanring1/</guid>
     <description><![CDATA[(译) eBPF Tracing 简明教程与示例 背景 原文链接 http://www.brendangregg.com/blog/2019-01-01/learn-ebpf-tracing.html 原文作者 Brendan Gregg 出版时间 01 Jan 2019 翻译时间 11 Jan 2020 之前开 2019 ShangHai KubeConf 听了几场 eBPF 的分享, 最近才开始深入研究, 故打算把研究]]></description>
-</item><item>
-    <title>阿芙罗狄忒你不要哭泣</title>
-    <link>https://example.com/zh-cn/dont-cry-aphrodite/</link>
-    <pubDate>Thu, 09 Jan 2020 20:20:28 &#43;0000</pubDate>
-    <author>作者</author>
-    <guid>https://example.com/zh-cn/dont-cry-aphrodite/</guid>
-    <description><![CDATA[这些日子隐隐觉得你并不开心, 我十分自责, 总觉得是那天妖精们藏起了星星。 北京的天总是阴沉沉的，有时候好像是要开启一场庭审，让我紧张得四肢发麻，]]></description>
 </item></channel>
 </rss>

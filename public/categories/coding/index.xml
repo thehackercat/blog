@@ -4,7 +4,16 @@
         <link>https://example.com/categories/coding/</link>
         <description>Coding - Category - LexusLee&#39;s blog</description>
         <generator>Hugo -- gohugo.io</generator><language>en</language><managingEditor>lexuscyborg103@gmail.com (LexusLee)</managingEditor>
-            <webMaster>lexuscyborg103@gmail.com (LexusLee)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Sat, 10 Apr 2021 15:04:09 &#43;0800</lastBuildDate><atom:link href="https://example.com/categories/coding/" rel="self" type="application/rss+xml" /><item>
+            <webMaster>lexuscyborg103@gmail.com (LexusLee)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Tue, 28 Sep 2021 19:51:32 &#43;0800</lastBuildDate><atom:link href="https://example.com/categories/coding/" rel="self" type="application/rss+xml" /><item>
+    <title>基于服务画像的垂直伸缩系统建设思考</title>
+    <link>https://example.com/service-portrait-vpa-design/</link>
+    <pubDate>Tue, 28 Sep 2021 19:51:32 &#43;0800</pubDate>
+    <author>Author</author>
+    <guid>https://example.com/service-portrait-vpa-design/</guid>
+    <description><![CDATA[<div style="text-align: right;">Lexus Lee</div>
+## 背景
+<p>近期公司开始做成本治理, 降本增效. 通过观察以往各业务线的资源规格配置, 不难发现有大量服务资源超配情况. 即服务实际资源开销远小于其声明的资源开销. 而这部分的超配直接导致集群的资源使用率较低. 通常形如下图</p>]]></description>
+</item><item>
     <title>Talk about Containerd</title>
     <link>https://example.com/talk-about-containerd/</link>
     <pubDate>Sat, 10 Apr 2021 15:04:09 &#43;0800</pubDate>
@@ -122,16 +131,5 @@ Ref https://github.com/kubernetes/kubernetes/issues/75482#issuecomment-511476698
 <p>最开始听到同事 k8s 分享时比较困惑我的一个问题是 k8s 怎么实现一个私有 ip(虚拟 ip，以下简称 vip)到另一个私有ip收发包的。</p>
 <p>不过其实我想知道的应该是 k8s 通信机制，它是怎么实现服务发现的，新建的 pod 是怎么感知到的，万一有些 pod 节点变更 vip 变了 k8s 是如何感知的。</p>
 <p>基于这个问题，做一下关于 k8s service&amp;kube-proxy 的分享。</p>]]></description>
-</item><item>
-    <title>记一次 postgresql 斯嘉丽约翰逊攻击的排查</title>
-    <link>https://example.com/scarllet-sql-attack/</link>
-    <pubDate>Sat, 11 Aug 2018 22:49:52 &#43;0000</pubDate>
-    <author>Author</author>
-    <guid>https://example.com/scarllet-sql-attack/</guid>
-    <description><![CDATA[<h3 id="背景">背景</h3>
-<p>今天下午连续收到了腾讯云 CPU overload 报警</p>
-<p></p>
-<p>登服务器一看, 有个 postgres 账户跑的进程把 CPU 占满了，进程名特别奇怪。</p>
-<p></p>]]></description>
 </item></channel>
 </rss>

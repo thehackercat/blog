@@ -1,13 +1,5 @@
----
-title: 基于服务画像的垂直伸缩系统建设思考
-date: 2021-09-28 15:10:46
-comment: true
-weight: 5
-draft: false
-categories: ["Coding"]
-tags: ["Docker", "Kubernetes", "Linux"]
-lightgallery: true
----
+# 基于服务画像的垂直伸缩系统建设思考
+
 <div style="text-align: right;">Lexus Lee</div>
 ## 背景
 
@@ -346,3 +338,4 @@ A: 内存不会进行超卖. 本次会对 cpu/mem 给出规格推荐值(界面�
 > 初期可以考虑在业务峰值压力下 如何优化单实例配置 和 实例数量，波峰波谷下的实例调整可以在一期积累更多经验后再进行。
 
 A：合理的. 非常同意，目前计划是在 recommender 组件的机制上先留出这样一个策略的口子. 但不计划对生产业务线接入. 后续有能力建设对业务无感的资源调整机制后再通过这个口子开放业务接入.
+
