@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
-	<meta name="generator" content="Hugo 0.79.1" />
+	<meta name="generator" content="Hugo 0.73.0" />
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="robots" content="noodp" />
@@ -11,7 +11,7 @@
 <meta property="og:type" content="website" />
 <meta property="og:url" content="https://example.com/" />
 <meta property="og:image" content="https://example.com/logo.png"/>
-<meta property="og:updated_time" content="2021-09-28T20:36:50+08:00" />
+<meta property="og:updated_time" content="2021-10-02T11:04:16+08:00" />
 <meta name="twitter:card" content="summary_large_image"/>
 <meta name="twitter:image" content="https://example.com/logo.png"/>
 
@@ -105,10 +105,18 @@
         alt="/images/avatar.png"
         title="/images/avatar.png" /></a></div><h1 class="home-title">LexusLee's blog</h1><h2 class="home-subtitle"><div id="id-1" class="typeit"></div></h2><div class="links"><a href="https://github.com/thehackercat" title="GitHub" target="_blank" rel="noopener noreffer me"><i class="fab fa-github-alt fa-fw"></i></a><a href="https://twitter.com/lexuscyborg103" title="Twitter" target="_blank" rel="noopener noreffer me"><i class="fab fa-twitter fa-fw"></i></a><a href="https://www.instagram.com/thehackercat" title="Instagram" target="_blank" rel="noopener noreffer me"><i class="fab fa-instagram fa-fw"></i></a><a href="https://t.me/thehackercat" title="Telegram" target="_blank" rel="noopener noreffer me"><i class="fab fa-telegram-plane fa-fw"></i></a><a href="https://www.douban.com/people/thehackercat" title="豆瓣" target="_blank" rel="noopener noreffer me"><i data-svg-src="https://cdn.jsdelivr.net/npm/simple-icons@2.14.0/icons/douban.svg"></i></a><a href="mailto:lexuscyborg103@gmail.com" title="Email" rel=" me"><i class="far fa-envelope fa-fw"></i></a><a href="/index.xml" title="RSS" target="_blank" rel="noopener noreffer me"><i class="fas fa-rss fa-fw"></i></a></div></div>
 <article class="single summary" itemscope itemtype="http://schema.org/Article"><h1 class="single-title" itemprop="name headline">
+        <a href="/talk-about-cloud-based-release-platform/">云原生下发布平台建设思考</a>
+    </h1><div class="post-meta"><span class="post-author"><a href="/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw"></i>LexusLee</a></span>&nbsp;<span class="post-publish">published on <time datetime="2021-10-02">2021-10-02</time></span>&nbsp;<span class="post-category">included in <a href="/categories/coding/"><i class="far fa-folder fa-fw"></i>Coding</a></span></div><div class="content"><div style="text-align: right;">Lexus Lee</div>
+<h2 id="背景">背景</h2>
+<p>从过去几个月, 我的工作精力主要集中在企业级发布平台的建设上. 同时也聚焦在容器云 <strong>PaaS</strong> 层建设。</p>
+<p>在当下云原生时代, 发布平台通常起到一个联结 PaaS 和 IaaS 的作用. 通过在 <strong>PaaS</strong> 层抽象，将 IaaS 层基建细节屏蔽，同时通过 api 和各个服务平台(CI/CD 服务, 监控告警服务, 网关服务, 工单系统, 服务治理系统等) 交互, 在云平台提供了一个统一的快捷入口，从逻辑上进行汇聚，便于开发者进行<strong>一站式</strong>应用发布、服务生命周期管理、服务治理、服务运维等操作.</p></div><div class="post-footer">
+        <a href="/talk-about-cloud-based-release-platform/">Read More</a><div class="post-tags">
+                <i class="fas fa-tags fa-fw"></i>&nbsp;<a href="/tags/docker/">Docker</a>,&nbsp;<a href="/tags/kubernetes/">Kubernetes</a></div></div>
+</article><article class="single summary" itemscope itemtype="http://schema.org/Article"><h1 class="single-title" itemprop="name headline">
         <a href="/service-portrait-vpa-design/">基于服务画像的垂直伸缩系统建设思考</a>
     </h1><div class="post-meta"><span class="post-author"><a href="/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw"></i>LexusLee</a></span>&nbsp;<span class="post-publish">published on <time datetime="2021-09-28">2021-09-28</time></span>&nbsp;<span class="post-category">included in <a href="/categories/coding/"><i class="far fa-folder fa-fw"></i>Coding</a></span></div><div class="content"><div style="text-align: right;">Lexus Lee</div>
 <h2 id="背景">背景</h2>
-<p>近期公司开始做成本治理, 降本增效. 通过观察以往各业务线的资源规格配置, 不难发现有大量服务资源超配情况. 即服务实际资源开销远小于其声明的资源开销. 而这部分的超配直接导致集群的资源使用率较低. 通常形如下图</p></div><div class="post-footer">
+<p>近期公司开始做成本治理, 降本增效. 通过观察以往各业务线的资源规格配置, 不难发现存在大量服务资源超配情况. 即服务实际资源开销远小于其声明的资源开销. 而这部分的资源超配直接导致了集群的资源使用率较低. 通常形如下图</p></div><div class="post-footer">
         <a href="/service-portrait-vpa-design/">Read More</a><div class="post-tags">
                 <i class="fas fa-tags fa-fw"></i>&nbsp;<a href="/tags/docker/">Docker</a>,&nbsp;<a href="/tags/kubernetes/">Kubernetes</a>,&nbsp;<a href="/tags/linux/">Linux</a></div></div>
 </article><article class="single summary" itemscope itemtype="http://schema.org/Article"><h1 class="single-title" itemprop="name headline">
@@ -196,26 +204,6 @@ I hate people,
 But I love person.</div><div class="post-footer">
         <a href="/i-hate-people/">Read More</a><div class="post-tags">
                 <i class="fas fa-tags fa-fw"></i>&nbsp;<a href="/tags/gossip/">Gossip</a></div></div>
-</article><article class="single summary" itemscope itemtype="http://schema.org/Article"><h1 class="single-title" itemprop="name headline">
-        <a href="/google-autopilot-scaling/">译《Autopilot: workload autoscaling at Google》</a>
-    </h1><div class="post-meta"><span class="post-author"><a href="/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw"></i>LexusLee</a></span>&nbsp;<span class="post-publish">published on <time datetime="2021-01-10">2021-01-10</time></span>&nbsp;<span class="post-category">included in <a href="/categories/coding/"><i class="far fa-folder fa-fw"></i>Coding</a></span></div><div class="content">摘要 原文链接：https://dl.acm.org/doi/pdf/10.1145/3342195.3387524
-在许多公共和私有云系统中，用户需要指定资源量（CPU内核和RAM）的限制以为其工作负荷提供资源。 超出其限制的作业可能会受到限制或终止，从而导致最终用户请求的延迟或丢弃，因此人工操作人员针对这种问题出于谨慎考虑，会申请高于任务自身需要的配置。 从规模上讲，这将导致大量的资源浪费。
-为了解决这个问题，Google使用Autopilot自动配置资源，同时调整作业中的并发任务数（水平缩放）和单个任务的CPU /内存限制（垂直缩放）。 Autopilot与人工操作员遵循相同的原则：Autopilot的主要目标是减少松弛（slack）（申请资源和实际资源使用之间的差异），同时最大程度地降低因内存不足（OOM）错误或 由于CPU节流，其性能下降。 Autopilot将机器学习算法应用到有关作业先前执行情况的历史数据上，再加上一组经过微调的启发式方法来实现这一目标。 在实践中，Autopilot工作只有23％的松弛（slack），而手动管理工作只有46％的松弛（slack）。 此外，Autopilot将受OOM严重影响的工作数量减少了10倍。
-尽管有其优点，要确保Autopilot被广泛采用仍需付出巨大的努力，包括使尚未加入的客户容易看到潜在的建议，自动迁移某些类别的任务以及增加对自定义推荐器的支持。 在撰写本文时，Autopilot任务占Google资源使用的48％以上。
-ACM参考格式：
-Krzysztof Rzadca，Pawel Findeisen，Jacek Swiderski，Przemyslaw Zych，Przemyslaw Broniek，Jarek Kusmierek，Pawel Nowak，Beata Strack，Piotr Witusowski，Steven Hand和John Wilkes。 2020年。
-Autopilot：Google的工作负载自动缩放。 在第十五欧洲2020年4月27日至30日，计算机系统会议（EuroSys'20），希腊伊拉克利翁。 ACM，美国纽约，纽约，共16页。 https://doi. org/10.1145/3342195.3387524
-1 介绍 许多类型的公共云和私有云系统要求其用户声明在执行期间其工作负载将需要多少个实例以及每个实例所需的资源：在公共云平台中，用户需要选择他们需要租用虚拟机（VM）的类型和数量； 在Kubernetes集群中，用户可以设置Pod副本的数量和单个Pod的资源限制; 在Google中，我们要求用户指定所需的容器数量以及每个容器的资源限制。 这些限制使云基础架构能够提供足够的性能隔离，从而使云计算成为可能。
-但是限制（主要是）对用户造成了麻烦。 很难估计一个作业需要多少资源才能最佳运行：CPU功率，内存和同时运行的副本数的正确组合。 负载测试可以帮助找到初始估计值，但是随着资源需求随时间变化，这些建议将过时，因为许多最终用户服务工作具有每日或每周的负载模式，并且随着服务变得越来越流行，流量在更长的时间内发生变化 。 最后，处理给定负载所需的资源会随着基础软件或硬件堆栈的新功能，优化和更新而变化。如果CPU容量不足，超出请求的资源可能会导致性能下降，或者导致任务被杀死 内存不足（OOM）。 都不是好事。
-从调研结果看，理性的用户将故意高估其工作所需的资源，从而导致对物理资源的不良利用。 一项分析[26]对在一个Google集群[27]上执行的为期一个月的作业跟踪显示，平均内存利用率为50％； 对阿里巴巴YARN集群的另一项分析[23]显示任务的峰值内存利用率从未超过80％。
-针对配置资源的困难，一种常见的模式是采用水平自动缩放器，该缩放器通过监控终端用户流量或平均CPU利用率的变化添加或删除副本来缩放任务。 所有主要的云提供商（AWS，Azure和GCP）都提供水平自动扩展功能； 它在某些云中间件（如Kubernetes）中也可用。 较不常见的模式是使用垂直自动缩放来调整每个副本可用的资源量。 两种技术也可以组合。
-Autopilot是Google在其内部云上使用的主要自动缩放器。 它提供水平和垂直自动缩放。 本文重点介绍Autopilot的内存垂直扩展，因为这种情况鲜为人知。 论文：
-  描述下Autopilot，以及它用于垂直自动缩放的两个主要算法：第一个算法依赖于历史用量的指数平滑滑动窗口； 另一个是基于从强化学习中借用的思想的元学习，该算法运行滑动窗口算法的许多变体，并为每个任务选择历史数据表现最佳的算法。（译注：强化学习：依赖海量的训练，并且需要精准的奖励。成本较高且比较复杂。元学习：具备自学能力，能够充分利用过去的经验来指导未来的任务。被认为是实现通用人工智能的关键。）
-  通过Google的工作负载采样评估Autopilot算法的有效性；
-  讨论为使我们的集群广泛采用Autopilot而采取的步骤。
-  2 通过Borg管理云资源 Autopilot的目标和制约因素来自Google的Borg基础架构，并且针对Google的工作负载进行了调整。 我们在此处提供了两者的简要概述：有关Borg的更多详细信息，请参见[34]，有关工作负载的更多详细信息，请参见[26、27、31、35]。</div><div class="post-footer">
-        <a href="/google-autopilot-scaling/">Read More</a><div class="post-tags">
-                <i class="fas fa-tags fa-fw"></i>&nbsp;<a href="/tags/kubernetes/">Kubernetes</a></div></div>
 </article><ul class="pagination"><li class="page-item active">
                     <span class="page-link">
                         <a href="/">1</a>

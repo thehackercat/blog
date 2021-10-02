@@ -4,9 +4,19 @@
         <link>https://example.com/</link>
         <description>LexusLee personal blog, recording things you people wouldn&#39;t believe. Like attack ships on fire off the shoulder of Orion, c-beams glitter in the dark near the Tannhauser Gate.</description>
         <generator>Hugo -- gohugo.io</generator><language>en</language><managingEditor>lexuscyborg103@gmail.com (LexusLee)</managingEditor>
-            <webMaster>lexuscyborg103@gmail.com (LexusLee)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Tue, 28 Sep 2021 19:51:32 &#43;0800</lastBuildDate>
+            <webMaster>lexuscyborg103@gmail.com (LexusLee)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Sat, 02 Oct 2021 11:04:16 &#43;0800</lastBuildDate>
             <atom:link href="https://example.com/index.xml" rel="self" type="application/rss+xml" />
         <item>
+    <title>云原生下发布平台建设思考</title>
+    <link>https://example.com/talk-about-cloud-based-release-platform/</link>
+    <pubDate>Sat, 02 Oct 2021 11:04:16 &#43;0800</pubDate>
+    <author>Author</author>
+    <guid>https://example.com/talk-about-cloud-based-release-platform/</guid>
+    <description><![CDATA[<div style="text-align: right;">Lexus Lee</div>
+<h2 id="背景">背景</h2>
+<p>从过去几个月, 我的工作精力主要集中在企业级发布平台的建设上. 同时也聚焦在容器云 <strong>PaaS</strong> 层建设。</p>
+<p>在当下云原生时代, 发布平台通常起到一个联结 PaaS 和 IaaS 的作用. 通过在 <strong>PaaS</strong> 层抽象，将 IaaS 层基建细节屏蔽，同时通过 api 和各个服务平台(CI/CD 服务, 监控告警服务, 网关服务, 工单系统, 服务治理系统等) 交互, 在云平台提供了一个统一的快捷入口，从逻辑上进行汇聚，便于开发者进行<strong>一站式</strong>应用发布、服务生命周期管理、服务治理、服务运维等操作.</p>]]></description>
+</item><item>
     <title>基于服务画像的垂直伸缩系统建设思考</title>
     <link>https://example.com/service-portrait-vpa-design/</link>
     <pubDate>Tue, 28 Sep 2021 19:51:32 &#43;0800</pubDate>
@@ -14,7 +24,7 @@
     <guid>https://example.com/service-portrait-vpa-design/</guid>
     <description><![CDATA[<div style="text-align: right;">Lexus Lee</div>
 <h2 id="背景">背景</h2>
-<p>近期公司开始做成本治理, 降本增效. 通过观察以往各业务线的资源规格配置, 不难发现有大量服务资源超配情况. 即服务实际资源开销远小于其声明的资源开销. 而这部分的超配直接导致集群的资源使用率较低. 通常形如下图</p>]]></description>
+<p>近期公司开始做成本治理, 降本增效. 通过观察以往各业务线的资源规格配置, 不难发现存在大量服务资源超配情况. 即服务实际资源开销远小于其声明的资源开销. 而这部分的资源超配直接导致了集群的资源使用率较低. 通常形如下图</p>]]></description>
 </item><item>
     <title>Talk about Containerd</title>
     <link>https://example.com/talk-about-containerd/</link>
@@ -161,13 +171,5 @@ Ref https://github.com/kubernetes/kubernetes/issues/75482#issuecomment-511476698
  脉冲型报警 单个原因引起的报警发散 多个报警为同个诱因  由于目前现有的一些告警系统都强依赖后面的监控 agent/cmdb , 比如 open-falcon/prometheus 虽然都支持了告警收敛这一套, 但要从豆瓣的 statsd+icinga 迁移到 alertManager 需要折腾一阵。而我实际只想要一个中间轻量的 alert exporter 去做告警聚合/收敛.
 所以我期望实现下列 feature:
  对于告警可配置梯度, 比如 apperr &gt; 50, 则立马报警不做 retry, 并且 notify_interval 为 1 分钟; 对于 50 &gt; apperr &gt; 20 则有3次 retry, retry 周期为 1 分钟, 报警周期为2分钟. 对于 apperr &lt; 1 则 retry 5 次, retry 周期 3 分钟, 报警周期 5 分钟. 告警配置中可用 与|或|非 的方式进行组合告警,告警收敛. 如  1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18  [rules] apperr - script: xxx - label: http, service, statsd, codeerr - warning_threshold: 0.]]></description>
-</item><item>
-    <title>eBPF learning 01</title>
-    <link>https://example.com/ebpf-leanring1/</link>
-    <pubDate>Mon, 13 Jan 2020 18:26:09 &#43;0000</pubDate>
-    <author>Author</author>
-    <guid>https://example.com/ebpf-leanring1/</guid>
-    <description><![CDATA[(译) eBPF Tracing 简明教程与示例 背景    原文链接 http://www.brendangregg.com/blog/2019-01-01/learn-ebpf-tracing.html     原文作者 Brendan Gregg   出版时间 01 Jan 2019   翻译时间 11 Jan 2020    之前开 2019 ShangHai KubeConf 听了几场 eBPF 的分享, 最近才开始深入研究, 故打算把研究 Linux performance 的大佬 Brendan Gregg 的文章《Learn eBPF Tracing: Tutorial and Examples》 作为 eBPF 入门翻译一遍, 希望对其他非英语母语的开发者有帮助。
-译文 在 2019 年的 Linux Plumber&rsquo;s 大会上至少有 24 场关于 eBPF 的讲座, eBPF 迅速地成为了炙手可热的技术。所以也许你也计划在新的一年里开始学习 eBPF!]]></description>
 </item></channel>
 </rss>

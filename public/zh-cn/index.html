@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
     <head>
-	<meta name="generator" content="Hugo 0.79.1" />
+	<meta name="generator" content="Hugo 0.73.0" />
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="robots" content="noodp" />
@@ -11,7 +11,7 @@
 <meta property="og:type" content="website" />
 <meta property="og:url" content="https://example.com/zh-cn/" />
 <meta property="og:image" content="https://example.com/logo.png"/>
-<meta property="og:updated_time" content="2021-09-28T20:29:30+08:00" />
+<meta property="og:updated_time" content="2021-10-02T11:04:16+08:00" />
 <meta name="twitter:card" content="summary_large_image"/>
 <meta name="twitter:image" content="https://example.com/logo.png"/>
 
@@ -105,10 +105,18 @@
         alt="/images/avatar.png"
         title="/images/avatar.png" /></a></div><h1 class="home-title">LexusLee's blog</h1><h2 class="home-subtitle"><div id="id-1" class="typeit"></div></h2><div class="links"><a href="https://github.com/thehackercat" title="GitHub" target="_blank" rel="noopener noreffer me"><i class="fab fa-github-alt fa-fw"></i></a><a href="https://twitter.com/lexuscyborg103" title="Twitter" target="_blank" rel="noopener noreffer me"><i class="fab fa-twitter fa-fw"></i></a><a href="https://www.instagram.com/thehackercat" title="Instagram" target="_blank" rel="noopener noreffer me"><i class="fab fa-instagram fa-fw"></i></a><a href="https://t.me/thehackercat" title="Telegram" target="_blank" rel="noopener noreffer me"><i class="fab fa-telegram-plane fa-fw"></i></a><a href="https://www.douban.com/people/thehackercat" title="豆瓣" target="_blank" rel="noopener noreffer me"><i data-svg-src="https://cdn.jsdelivr.net/npm/simple-icons@2.14.0/icons/douban.svg"></i></a><a href="mailto:lexuscyborg103@gmail.com" title="Email" rel=" me"><i class="far fa-envelope fa-fw"></i></a><a href="/zh-cn/index.xml" title="RSS" target="_blank" rel="noopener noreffer me"><i class="fas fa-rss fa-fw"></i></a></div></div>
 <article class="single summary" itemscope itemtype="http://schema.org/Article"><h1 class="single-title" itemprop="name headline">
+        <a href="/zh-cn/talk-about-cloud-based-release-platform/">云原生下发布平台建设思考</a>
+    </h1><div class="post-meta"><span class="post-author"><a href="/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw"></i>LexusLee</a></span>&nbsp;<span class="post-publish">发布于 <time datetime="2021-10-02">2021-10-02</time></span>&nbsp;<span class="post-category">收录于 <a href="/zh-cn/categories/coding/"><i class="far fa-folder fa-fw"></i>Coding</a></span></div><div class="content"><div style="text-align: right;">Lexus Lee</div>
+<h2 id="背景">背景</h2>
+<p>从过去几个月, 我的工作精力主要集中在企业级发布平台的建设上. 同时也聚焦在容器云 <strong>PaaS</strong> 层建设。</p>
+<p>在当下云原生时代, 发布平台通常起到一个联结 PaaS 和 IaaS 的作用. 通过在 <strong>PaaS</strong> 层抽象，将 IaaS 层基建细节屏蔽，同时通过 api 和各个服务平台(CI/CD 服务, 监控告警服务, 网关服务, 工单系统, 服务治理系统等) 交互, 在云平台提供了一个统一的快捷入口，从逻辑上进行汇聚，便于开发者进行<strong>一站式</strong>应用发布、服务生命周期管理、服务治理、服务运维等操作.</p></div><div class="post-footer">
+        <a href="/zh-cn/talk-about-cloud-based-release-platform/">阅读全文</a><div class="post-tags">
+                <i class="fas fa-tags fa-fw"></i>&nbsp;<a href="/zh-cn/tags/docker/">Docker</a>,&nbsp;<a href="/zh-cn/tags/kubernetes/">Kubernetes</a></div></div>
+</article><article class="single summary" itemscope itemtype="http://schema.org/Article"><h1 class="single-title" itemprop="name headline">
         <a href="/zh-cn/service-portrait-vpa-design/">基于服务画像的垂直伸缩系统建设思考</a>
     </h1><div class="post-meta"><span class="post-author"><a href="/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw"></i>LexusLee</a></span>&nbsp;<span class="post-publish">发布于 <time datetime="2021-09-28">2021-09-28</time></span>&nbsp;<span class="post-category">收录于 <a href="/zh-cn/categories/coding/"><i class="far fa-folder fa-fw"></i>Coding</a></span></div><div class="content"><div style="text-align: right;">Lexus Lee</div>
 <h2 id="背景">背景</h2>
-<p>近期公司开始做成本治理, 降本增效. 通过观察以往各业务线的资源规格配置, 不难发现有大量服务资源超配情况. 即服务实际资源开销远小于其声明的资源开销. 而这部分的超配直接导致集群的资源使用率较低. 通常形如下图</p></div><div class="post-footer">
+<p>近期公司开始做成本治理, 降本增效. 通过观察以往各业务线的资源规格配置, 不难发现存在大量服务资源超配情况. 即服务实际资源开销远小于其声明的资源开销. 而这部分的资源超配直接导致了集群的资源使用率较低. 通常形如下图</p></div><div class="post-footer">
         <a href="/zh-cn/service-portrait-vpa-design/">阅读全文</a><div class="post-tags">
                 <i class="fas fa-tags fa-fw"></i>&nbsp;<a href="/zh-cn/tags/docker/">Docker</a>,&nbsp;<a href="/zh-cn/tags/kubernetes/">Kubernetes</a>,&nbsp;<a href="/zh-cn/tags/linux/">Linux</a></div></div>
 </article><article class="single summary" itemscope itemtype="http://schema.org/Article"><h1 class="single-title" itemprop="name headline">
@@ -130,11 +138,6 @@
     </h1><div class="post-meta"><span class="post-author"><a href="/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw"></i>LexusLee</a></span>&nbsp;<span class="post-publish">发布于 <time datetime="2021-01-29">2021-01-29</time></span>&nbsp;<span class="post-category">收录于 <a href="/zh-cn/categories/gossip/"><i class="far fa-folder fa-fw"></i>Gossip</a></span></div><div class="content">「I hate people !」 早上摸鱼时从友邻广播里看到这句话. 广播里讲了个故事，一位很健谈的朋友，一边讨厌人类，一边等个红灯都能跟人聊五块钱的，从椰子鸡到加</div><div class="post-footer">
         <a href="/zh-cn/i-hate-people/">阅读全文</a><div class="post-tags">
                 <i class="fas fa-tags fa-fw"></i>&nbsp;<a href="/zh-cn/tags/gossip/">Gossip</a></div></div>
-</article><article class="single summary" itemscope itemtype="http://schema.org/Article"><h1 class="single-title" itemprop="name headline">
-        <a href="/zh-cn/google-autopilot-scaling/">译《Autopilot: workload autoscaling at Google》</a>
-    </h1><div class="post-meta"><span class="post-author"><a href="/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw"></i>LexusLee</a></span>&nbsp;<span class="post-publish">发布于 <time datetime="2021-01-10">2021-01-10</time></span>&nbsp;<span class="post-category">收录于 <a href="/zh-cn/categories/coding/"><i class="far fa-folder fa-fw"></i>Coding</a></span></div><div class="content">摘要 原文链接：https://dl.acm.org/doi/pdf/10.1145/3342195.3387524 在许多公共和私有云系统中，</div><div class="post-footer">
-        <a href="/zh-cn/google-autopilot-scaling/">阅读全文</a><div class="post-tags">
-                <i class="fas fa-tags fa-fw"></i>&nbsp;<a href="/zh-cn/tags/kubernetes/">Kubernetes</a></div></div>
 </article><ul class="pagination"><li class="page-item active">
                     <span class="page-link">
                         <a href="/zh-cn/">1</a>

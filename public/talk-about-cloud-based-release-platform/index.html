@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1">
+        <title>云原生下发布平台建设思考 - LexusLee&#39;s blog</title><meta name="Description" content="LexusLee personal blog, recording things you people wouldn&#39;t believe. Like attack ships on fire off the shoulder of Orion, c-beams glitter in the dark near the Tannhauser Gate."><meta property="og:title" content="云原生下发布平台建设思考" />
+<meta property="og:description" content="Lexus Lee
+背景
+从过去几个月, 我的工作精力主要集中在企业级发布平台的建设上. 同时也聚焦在容器云 PaaS 层建设。
+在当下云原生时代, 发布平台通常起到一个联结 PaaS 和 IaaS 的作用. 通过在 PaaS 层抽象，将 IaaS 层基建细节屏蔽，同时通过 api 和各个服务平台(CI/CD 服务, 监控告警服务, 网关服务, 工单系统, 服务治理系统等) 交互, 在云平台提供了一个统一的快捷入口，从逻辑上进行汇聚，便于开发者进行一站式应用发布、服务生命周期管理、服务治理、服务运维等操作." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://example.com/talk-about-cloud-based-release-platform/" />
+<meta property="og:image" content="https://example.com/logo.png"/>
+<meta property="article:published_time" content="2021-10-02T11:04:16+08:00" />
+<meta property="article:modified_time" content="2021-10-02T11:04:16+08:00" />
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://example.com/logo.png"/>
+
+<meta name="twitter:title" content="云原生下发布平台建设思考"/>
+<meta name="twitter:description" content="Lexus Lee
+背景
+从过去几个月, 我的工作精力主要集中在企业级发布平台的建设上. 同时也聚焦在容器云 PaaS 层建设。
+在当下云原生时代, 发布平台通常起到一个联结 PaaS 和 IaaS 的作用. 通过在 PaaS 层抽象，将 IaaS 层基建细节屏蔽，同时通过 api 和各个服务平台(CI/CD 服务, 监控告警服务, 网关服务, 工单系统, 服务治理系统等) 交互, 在云平台提供了一个统一的快捷入口，从逻辑上进行汇聚，便于开发者进行一站式应用发布、服务生命周期管理、服务治理、服务运维等操作."/>
+<meta name="application-name" content="Nice to meet you">
+<meta name="apple-mobile-web-app-title" content="Nice to meet you"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="icon" href="/images/favicon.ico"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://example.com/talk-about-cloud-based-release-platform/" /><link rel="prev" href="https://example.com/service-portrait-vpa-design/" /><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/normalize.css@8.0.1/normalize.min.css"><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.13.0/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.7.2/animate.min.css"><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "云原生下发布平台建设思考",
+        "inLanguage": "en",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/example.com\/talk-about-cloud-based-release-platform\/"
+        },"image": ["https:\/\/example.com\/images\/Apple-Devices-Preview.png"],"genre": "posts","keywords": "Docker, Kubernetes","wordcount":  92 ,
+        "url": "https:\/\/example.com\/talk-about-cloud-based-release-platform\/","datePublished": "2021-10-02T11:04:16+08:00","dateModified": "2021-10-02T11:04:16+08:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.","publisher": {
+            "@type": "Organization",
+            "name": "LexusLee","logo": {
+                    "@type": "ImageObject",
+                    "url": "https:\/\/example.com\/images\/avatar.png",
+                    "width":  552 ,
+                    "height":  608 
+                }},"author": {
+                "@type": "Person",
+                "name": "LexusLee"
+            },"description": ""
+    }
+    </script></head>
+    <body header-desktop="fixed" header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="LexusLee&#39;s blog"><span class="header-title-pre"><i class='far fa-kiss-wink-heart fa-fw'></i></span>Nice to meet you</a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/posts/"> Posts </a><a class="menu-item" href="/tags/"> Tags </a><a class="menu-item" href="/categories/"> Categories </a><a class="menu-item" href="/categories/documentation/"> Docs </a><a class="menu-item" href="/about/"> About </a><a class="menu-item" href="https://github.com/thehackercat" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i>  </a><span class="menu-item delimiter"></span><a href="javascript:void(0);" class="menu-item language" title="Select Language">English<i class="fas fa-chevron-right fa-fw"></i>
+                        <select class="language-select" id="language-select-desktop" onchange="location = this.value;"><option value="/talk-about-cloud-based-release-platform/" selected>English</option><option value="/zh-cn/talk-about-cloud-based-release-platform/">简体中文</option></select>
+                    </a><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="Search">
+                            <i class="fas fa-search fa-fw"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="Clear">
+                            <i class="fas fa-times-circle fa-fw"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <i class="fas fa-spinner fa-fw fa-spin"></i>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                    <i class="fas fa-adjust fa-fw"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="LexusLee&#39;s blog"><span class="header-title-pre"><i class='far fa-kiss-wink-heart fa-fw'></i></span>Nice to meet you</a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-mobile">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="Search">
+                            <i class="fas fa-search fa-fw"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="Clear">
+                            <i class="fas fa-times-circle fa-fw"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <i class="fas fa-spinner fa-fw fa-spin"></i>
+                        </span>
+                    </div>
+                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                        Cancel
+                    </a>
+                </div><a class="menu-item" href="/posts/" title="">Posts</a><a class="menu-item" href="/tags/" title="">Tags</a><a class="menu-item" href="/categories/" title="">Categories</a><a class="menu-item" href="/categories/documentation/" title="">Docs</a><a class="menu-item" href="/about/" title="">About</a><a class="menu-item" href="https://github.com/thehackercat" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i></a><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                <i class="fas fa-adjust fa-fw"></i>
+            </a><a href="javascript:void(0);" class="menu-item" title="Select Language">English<i class="fas fa-chevron-right fa-fw"></i>
+                    <select class="language-select" onchange="location = this.value;"><option value="/talk-about-cloud-based-release-platform/" selected>English</option><option value="/zh-cn/talk-about-cloud-based-release-platform/">简体中文</option></select>
+                </a></div>
+    </div>
+</header>
+<div class="search-dropdown desktop">
+    <div id="search-dropdown-desktop"></div>
+</div>
+<div class="search-dropdown mobile">
+    <div id="search-dropdown-mobile"></div>
+</div>
+<main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">Contents</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animated flipInX">云原生下发布平台建设思考</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw"></i>LexusLee</a></span>&nbsp;<span class="post-category">included in <a href="/categories/coding/"><i class="far fa-folder fa-fw"></i>Coding</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw"></i>&nbsp;<time datetime="2021-10-02">2021-10-02</time>&nbsp;<i class="fas fa-pencil-alt fa-fw"></i>&nbsp;92 words&nbsp;
+                <i class="far fa-clock fa-fw"></i>&nbsp;One minute&nbsp;</div>
+        </div><div class="details toc" id="toc-static"  kept="">
+                <div class="details-summary toc-title">
+                    <span>Contents</span>
+                    <span><i class="details-icon fas fa-angle-right"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#背景">背景</a>
+      <ul>
+        <li><a href="#那么什么是-paas-平台">那么什么是 PaaS 平台?</a></li>
+        <li><a href="#云原生时代发布平台思考">云原生时代发布平台思考</a></li>
+        <li><a href="#发布平台全景图">发布平台全景图</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><div style="text-align: right;">Lexus Lee</div>
+<h2 id="背景">背景</h2>
+<p>从过去几个月, 我的工作精力主要集中在企业级发布平台的建设上. 同时也聚焦在容器云 <strong>PaaS</strong> 层建设。</p>
+<p>在当下云原生时代, 发布平台通常起到一个联结 PaaS 和 IaaS 的作用. 通过在 <strong>PaaS</strong> 层抽象，将 IaaS 层基建细节屏蔽，同时通过 api 和各个服务平台(CI/CD 服务, 监控告警服务, 网关服务, 工单系统, 服务治理系统等) 交互, 在云平台提供了一个统一的快捷入口，从逻辑上进行汇聚，便于开发者进行<strong>一站式</strong>应用发布、服务生命周期管理、服务治理、服务运维等操作.</p>
+<p>这也是发布平台的职能，在一个完整的 PaaS 云平台体系中，其能力应是<strong>集成的，而非离散的</strong>－－系统需要提供很好的集成能力，让系统得到收敛，避免系统被割裂成一个一个的执行单元，那么用户常常会为此痛苦不堪；同时平台也是<strong>场景化的，而非基于功能需求的</strong>－－场景能够串联工具的能力，跨越短平快的需求，让平台的各个工具能够串联的运转，其数据能力能在多个子系统间流动起来。</p>
+<h3 id="那么什么是-paas-平台">那么什么是 PaaS 平台?</h3>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://blog-1251445337.cos.ap-chengdu.myqcloud.com/%E5%8F%91%E5%B8%83%E5%B9%B3%E5%8F%B0%E6%80%9D%E8%80%83/%E5%8F%91%E5%B8%83%E5%B9%B3%E5%8F%B0%E6%80%9D%E8%80%83.png"
+        data-srcset="https://blog-1251445337.cos.ap-chengdu.myqcloud.com/%E5%8F%91%E5%B8%83%E5%B9%B3%E5%8F%B0%E6%80%9D%E8%80%83/%E5%8F%91%E5%B8%83%E5%B9%B3%E5%8F%B0%E6%80%9D%E8%80%83.png, https://blog-1251445337.cos.ap-chengdu.myqcloud.com/%E5%8F%91%E5%B8%83%E5%B9%B3%E5%8F%B0%E6%80%9D%E8%80%83/%E5%8F%91%E5%B8%83%E5%B9%B3%E5%8F%B0%E6%80%9D%E8%80%83.png 1.5x, https://blog-1251445337.cos.ap-chengdu.myqcloud.com/%E5%8F%91%E5%B8%83%E5%B9%B3%E5%8F%B0%E6%80%9D%E8%80%83/%E5%8F%91%E5%B8%83%E5%B9%B3%E5%8F%B0%E6%80%9D%E8%80%83.png 2x"
+        data-sizes="auto"
+        alt="https://blog-1251445337.cos.ap-chengdu.myqcloud.com/%E5%8F%91%E5%B8%83%E5%B9%B3%E5%8F%B0%E6%80%9D%E8%80%83/%E5%8F%91%E5%B8%83%E5%B9%B3%E5%8F%B0%E6%80%9D%E8%80%83.png"
+        title="什么是发布平台" /></p>
+<p>PaaS 是在 IaaS 层之上的基础平台，一个典型的特征是拥有 App 概念，一切围绕 App 开发的生命周期展开，也会对 App 的架构做一定的约束. 由于直接对接业务侧应用甚至应用架构, 且 PaaS 平台通常是业务方最直接所见的基础平台. 对 PaaS 平台的建设要求就有所提高，通常需要在建设通用性能力的基础上，提供一定的贴切公司使用场景的定制化能力。</p>
+<p><strong>故通常云平台也在承接着各个业务线开发者提来的各式各样的需求</strong>.  起到对业务部门垂直支撑的作用.</p>
+<p>一个常见的云平台生态支撑场景如下图所示</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://blog-1251445337.cos.ap-chengdu.myqcloud.com/%E5%8F%91%E5%B8%83%E5%B9%B3%E5%8F%B0%E6%80%9D%E8%80%83/%E4%BA%91%E5%8E%9F%E7%94%9F%E4%B8%9A%E5%8A%A1%E7%94%9F%E6%80%81%E5%9B%BE.png"
+        data-srcset="https://blog-1251445337.cos.ap-chengdu.myqcloud.com/%E5%8F%91%E5%B8%83%E5%B9%B3%E5%8F%B0%E6%80%9D%E8%80%83/%E4%BA%91%E5%8E%9F%E7%94%9F%E4%B8%9A%E5%8A%A1%E7%94%9F%E6%80%81%E5%9B%BE.png, https://blog-1251445337.cos.ap-chengdu.myqcloud.com/%E5%8F%91%E5%B8%83%E5%B9%B3%E5%8F%B0%E6%80%9D%E8%80%83/%E4%BA%91%E5%8E%9F%E7%94%9F%E4%B8%9A%E5%8A%A1%E7%94%9F%E6%80%81%E5%9B%BE.png 1.5x, https://blog-1251445337.cos.ap-chengdu.myqcloud.com/%E5%8F%91%E5%B8%83%E5%B9%B3%E5%8F%B0%E6%80%9D%E8%80%83/%E4%BA%91%E5%8E%9F%E7%94%9F%E4%B8%9A%E5%8A%A1%E7%94%9F%E6%80%81%E5%9B%BE.png 2x"
+        data-sizes="auto"
+        alt="https://blog-1251445337.cos.ap-chengdu.myqcloud.com/%E5%8F%91%E5%B8%83%E5%B9%B3%E5%8F%B0%E6%80%9D%E8%80%83/%E4%BA%91%E5%8E%9F%E7%94%9F%E4%B8%9A%E5%8A%A1%E7%94%9F%E6%80%81%E5%9B%BE.png"
+        title="业务生态支撑" /></p>
+<h3 id="云原生时代发布平台思考">云原生时代发布平台思考</h3>
+<p>随着近年来云原生概念和云原生架构设计的流行，越来越多的开发团队开始使用 DevOps 模式进行系统开发，并把大型系统拆解成一个个微小的服务模块，以便系统能更好地进行容器化部署。</p>
+<p>基于 DevOps、微服务、容器化等云原生的能力，可以帮助业务团队快速、持续、可靠和规模化地交付系统，同时也使得系统的复杂度成倍提升，由此带来了前所未有的运维挑战，比如：</p>
+<ul>
+<li>模块之间的调用从进程内的函数调用变为容器进程间的调用，而网络总是不可靠的。</li>
+<li>微服务拆分多样, 难以从全局视角观测各个微服务健康信息。</li>
+<li>服务的调用路径变长，使得流量的走向变得不可控，故障排查的难度增大。</li>
+<li>引入 Kubernetes、Docker、Service Mesh 等云原生系统，基础设施层对业务开发团队来说变得更加黑盒。</li>
+</ul>
+<p>无论是微服务拆分, 容器化, 云原生化等, 都对服务的发布过程带来巨大挑战. 如何做到无感地支持容器/k8s发布, 同时提供云原生时代的可观察性可以说的云原生时代发布平台的主要目标。</p>
+<p>而从前司的平台建设经验来看, 我们在平台建设初中期也遇到了以下问题</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://blog-1251445337.cos.ap-chengdu.myqcloud.com/%E5%8F%91%E5%B8%83%E5%B9%B3%E5%8F%B0%E6%80%9D%E8%80%83/%E5%8F%91%E5%B8%83%E5%B9%B3%E5%8F%B0%E5%85%B1%E6%80%A7%E6%80%9D%E8%80%83.png"
+        data-srcset="https://blog-1251445337.cos.ap-chengdu.myqcloud.com/%E5%8F%91%E5%B8%83%E5%B9%B3%E5%8F%B0%E6%80%9D%E8%80%83/%E5%8F%91%E5%B8%83%E5%B9%B3%E5%8F%B0%E5%85%B1%E6%80%A7%E6%80%9D%E8%80%83.png, https://blog-1251445337.cos.ap-chengdu.myqcloud.com/%E5%8F%91%E5%B8%83%E5%B9%B3%E5%8F%B0%E6%80%9D%E8%80%83/%E5%8F%91%E5%B8%83%E5%B9%B3%E5%8F%B0%E5%85%B1%E6%80%A7%E6%80%9D%E8%80%83.png 1.5x, https://blog-1251445337.cos.ap-chengdu.myqcloud.com/%E5%8F%91%E5%B8%83%E5%B9%B3%E5%8F%B0%E6%80%9D%E8%80%83/%E5%8F%91%E5%B8%83%E5%B9%B3%E5%8F%B0%E5%85%B1%E6%80%A7%E6%80%9D%E8%80%83.png 2x"
+        data-sizes="auto"
+        alt="https://blog-1251445337.cos.ap-chengdu.myqcloud.com/%E5%8F%91%E5%B8%83%E5%B9%B3%E5%8F%B0%E6%80%9D%E8%80%83/%E5%8F%91%E5%B8%83%E5%B9%B3%E5%8F%B0%E5%85%B1%E6%80%A7%E6%80%9D%E8%80%83.png"
+        title="业务支撑四条线" /></p>
+<p>如<strong>发布过程</strong>中的金丝雀/预发布环境/持续测试支持, 属于对于服务自身发布过程的稳定性建设, 帮助业务更搞笑稳定的进行版本发布.</p>
+<p><strong>发布后的应用观测</strong>中也涉及到日志查询, 容器 debug 能力, 实时诊断能力等支持.</p>
+<p>基于以上遇到的问题，大致抽象了以下几个长线来探讨发布平台建设</p>
+<ul>
+<li>服务发布稳定性</li>
+<li>发布系统可扩展性</li>
+<li>服务可观察性</li>
+<li>发布系统易用性</li>
+</ul>
+<p>根于上述4条长线, 列出了我个人理解的云原生时代的发布平台建设全景图</p>
+<h3 id="发布平台全景图">发布平台全景图</h3>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://blog-1251445337.cos.ap-chengdu.myqcloud.com/%E5%8F%91%E5%B8%83%E5%B9%B3%E5%8F%B0%E6%80%9D%E8%80%83/%E5%8F%91%E5%B8%83%E7%B3%BB%E7%BB%9Fv2.png"
+        data-srcset="https://blog-1251445337.cos.ap-chengdu.myqcloud.com/%E5%8F%91%E5%B8%83%E5%B9%B3%E5%8F%B0%E6%80%9D%E8%80%83/%E5%8F%91%E5%B8%83%E7%B3%BB%E7%BB%9Fv2.png, https://blog-1251445337.cos.ap-chengdu.myqcloud.com/%E5%8F%91%E5%B8%83%E5%B9%B3%E5%8F%B0%E6%80%9D%E8%80%83/%E5%8F%91%E5%B8%83%E7%B3%BB%E7%BB%9Fv2.png 1.5x, https://blog-1251445337.cos.ap-chengdu.myqcloud.com/%E5%8F%91%E5%B8%83%E5%B9%B3%E5%8F%B0%E6%80%9D%E8%80%83/%E5%8F%91%E5%B8%83%E7%B3%BB%E7%BB%9Fv2.png 2x"
+        data-sizes="auto"
+        alt="https://blog-1251445337.cos.ap-chengdu.myqcloud.com/%E5%8F%91%E5%B8%83%E5%B9%B3%E5%8F%B0%E6%80%9D%E8%80%83/%E5%8F%91%E5%B8%83%E7%B3%BB%E7%BB%9Fv2.png"
+        title="发布平台全景图" /></p></div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>Updated on 2021-10-02</span>
+            </div>
+            <div class="post-info-license"></div>
+        </div>
+        <div class="post-info-line">
+            <div class="post-info-md"><span>
+                            <a class="link-to-markdown" href="/talk-about-cloud-based-release-platform/index.md" target="_blank">Read Markdown</a>
+                        </span></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="Share on Twitter" data-sharer="twitter" data-url="https://example.com/talk-about-cloud-based-release-platform/" data-title="云原生下发布平台建设思考" data-via="lexuscyborg103" data-hashtags="Docker,Kubernetes"><i class="fab fa-twitter fa-fw"></i></a><a href="javascript:void(0);" title="Share on 微博" data-sharer="weibo" data-url="https://example.com/talk-about-cloud-based-release-platform/" data-title="云原生下发布平台建设思考"><i class="fab fa-weibo fa-fw"></i></a><a href="javascript:void(0);" title="Share on Evernote" data-sharer="evernote" data-url="https://example.com/talk-about-cloud-based-release-platform/" data-title="云原生下发布平台建设思考"><i class="fab fa-evernote fa-fw"></i></a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw"></i>&nbsp;<a href="/tags/docker/">Docker</a>,&nbsp;<a href="/tags/kubernetes/">Kubernetes</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">Back</a></span>&nbsp;|&nbsp;<span><a href="/">Home</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/service-portrait-vpa-design/" class="prev" rel="prev" title="基于服务画像的垂直伸缩系统建设思考"><i class="fas fa-angle-left fa-fw"></i>基于服务画像的垂直伸缩系统建设思考</a></div>
+</div>
+</article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line"><i class="far fa-copyright fa-fw"></i><span itemprop="copyrightYear">2015 - 2021</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/" target="_blank">LexusLee</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="Back to Top">
+                <i class="fas fa-arrow-up fa-fw"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="View Comments">
+                <i class="fas fa-comment fa-fw"></i>
+            </a>
+        </div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery.js@1.2.0/dist/css/lightgallery.min.css"><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/smooth-scroll@16.1.3/dist/smooth-scroll.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/autocomplete.js@0.37.1/dist/autocomplete.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/algoliasearch@4.2.0/dist/algoliasearch-lite.umd.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lazysizes@5.2.2/lazysizes.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lightgallery.js@1.2.0/dist/js/lightgallery.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lg-thumbnail.js@1.2.0/dist/lg-thumbnail.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lg-zoom.js@1.2.0/dist/lg-zoom.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/clipboard@2.0.6/dist/clipboard.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sharer.js@0.4.0/sharer.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"Copy to clipboard","maxShownLines":10},"comment":{},"lightGallery":{"actualSize":false,"exThumbImage":"data-thumbnail","hideBarsDelay":2000,"selector":".lightgallery","speed":400,"thumbContHeight":80,"thumbWidth":80,"thumbnail":true},"search":{"algoliaAppID":"PASDMWALPK","algoliaIndex":"index.en","algoliaSearchKey":"b42948e51daaa93df92381c8e2ac0f93","highlightTag":"em","maxResultLength":10,"noResultsFound":"No results found","snippetLength":30,"type":"algolia"}};</script><script type="text/javascript" src="/js/theme.min.js"></script></body>
+</html>

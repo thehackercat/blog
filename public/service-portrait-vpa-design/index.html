@@ -8,7 +8,7 @@
         <title>基于服务画像的垂直伸缩系统建设思考 - LexusLee&#39;s blog</title><meta name="Description" content="LexusLee personal blog, recording things you people wouldn&#39;t believe. Like attack ships on fire off the shoulder of Orion, c-beams glitter in the dark near the Tannhauser Gate."><meta property="og:title" content="基于服务画像的垂直伸缩系统建设思考" />
 <meta property="og:description" content="Lexus Lee
 背景
-近期公司开始做成本治理, 降本增效. 通过观察以往各业务线的资源规格配置, 不难发现有大量服务资源超配情况. 即服务实际资源开销远小于其声明的资源开销. 而这部分的超配直接导致集群的资源使用率较低. 通常形如下图" />
+近期公司开始做成本治理, 降本增效. 通过观察以往各业务线的资源规格配置, 不难发现存在大量服务资源超配情况. 即服务实际资源开销远小于其声明的资源开销. 而这部分的资源超配直接导致了集群的资源使用率较低. 通常形如下图" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://example.com/service-portrait-vpa-design/" />
 <meta property="og:image" content="https://example.com/logo.png"/>
@@ -20,9 +20,9 @@
 <meta name="twitter:title" content="基于服务画像的垂直伸缩系统建设思考"/>
 <meta name="twitter:description" content="Lexus Lee
 背景
-近期公司开始做成本治理, 降本增效. 通过观察以往各业务线的资源规格配置, 不难发现有大量服务资源超配情况. 即服务实际资源开销远小于其声明的资源开销. 而这部分的超配直接导致集群的资源使用率较低. 通常形如下图"/>
+近期公司开始做成本治理, 降本增效. 通过观察以往各业务线的资源规格配置, 不难发现存在大量服务资源超配情况. 即服务实际资源开销远小于其声明的资源开销. 而这部分的资源超配直接导致了集群的资源使用率较低. 通常形如下图"/>
 <meta name="application-name" content="Nice to meet you">
-<meta name="apple-mobile-web-app-title" content="Nice to meet you"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="icon" href="/images/favicon.ico"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://example.com/service-portrait-vpa-design/" /><link rel="prev" href="https://example.com/talk-about-containerd/" /><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/normalize.css@8.0.1/normalize.min.css"><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.13.0/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.7.2/animate.min.css"><script type="application/ld+json">
+<meta name="apple-mobile-web-app-title" content="Nice to meet you"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="icon" href="/images/favicon.ico"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://example.com/service-portrait-vpa-design/" /><link rel="prev" href="https://example.com/talk-about-containerd/" /><link rel="next" href="https://example.com/talk-about-cloud-based-release-platform/" /><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/normalize.css@8.0.1/normalize.min.css"><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.13.0/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.7.2/animate.min.css"><script type="application/ld+json">
     {
         "@context": "http://schema.org",
         "@type": "BlogPosting",
@@ -154,7 +154,7 @@
 </nav></div>
             </div><div class="content" id="content"><div style="text-align: right;">Lexus Lee</div>
 <h2 id="背景">背景</h2>
-<p>近期公司开始做成本治理, 降本增效. 通过观察以往各业务线的资源规格配置, 不难发现有大量服务资源超配情况. 即服务实际资源开销远小于其声明的资源开销. 而这部分的超配直接导致集群的资源使用率较低. 通常形如下图</p>
+<p>近期公司开始做成本治理, 降本增效. 通过观察以往各业务线的资源规格配置, 不难发现存在大量服务资源超配情况. 即服务实际资源开销远小于其声明的资源开销. 而这部分的资源超配直接导致了集群的资源使用率较低. 通常形如下图</p>
 <p><img
         class="lazyload"
         src="/svg/loading.min.svg"
@@ -163,7 +163,7 @@
         data-sizes="auto"
         alt="https://blog-1251445337.cos.ap-chengdu.myqcloud.com/%E6%9C%8D%E5%8A%A1%E7%94%BB%E5%83%8F/%E8%B5%84%E6%BA%90%E4%BD%BF%E7%94%A8%E7%8E%87.png"
         title="资源余量图" /></p>
-<p>在过去的集群资源使用实践过程中，我们也遇到了如下问题：</p>
+<p>从过去的集群资源使用实践过程中，我们也遇到了如下问题：</p>
 <ul>
 <li>
 <p>服务本身资源使用率较低, 但申请资源规格时使用了较高的规格</p>
@@ -179,7 +179,7 @@
 <p>- <strong>如何建设合理的服务资源画像, 对外提供画像数据查询能力</strong></p>
 <p>- <strong>依据资源画像数据在调度系统提供一定资源超售能力, 从而提高集群资源使用率</strong></p>
 <h3 id="目标">目标</h3>
-<p>如背景中提到的资源分配值与资源使用值之间的差值是带来整体资源利用率较低的直接原因, 故有效缩短这部分差值能带来直接的资源利用率提升.</p>
+<p>如背景中提到的资源分配值与资源使用值之间存在的差值是带来整体资源利用率较低的直接原因, 故有效缩短这部分差值能带来资源利用率的直接提升.</p>
 <p>故我们抽象了以下公式:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
@@ -337,36 +337,36 @@
 <table>
 <thead>
 <tr>
-<th style="text-align:left">列名</th>
-<th style="text-align:left">类型</th>
-<th style="text-align:left">备注信息</th>
+<th align="left">列名</th>
+<th align="left">类型</th>
+<th align="left">备注信息</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align:left">data</td>
-<td style="text-align:left">varchar(255)</td>
-<td style="text-align:left">采集时间</td>
+<td align="left">data</td>
+<td align="left">varchar(255)</td>
+<td align="left">采集时间</td>
 </tr>
 <tr>
-<td style="text-align:left">id</td>
-<td style="text-align:left">bigint</td>
-<td style="text-align:left">主键</td>
+<td align="left">id</td>
+<td align="left">bigint</td>
+<td align="left">主键</td>
 </tr>
 <tr>
-<td style="text-align:left">resource_suffix</td>
-<td style="text-align:left">varchar(255)</td>
-<td style="text-align:left">特征后缀, 如 cpu_busy_TP90, cpu_busy_TP99</td>
+<td align="left">resource_suffix</td>
+<td align="left">varchar(255)</td>
+<td align="left">特征后缀, 如 cpu_busy_TP90, cpu_busy_TP99</td>
 </tr>
 <tr>
-<td style="text-align:left">resource_type</td>
-<td style="text-align:left">int(11)</td>
-<td style="text-align:left">资源类型：cpu、memory等</td>
+<td align="left">resource_type</td>
+<td align="left">int(11)</td>
+<td align="left">资源类型：cpu、memory等</td>
 </tr>
 <tr>
-<td style="text-align:left">value</td>
-<td style="text-align:left">varchar(255)</td>
-<td style="text-align:left">资源值</td>
+<td align="left">value</td>
+<td align="left">varchar(255)</td>
+<td align="left">资源值</td>
 </tr>
 </tbody>
 </table>
@@ -515,7 +515,8 @@
         </section>
     </div>
 
-    <div class="post-nav"><a href="/talk-about-containerd/" class="prev" rel="prev" title="Talk about Containerd"><i class="fas fa-angle-left fa-fw"></i>Talk about Containerd</a></div>
+    <div class="post-nav"><a href="/talk-about-containerd/" class="prev" rel="prev" title="Talk about Containerd"><i class="fas fa-angle-left fa-fw"></i>Talk about Containerd</a>
+            <a href="/talk-about-cloud-based-release-platform/" class="next" rel="next" title="云原生下发布平台建设思考">云原生下发布平台建设思考<i class="fas fa-angle-right fa-fw"></i></a></div>
 </div>
 </article></div>
             </main><footer class="footer">
