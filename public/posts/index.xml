@@ -4,7 +4,22 @@
         <link>https://example.com/posts/</link>
         <description>All Posts | LexusLee&#39;s blog</description>
         <generator>Hugo -- gohugo.io</generator><language>en</language><managingEditor>lexuscyborg103@gmail.com (LexusLee)</managingEditor>
-            <webMaster>lexuscyborg103@gmail.com (LexusLee)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Sat, 02 Oct 2021 11:04:16 &#43;0800</lastBuildDate><atom:link href="https://example.com/posts/" rel="self" type="application/rss+xml" /><item>
+            <webMaster>lexuscyborg103@gmail.com (LexusLee)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Sat, 09 Oct 2021 09:57:53 &#43;0800</lastBuildDate><atom:link href="https://example.com/posts/" rel="self" type="application/rss+xml" /><item>
+    <title>Kube-scheduler 调度模型与美团本地化改造</title>
+    <link>https://example.com/kubernetes-scheduler-modified-in-meituan/</link>
+    <pubDate>Sat, 09 Oct 2021 09:57:53 &#43;0800</pubDate>
+    <author>Author</author>
+    <guid>https://example.com/kubernetes-scheduler-modified-in-meituan/</guid>
+    <description><![CDATA[背景 今天主要分享下我在美团 Hulk 团队调度系统组期间学习到的 k8s scheduler 调度模型及美团对于调度器相关改造
+Hulk 团队介绍 Hulk 是美团负责容器云平台的团队, 我所在的组是调度系统组下面的 k8s 小组. 主要负责所有 k8s 相关组件开发维护.
+Kube-scheduler 调度模型介绍 (本次介绍基于 k8s 1.16 版本)
+pod 是 k8s 工作负载的最小实体，也是 scheduler 调度的主要对象。
+k8s 调度器所做的工作，即将 pod 绑定到指定节点上，为 pod 选择合适的节点。
+Scheduler 会先 watch apiserver 获取其中待调度的 pod, 即 pod.spec.nodeName 字段为空的 pod 对象, 通过调用 pod informer 的 handler 并将该 pod 加入调度队列中。
+默认情况下, k8s 调度队列是一个 PriorityQueue, 并且当某些集群信息发生改变时, 调度器会对调度队列的内容进行一些特殊操作. 在这儿不论述.
+一次调度过程在判断一个 Node是否可作为目标机器时，主要分为三个阶段：
+ Predicates 预选阶段：硬性条件，过滤掉不满足条件的节点，这个过程称为 Predicates。这是固定先后顺序的一系列过滤条件，任何一个 Predicate 不符合则放弃该 Node。 Prioritites 优选阶段：软性条件，对通过的节点按照优先级排序，称之为 Priorities。每一个 Priority 都是一个影响因素，都有一定的权重。 Select 选定阶段：从优选列表中选择优先级最高的节点，称为 Select。选择的 Node 即为最终部署 Pod 的机器。  预选阶段 Scheduler 起 n 个 goroutine 并发对整个集群的所有 nodes 进行 predicates 串行运算过滤规则，直到最终过滤出符合条件的 nodes 列表]]></description>
+</item><item>
     <title>云原生下发布平台建设思考</title>
     <link>https://example.com/talk-about-cloud-based-release-platform/</link>
     <pubDate>Sat, 02 Oct 2021 11:04:16 &#43;0800</pubDate>
@@ -159,15 +174,5 @@ Develop  Vscode Sublime Sourcetree Github Desktop Iterm2 Postman Cyberduck Docke
 而 kubectl drain node 并不 evict daemonset pods. 故在升级/重启 dockerd 期间会造成 ingress 短暂不可用. 而现有的 lb 的 health check 不能 cover 这一点, 仍会有流量打入.会导致升级期间 ingress 流量黑洞问题.
 并且 dockerd 拉起来后, 有些 daemonsets 由于 ingress 自身 livenessProbe 等原因在 dockerd 升级期间持续 crashLoopbackoff 了, 一个原因是仍然 mount 一份旧的 docker overlay. 在 delete pod 重启后恢复. 故需要一个手段在升级后重启 ingress pods.
 Ref https://github.com/kubernetes/kubernetes/issues/75482#issuecomment-511476698]]></description>
-</item><item>
-    <title>告警收敛设计</title>
-    <link>https://example.com/alert-convergence/</link>
-    <pubDate>Tue, 07 Jul 2020 22:30:07 &#43;0000</pubDate>
-    <author>Author</author>
-    <guid>https://example.com/alert-convergence/</guid>
-    <description><![CDATA[背景 最近在豆瓣做面向开发者的 op 报警系统, 最头疼的是下列几种情况
- 脉冲型报警 单个原因引起的报警发散 多个报警为同个诱因  由于目前现有的一些告警系统都强依赖后面的监控 agent/cmdb , 比如 open-falcon/prometheus 虽然都支持了告警收敛这一套, 但要从豆瓣的 statsd+icinga 迁移到 alertManager 需要折腾一阵。而我实际只想要一个中间轻量的 alert exporter 去做告警聚合/收敛.
-所以我期望实现下列 feature:
- 对于告警可配置梯度, 比如 apperr &gt; 50, 则立马报警不做 retry, 并且 notify_interval 为 1 分钟; 对于 50 &gt; apperr &gt; 20 则有3次 retry, retry 周期为 1 分钟, 报警周期为2分钟. 对于 apperr &lt; 1 则 retry 5 次, retry 周期 3 分钟, 报警周期 5 分钟. 告警配置中可用 与|或|非 的方式进行组合告警,告警收敛. 如  1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18  [rules] apperr - script: xxx - label: http, service, statsd, codeerr - warning_threshold: 0.]]></description>
 </item></channel>
 </rss>

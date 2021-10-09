@@ -11,7 +11,7 @@
 <meta property="og:type" content="website" />
 <meta property="og:url" content="https://example.com/" />
 <meta property="og:image" content="https://example.com/logo.png"/>
-<meta property="og:updated_time" content="2021-10-02T11:04:16+08:00" />
+<meta property="og:updated_time" content="2021-10-09T09:57:53+08:00" />
 <meta name="twitter:card" content="summary_large_image"/>
 <meta name="twitter:image" content="https://example.com/logo.png"/>
 
@@ -105,6 +105,19 @@
         alt="/images/avatar.png"
         title="/images/avatar.png" /></a></div><h1 class="home-title">LexusLee's blog</h1><h2 class="home-subtitle"><div id="id-1" class="typeit"></div></h2><div class="links"><a href="https://github.com/thehackercat" title="GitHub" target="_blank" rel="noopener noreffer me"><i class="fab fa-github-alt fa-fw"></i></a><a href="https://twitter.com/lexuscyborg103" title="Twitter" target="_blank" rel="noopener noreffer me"><i class="fab fa-twitter fa-fw"></i></a><a href="https://www.instagram.com/thehackercat" title="Instagram" target="_blank" rel="noopener noreffer me"><i class="fab fa-instagram fa-fw"></i></a><a href="https://t.me/thehackercat" title="Telegram" target="_blank" rel="noopener noreffer me"><i class="fab fa-telegram-plane fa-fw"></i></a><a href="https://www.douban.com/people/thehackercat" title="豆瓣" target="_blank" rel="noopener noreffer me"><i data-svg-src="https://cdn.jsdelivr.net/npm/simple-icons@2.14.0/icons/douban.svg"></i></a><a href="mailto:lexuscyborg103@gmail.com" title="Email" rel=" me"><i class="far fa-envelope fa-fw"></i></a><a href="/index.xml" title="RSS" target="_blank" rel="noopener noreffer me"><i class="fas fa-rss fa-fw"></i></a></div></div>
 <article class="single summary" itemscope itemtype="http://schema.org/Article"><h1 class="single-title" itemprop="name headline">
+        <a href="/kubernetes-scheduler-modified-in-meituan/">Kube-scheduler 调度模型与美团本地化改造</a>
+    </h1><div class="post-meta"><span class="post-author"><a href="/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw"></i>LexusLee</a></span>&nbsp;<span class="post-publish">published on <time datetime="2021-10-09">2021-10-09</time></span>&nbsp;<span class="post-category">included in <a href="/categories/coding/"><i class="far fa-folder fa-fw"></i>Coding</a></span></div><div class="content">背景 今天主要分享下我在美团 Hulk 团队调度系统组期间学习到的 k8s scheduler 调度模型及美团对于调度器相关改造
+Hulk 团队介绍 Hulk 是美团负责容器云平台的团队, 我所在的组是调度系统组下面的 k8s 小组. 主要负责所有 k8s 相关组件开发维护.
+Kube-scheduler 调度模型介绍 (本次介绍基于 k8s 1.16 版本)
+pod 是 k8s 工作负载的最小实体，也是 scheduler 调度的主要对象。
+k8s 调度器所做的工作，即将 pod 绑定到指定节点上，为 pod 选择合适的节点。
+Scheduler 会先 watch apiserver 获取其中待调度的 pod, 即 pod.spec.nodeName 字段为空的 pod 对象, 通过调用 pod informer 的 handler 并将该 pod 加入调度队列中。
+默认情况下, k8s 调度队列是一个 PriorityQueue, 并且当某些集群信息发生改变时, 调度器会对调度队列的内容进行一些特殊操作. 在这儿不论述.
+一次调度过程在判断一个 Node是否可作为目标机器时，主要分为三个阶段：
+ Predicates 预选阶段：硬性条件，过滤掉不满足条件的节点，这个过程称为 Predicates。这是固定先后顺序的一系列过滤条件，任何一个 Predicate 不符合则放弃该 Node。 Prioritites 优选阶段：软性条件，对通过的节点按照优先级排序，称之为 Priorities。每一个 Priority 都是一个影响因素，都有一定的权重。 Select 选定阶段：从优选列表中选择优先级最高的节点，称为 Select。选择的 Node 即为最终部署 Pod 的机器。  预选阶段 Scheduler 起 n 个 goroutine 并发对整个集群的所有 nodes 进行 predicates 串行运算过滤规则，直到最终过滤出符合条件的 nodes 列表</div><div class="post-footer">
+        <a href="/kubernetes-scheduler-modified-in-meituan/">Read More</a><div class="post-tags">
+                <i class="fas fa-tags fa-fw"></i>&nbsp;<a href="/tags/kubernetes/">Kubernetes</a>,&nbsp;<a href="/tags/linux/">Linux</a></div></div>
+</article><article class="single summary" itemscope itemtype="http://schema.org/Article"><h1 class="single-title" itemprop="name headline">
         <a href="/talk-about-cloud-based-release-platform/">云原生下发布平台建设思考</a>
     </h1><div class="post-meta"><span class="post-author"><a href="/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw"></i>LexusLee</a></span>&nbsp;<span class="post-publish">published on <time datetime="2021-10-02">2021-10-02</time></span>&nbsp;<span class="post-category">included in <a href="/categories/coding/"><i class="far fa-folder fa-fw"></i>Coding</a></span></div><div class="content"><div style="text-align: right;">Lexus Lee</div>
 <h2 id="背景">背景</h2>
@@ -163,46 +176,6 @@ Scuba 是Facebook的数据管理系统，用于大部分的实时分析。Scuba 
 没想一个月过去了，只看到了 1518 部。
 要是电影可以投射在云层里，那我便天天都可以看电影了。</div><div class="post-footer">
         <a href="/cloud-movie-projector/">Read More</a><div class="post-tags">
-                <i class="fas fa-tags fa-fw"></i>&nbsp;<a href="/tags/gossip/">Gossip</a></div></div>
-</article><article class="single summary" itemscope itemtype="http://schema.org/Article"><h1 class="single-title" itemprop="name headline">
-        <a href="/i-hate-people/">I hate people</a>
-    </h1><div class="post-meta"><span class="post-author"><a href="/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw"></i>LexusLee</a></span>&nbsp;<span class="post-publish">published on <time datetime="2021-01-29">2021-01-29</time></span>&nbsp;<span class="post-category">included in <a href="/categories/gossip/"><i class="far fa-folder fa-fw"></i>Gossip</a></span></div><div class="content">「I hate people !」
-早上摸鱼时从友邻广播里看到这句话.
-广播里讲了个故事，一位很健谈的朋友，一边讨厌人类，一边等个红灯都能跟人聊五块钱的，从椰子鸡到加拿大冰球，什么都聊。
-如此言行不一致, 遭到了质疑。
-朋友解释道，people in general 才是让他厌烦之处。When it gets personal, 那世界就变得有趣起来。
-我开始反思。
-是啊, people 是个非常 general 的概念, 是无具象的.
-但当讨论到 person. 那这个人开始有了名字，有了声调. 这个人从&quot;people&quot;的群体里脱离出来，变得具象起来。
-every single person 各有各自值得喜欢的地方。
-只要一想到一个人类，无论他或她在哪里，在做什么想什么，都在发出悠长的呼吸;
-睡梦时眼皮微微滑动，在做梦
-睡醒时眼皮被太阳直登登地打亮
-这样鲜活的人，多浪漫呀.
-哪儿会有人不喜欢具象的人呢。
-反观下来，自己似乎常常追逐一些抽象的事物。
-越是虚妄，越着迷。
-像是对超级英雄有着的不切实际的幻想, 渴望超能力的降临.
-而抽离回生活中，却只能靠具象之物来校正这份抽象，而无法放弃抽象本身。
-即使那些肌肤相亲的实景实物让人感到愉悦，但也会怀疑是否是自己赋予了某种抽象的意义.
-王小波说，人是轻易不能知道自己的。
-因为我们的感官是向外的，能察觉到他人细微的变化。但对于自己却不十分了然。
-我不太信。
-我爱游离在幻想与现实的边界。
-有时，我想我爱自己多过爱他人。
-我希望我的自我永远滋滋作响，翻腾不休，就像火炭上的一滴糖。
-只是转念一想，
-椰子鸡也好吃，加拿大冰球，也挺酷。
-还有铲冰激凌，炸得焦脆的牛奶块。
-打开冰箱门满满的饮料。
-冬天里猫咪柔软的肚子，以及情人温软的胸膛。
-美好得令人惭愧。
-你说，从今天起,
-我也要开始学习爱人，爱他人，爱具象的人。
-像王小波一样, 像友邻的朋友一样，
-I hate people,
-But I love person.</div><div class="post-footer">
-        <a href="/i-hate-people/">Read More</a><div class="post-tags">
                 <i class="fas fa-tags fa-fw"></i>&nbsp;<a href="/tags/gossip/">Gossip</a></div></div>
 </article><ul class="pagination"><li class="page-item active">
                     <span class="page-link">

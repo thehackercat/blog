@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1">
+        <title>Kube-scheduler 调度模型与美团本地化改造 - LexusLee&#39;s blog</title><meta name="Description" content="LexusLee personal blog, recording things you people wouldn&#39;t believe. Like attack ships on fire off the shoulder of Orion, c-beams glitter in the dark near the Tannhauser Gate."><meta property="og:title" content="Kube-scheduler 调度模型与美团本地化改造" />
+<meta property="og:description" content="背景 今天主要分享下我在美团 Hulk 团队调度系统组期间学习到的 k8s scheduler 调度模型及美团对于调度器相关改造
+Hulk 团队介绍 Hulk 是美团负责容器云平台的团队, 我所在的组是调度系统组下面的 k8s 小组. 主要负责所有 k8s 相关组件开发维护.
+Kube-scheduler 调度模型介绍 (本次介绍基于 k8s 1.16 版本)
+pod 是 k8s 工作负载的最小实体，也是 scheduler 调度的主要对象。
+k8s 调度器所做的工作，即将 pod 绑定到指定节点上，为 pod 选择合适的节点。
+Scheduler 会先 watch apiserver 获取其中待调度的 pod, 即 pod.spec.nodeName 字段为空的 pod 对象, 通过调用 pod informer 的 handler 并将该 pod 加入调度队列中。
+默认情况下, k8s 调度队列是一个 PriorityQueue, 并且当某些集群信息发生改变时, 调度器会对调度队列的内容进行一些特殊操作. 在这儿不论述.
+一次调度过程在判断一个 Node是否可作为目标机器时，主要分为三个阶段：
+ Predicates 预选阶段：硬性条件，过滤掉不满足条件的节点，这个过程称为 Predicates。这是固定先后顺序的一系列过滤条件，任何一个 Predicate 不符合则放弃该 Node。 Prioritites 优选阶段：软性条件，对通过的节点按照优先级排序，称之为 Priorities。每一个 Priority 都是一个影响因素，都有一定的权重。 Select 选定阶段：从优选列表中选择优先级最高的节点，称为 Select。选择的 Node 即为最终部署 Pod 的机器。  预选阶段 Scheduler 起 n 个 goroutine 并发对整个集群的所有 nodes 进行 predicates 串行运算过滤规则，直到最终过滤出符合条件的 nodes 列表" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://example.com/kubernetes-scheduler-modified-in-meituan/" />
+<meta property="og:image" content="https://example.com/logo.png"/>
+<meta property="article:published_time" content="2021-10-09T09:57:53+08:00" />
+<meta property="article:modified_time" content="2021-10-09T09:57:53+08:00" />
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://example.com/logo.png"/>
+
+<meta name="twitter:title" content="Kube-scheduler 调度模型与美团本地化改造"/>
+<meta name="twitter:description" content="背景 今天主要分享下我在美团 Hulk 团队调度系统组期间学习到的 k8s scheduler 调度模型及美团对于调度器相关改造
+Hulk 团队介绍 Hulk 是美团负责容器云平台的团队, 我所在的组是调度系统组下面的 k8s 小组. 主要负责所有 k8s 相关组件开发维护.
+Kube-scheduler 调度模型介绍 (本次介绍基于 k8s 1.16 版本)
+pod 是 k8s 工作负载的最小实体，也是 scheduler 调度的主要对象。
+k8s 调度器所做的工作，即将 pod 绑定到指定节点上，为 pod 选择合适的节点。
+Scheduler 会先 watch apiserver 获取其中待调度的 pod, 即 pod.spec.nodeName 字段为空的 pod 对象, 通过调用 pod informer 的 handler 并将该 pod 加入调度队列中。
+默认情况下, k8s 调度队列是一个 PriorityQueue, 并且当某些集群信息发生改变时, 调度器会对调度队列的内容进行一些特殊操作. 在这儿不论述.
+一次调度过程在判断一个 Node是否可作为目标机器时，主要分为三个阶段：
+ Predicates 预选阶段：硬性条件，过滤掉不满足条件的节点，这个过程称为 Predicates。这是固定先后顺序的一系列过滤条件，任何一个 Predicate 不符合则放弃该 Node。 Prioritites 优选阶段：软性条件，对通过的节点按照优先级排序，称之为 Priorities。每一个 Priority 都是一个影响因素，都有一定的权重。 Select 选定阶段：从优选列表中选择优先级最高的节点，称为 Select。选择的 Node 即为最终部署 Pod 的机器。  预选阶段 Scheduler 起 n 个 goroutine 并发对整个集群的所有 nodes 进行 predicates 串行运算过滤规则，直到最终过滤出符合条件的 nodes 列表"/>
+<meta name="application-name" content="Nice to meet you">
+<meta name="apple-mobile-web-app-title" content="Nice to meet you"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="icon" href="/images/favicon.ico"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://example.com/kubernetes-scheduler-modified-in-meituan/" /><link rel="prev" href="https://example.com/talk-about-cloud-based-release-platform/" /><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/normalize.css@8.0.1/normalize.min.css"><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.13.0/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.7.2/animate.min.css"><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "Kube-scheduler 调度模型与美团本地化改造",
+        "inLanguage": "en",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/example.com\/kubernetes-scheduler-modified-in-meituan\/"
+        },"image": ["https:\/\/example.com\/images\/Apple-Devices-Preview.png"],"genre": "posts","keywords": "Kubernetes, Linux","wordcount":  195 ,
+        "url": "https:\/\/example.com\/kubernetes-scheduler-modified-in-meituan\/","datePublished": "2021-10-09T09:57:53+08:00","dateModified": "2021-10-09T09:57:53+08:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.","publisher": {
+            "@type": "Organization",
+            "name": "LexusLee","logo": {
+                    "@type": "ImageObject",
+                    "url": "https:\/\/example.com\/images\/avatar.png",
+                    "width":  552 ,
+                    "height":  608 
+                }},"author": {
+                "@type": "Person",
+                "name": "LexusLee"
+            },"description": ""
+    }
+    </script></head>
+    <body header-desktop="fixed" header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="LexusLee&#39;s blog"><span class="header-title-pre"><i class='far fa-kiss-wink-heart fa-fw'></i></span>Nice to meet you</a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/posts/"> Posts </a><a class="menu-item" href="/tags/"> Tags </a><a class="menu-item" href="/categories/"> Categories </a><a class="menu-item" href="/categories/documentation/"> Docs </a><a class="menu-item" href="/about/"> About </a><a class="menu-item" href="https://github.com/thehackercat" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i>  </a><span class="menu-item delimiter"></span><a href="javascript:void(0);" class="menu-item language" title="Select Language">English<i class="fas fa-chevron-right fa-fw"></i>
+                        <select class="language-select" id="language-select-desktop" onchange="location = this.value;"><option value="/kubernetes-scheduler-modified-in-meituan/" selected>English</option><option value="/zh-cn/kubernetes-scheduler-modified-in-meituan/">简体中文</option></select>
+                    </a><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="Search">
+                            <i class="fas fa-search fa-fw"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="Clear">
+                            <i class="fas fa-times-circle fa-fw"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <i class="fas fa-spinner fa-fw fa-spin"></i>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                    <i class="fas fa-adjust fa-fw"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="LexusLee&#39;s blog"><span class="header-title-pre"><i class='far fa-kiss-wink-heart fa-fw'></i></span>Nice to meet you</a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-mobile">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="Search">
+                            <i class="fas fa-search fa-fw"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="Clear">
+                            <i class="fas fa-times-circle fa-fw"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <i class="fas fa-spinner fa-fw fa-spin"></i>
+                        </span>
+                    </div>
+                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                        Cancel
+                    </a>
+                </div><a class="menu-item" href="/posts/" title="">Posts</a><a class="menu-item" href="/tags/" title="">Tags</a><a class="menu-item" href="/categories/" title="">Categories</a><a class="menu-item" href="/categories/documentation/" title="">Docs</a><a class="menu-item" href="/about/" title="">About</a><a class="menu-item" href="https://github.com/thehackercat" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i></a><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                <i class="fas fa-adjust fa-fw"></i>
+            </a><a href="javascript:void(0);" class="menu-item" title="Select Language">English<i class="fas fa-chevron-right fa-fw"></i>
+                    <select class="language-select" onchange="location = this.value;"><option value="/kubernetes-scheduler-modified-in-meituan/" selected>English</option><option value="/zh-cn/kubernetes-scheduler-modified-in-meituan/">简体中文</option></select>
+                </a></div>
+    </div>
+</header>
+<div class="search-dropdown desktop">
+    <div id="search-dropdown-desktop"></div>
+</div>
+<div class="search-dropdown mobile">
+    <div id="search-dropdown-mobile"></div>
+</div>
+<main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">Contents</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animated flipInX">Kube-scheduler 调度模型与美团本地化改造</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw"></i>LexusLee</a></span>&nbsp;<span class="post-category">included in <a href="/categories/coding/"><i class="far fa-folder fa-fw"></i>Coding</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw"></i>&nbsp;<time datetime="2021-10-09">2021-10-09</time>&nbsp;<i class="fas fa-pencil-alt fa-fw"></i>&nbsp;195 words&nbsp;
+                <i class="far fa-clock fa-fw"></i>&nbsp;One minute&nbsp;</div>
+        </div><div class="details toc" id="toc-static"  kept="">
+                <div class="details-summary toc-title">
+                    <span>Contents</span>
+                    <span><i class="details-icon fas fa-angle-right"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#背景">背景</a>
+      <ul>
+        <li><a href="#hulk-团队介绍">Hulk 团队介绍</a></li>
+        <li><a href="#kube-scheduler-调度模型介绍">Kube-scheduler 调度模型介绍</a></li>
+        <li><a href="#预选阶段">预选阶段</a></li>
+        <li><a href="#打分优选阶段">打分(优选)阶段</a>
+          <ul>
+            <li><a href="#打分规则">打分规则</a></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+    <li><a href="#美团优化">美团优化</a>
+      <ul>
+        <li><a href="#预选中断机制">预选中断机制</a></li>
+        <li><a href="#局部最优解">局部最优解</a></li>
+        <li><a href="#priorityqueue-改造">PriorityQueue 改造</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><h2 id="背景">背景</h2>
+<p>今天主要分享下我在美团 Hulk 团队调度系统组期间学习到的 k8s scheduler 调度模型及美团对于调度器相关改造</p>
+<h3 id="hulk-团队介绍">Hulk 团队介绍</h3>
+<p>Hulk 是美团负责容器云平台的团队, 我所在的组是调度系统组下面的 k8s 小组. 主要负责所有 k8s 相关组件开发维护.</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://s3.us-west-2.amazonaws.com/secure.notion-static.com/2d00a5af-0eee-4522-8995-ddf2c22ff8cb/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;X-Amz-Credential=AKIAT73L2G45O3KS52Y5%2F20211009%2Fus-west-2%2Fs3%2Faws4_request&amp;X-Amz-Date=20211009T020410Z&amp;X-Amz-Expires=86400&amp;X-Amz-Signature=9eeb22d82330a778eb88931c1dda08c1f3c28d2591f49f453ef0407ea8a5ea83&amp;X-Amz-SignedHeaders=host&amp;response-content-disposition=filename%20%3D%22Untitled.png%22"
+        data-srcset="https://s3.us-west-2.amazonaws.com/secure.notion-static.com/2d00a5af-0eee-4522-8995-ddf2c22ff8cb/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;X-Amz-Credential=AKIAT73L2G45O3KS52Y5%2F20211009%2Fus-west-2%2Fs3%2Faws4_request&amp;X-Amz-Date=20211009T020410Z&amp;X-Amz-Expires=86400&amp;X-Amz-Signature=9eeb22d82330a778eb88931c1dda08c1f3c28d2591f49f453ef0407ea8a5ea83&amp;X-Amz-SignedHeaders=host&amp;response-content-disposition=filename%20%3D%22Untitled.png%22, https://s3.us-west-2.amazonaws.com/secure.notion-static.com/2d00a5af-0eee-4522-8995-ddf2c22ff8cb/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;X-Amz-Credential=AKIAT73L2G45O3KS52Y5%2F20211009%2Fus-west-2%2Fs3%2Faws4_request&amp;X-Amz-Date=20211009T020410Z&amp;X-Amz-Expires=86400&amp;X-Amz-Signature=9eeb22d82330a778eb88931c1dda08c1f3c28d2591f49f453ef0407ea8a5ea83&amp;X-Amz-SignedHeaders=host&amp;response-content-disposition=filename%20%3D%22Untitled.png%22 1.5x, https://s3.us-west-2.amazonaws.com/secure.notion-static.com/2d00a5af-0eee-4522-8995-ddf2c22ff8cb/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;X-Amz-Credential=AKIAT73L2G45O3KS52Y5%2F20211009%2Fus-west-2%2Fs3%2Faws4_request&amp;X-Amz-Date=20211009T020410Z&amp;X-Amz-Expires=86400&amp;X-Amz-Signature=9eeb22d82330a778eb88931c1dda08c1f3c28d2591f49f453ef0407ea8a5ea83&amp;X-Amz-SignedHeaders=host&amp;response-content-disposition=filename%20%3D%22Untitled.png%22 2x"
+        data-sizes="auto"
+        alt="https://s3.us-west-2.amazonaws.com/secure.notion-static.com/2d00a5af-0eee-4522-8995-ddf2c22ff8cb/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;X-Amz-Credential=AKIAT73L2G45O3KS52Y5%2F20211009%2Fus-west-2%2Fs3%2Faws4_request&amp;X-Amz-Date=20211009T020410Z&amp;X-Amz-Expires=86400&amp;X-Amz-Signature=9eeb22d82330a778eb88931c1dda08c1f3c28d2591f49f453ef0407ea8a5ea83&amp;X-Amz-SignedHeaders=host&amp;response-content-disposition=filename%20%3D%22Untitled.png%22"
+        title="Hulk 组织架构图" /></p>
+<h3 id="kube-scheduler-调度模型介绍">Kube-scheduler 调度模型介绍</h3>
+<p><em>(本次介绍基于 k8s 1.16 版本)</em></p>
+<p>pod 是 k8s 工作负载的最小实体，也是 scheduler 调度的主要对象。</p>
+<p>k8s 调度器所做的工作，即将 pod 绑定到指定节点上，为 pod 选择合适的节点。</p>
+<p>Scheduler 会先 watch apiserver 获取其中待调度的 pod, 即 pod.spec.nodeName 字段为空的 pod 对象, 通过调用 pod informer 的 handler 并将该 pod 加入调度队列中。</p>
+<p>默认情况下, k8s 调度队列是一个 PriorityQueue, 并且当某些集群信息发生改变时, 调度器会对调度队列的内容进行一些特殊操作. 在这儿不论述.</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://s3.us-west-2.amazonaws.com/secure.notion-static.com/7c7bbabd-8d97-482e-9693-a44977b8350e/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;X-Amz-Credential=AKIAT73L2G45O3KS52Y5%2F20211009%2Fus-west-2%2Fs3%2Faws4_request&amp;X-Amz-Date=20211009T020949Z&amp;X-Amz-Expires=86400&amp;X-Amz-Signature=5a5f172dc3031b9d5f841eb6bdcbc0428e72648891a947422d7196bc77969287&amp;X-Amz-SignedHeaders=host&amp;response-content-disposition=filename%20%3D%22Untitled.png%22"
+        data-srcset="https://s3.us-west-2.amazonaws.com/secure.notion-static.com/7c7bbabd-8d97-482e-9693-a44977b8350e/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;X-Amz-Credential=AKIAT73L2G45O3KS52Y5%2F20211009%2Fus-west-2%2Fs3%2Faws4_request&amp;X-Amz-Date=20211009T020949Z&amp;X-Amz-Expires=86400&amp;X-Amz-Signature=5a5f172dc3031b9d5f841eb6bdcbc0428e72648891a947422d7196bc77969287&amp;X-Amz-SignedHeaders=host&amp;response-content-disposition=filename%20%3D%22Untitled.png%22, https://s3.us-west-2.amazonaws.com/secure.notion-static.com/7c7bbabd-8d97-482e-9693-a44977b8350e/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;X-Amz-Credential=AKIAT73L2G45O3KS52Y5%2F20211009%2Fus-west-2%2Fs3%2Faws4_request&amp;X-Amz-Date=20211009T020949Z&amp;X-Amz-Expires=86400&amp;X-Amz-Signature=5a5f172dc3031b9d5f841eb6bdcbc0428e72648891a947422d7196bc77969287&amp;X-Amz-SignedHeaders=host&amp;response-content-disposition=filename%20%3D%22Untitled.png%22 1.5x, https://s3.us-west-2.amazonaws.com/secure.notion-static.com/7c7bbabd-8d97-482e-9693-a44977b8350e/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;X-Amz-Credential=AKIAT73L2G45O3KS52Y5%2F20211009%2Fus-west-2%2Fs3%2Faws4_request&amp;X-Amz-Date=20211009T020949Z&amp;X-Amz-Expires=86400&amp;X-Amz-Signature=5a5f172dc3031b9d5f841eb6bdcbc0428e72648891a947422d7196bc77969287&amp;X-Amz-SignedHeaders=host&amp;response-content-disposition=filename%20%3D%22Untitled.png%22 2x"
+        data-sizes="auto"
+        alt="https://s3.us-west-2.amazonaws.com/secure.notion-static.com/7c7bbabd-8d97-482e-9693-a44977b8350e/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;X-Amz-Credential=AKIAT73L2G45O3KS52Y5%2F20211009%2Fus-west-2%2Fs3%2Faws4_request&amp;X-Amz-Date=20211009T020949Z&amp;X-Amz-Expires=86400&amp;X-Amz-Signature=5a5f172dc3031b9d5f841eb6bdcbc0428e72648891a947422d7196bc77969287&amp;X-Amz-SignedHeaders=host&amp;response-content-disposition=filename%20%3D%22Untitled.png%22"
+        title="pod 调度序列图" /></p>
+<p>一次调度过程在判断一个 Node是否可作为目标机器时，主要分为三个阶段：</p>
+<ul>
+<li>Predicates 预选阶段：硬性条件，过滤掉不满足条件的节点，这个过程称为 Predicates。这是固定先后顺序的一系列过滤条件，任何一个 Predicate 不符合则放弃该 Node。</li>
+<li>Prioritites 优选阶段：软性条件，对通过的节点按照优先级排序，称之为 Priorities。每一个 Priority 都是一个影响因素，都有一定的权重。</li>
+<li>Select 选定阶段：从优选列表中选择优先级最高的节点，称为 Select。选择的 Node 即为最终部署 Pod 的机器。</li>
+</ul>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://p0.meituan.net/travelcube/ef026e009a90602b853af323f58af5c3266174.jpg"
+        data-srcset="https://p0.meituan.net/travelcube/ef026e009a90602b853af323f58af5c3266174.jpg, https://p0.meituan.net/travelcube/ef026e009a90602b853af323f58af5c3266174.jpg 1.5x, https://p0.meituan.net/travelcube/ef026e009a90602b853af323f58af5c3266174.jpg 2x"
+        data-sizes="auto"
+        alt="https://p0.meituan.net/travelcube/ef026e009a90602b853af323f58af5c3266174.jpg"
+        title="调度流程图" /></p>
+<h3 id="预选阶段">预选阶段</h3>
+<p>Scheduler 起 n 个 goroutine 并发对整个集群的所有 nodes 进行 predicates 串行运算过滤规则，直到最终过滤出符合条件的 nodes 列表</p>
+<h3 id="打分优选阶段">打分(优选)阶段</h3>
+<p>优选阶段，也叫打分阶段，采用 0-10 分加权平均制, 每个优选算法有一定的权重, 优选算法*权重后的积分则为优选阶段最终评分, 0 分为最低分, 10 分为最高分.</p>
+<p>最终会选取打分最高的节点作为调度分配节点.</p>
+<h4 id="打分规则">打分规则</h4>
+<p>最常用为 LeastRequestedPriority 打分规则. 可以简单总结为:</p>
+<p>即, 选择出宿主机空闲资源(cpu/memory)最多的节点。</p>
+<p>同时还有如 BalancedResourceAllocation 打分规则, 其标准是判断调度完成后，所有节点里各种资源分配最均衡的那个节点. 随着社区 scheduler 不断演进, 也不断增加更细粒度的打分算法.</p>
+<p>节点打分算法我们可以抽象为以下公式:</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://static001.infoq.cn/resource/image/cc/1a/ccf8e76258ee68f4fa3085caa881111a.png"
+        data-srcset="https://static001.infoq.cn/resource/image/cc/1a/ccf8e76258ee68f4fa3085caa881111a.png, https://static001.infoq.cn/resource/image/cc/1a/ccf8e76258ee68f4fa3085caa881111a.png 1.5x, https://static001.infoq.cn/resource/image/cc/1a/ccf8e76258ee68f4fa3085caa881111a.png 2x"
+        data-sizes="auto"
+        alt="https://static001.infoq.cn/resource/image/cc/1a/ccf8e76258ee68f4fa3085caa881111a.png"
+        title="节点打分算法" /></p>
+<h2 id="美团优化">美团优化</h2>
+<p>由于早期 kube-scheduler 版本在大规模集群下存在一定的调度时延问题, 未解决该问题, 美团也做了定制化改造.</p>
+<h3 id="预选中断机制">预选中断机制</h3>
+<p>通过深入分析调度过程可以发现，调度器在预选阶段即使已经知道当前 Node不符合某个过滤条件仍然会继续判断后续的过滤条件是否符合。试想如果有上万台 Node节点，这些判断逻辑会浪费很多计算时间，这也是调度器性能低下的一个重要因素。</p>
+<p>为此，我们提出了“预选失败中断机制”，即一旦某个预选条件不满足，那么该 Node即被立即放弃，后面的预选条件不再做判断计算，从而大大减少了计算量，调度性能也大大提升。如下图所示：</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://p1.meituan.net/travelcube/f0fbc86f4397e6b51a6546a53669cfbc181723.jpg"
+        data-srcset="https://p1.meituan.net/travelcube/f0fbc86f4397e6b51a6546a53669cfbc181723.jpg, https://p1.meituan.net/travelcube/f0fbc86f4397e6b51a6546a53669cfbc181723.jpg 1.5x, https://p1.meituan.net/travelcube/f0fbc86f4397e6b51a6546a53669cfbc181723.jpg 2x"
+        data-sizes="auto"
+        alt="https://p1.meituan.net/travelcube/f0fbc86f4397e6b51a6546a53669cfbc181723.jpg"
+        title="改造1" /></p>
+<h3 id="局部最优解">局部最优解</h3>
+<p>当前调度策略中，每次调度调度器都会遍历集群中所有的Node，以便找出最优的节点，这在调度领域称之为BestFit算法。但是在生产环境中，我们是选取最优Node还是次优Node，其实并没有特别大的区别和影响，有时候我们还是会避免选取最优的Node（例如我们集群为了解决新上线机器后频繁在该机器上创建应用的问题，就将最优解随机化）。换句话说，找出局部最优解就能满足需求。</p>
+<p>假设集群一共1000个Node，一次调度过程PodA，这其中有700个Node都能通过Predicates（预选阶段），那么我们就会把所有的Node遍历并找出这700个Node，然后经过得分排序找出最优的Node节点NodeX。但是采用局部最优算法，即我们认为只要能找出N个Node，并在这N个Node中选择得分最高的Node即能满足需求，比如默认找出100个可以通过Predicates（预选阶段）的Node即可，最优解就在这100个Node中选择。当然全局最优解NodeX也可能不在这100个Node中，但是我们在这100个Node中选择最优的NodeY也能满足要求。最好的情况是遍历100个Node就找出这100个Node，也可能遍历了200个或者300个Node等等，这样我们可以大大减少计算时间，同时也不会对我们的调度结果产生太大的影响。</p>
+<p><strong>方案1：</strong></p>
+<p>每次调度只对 K 个 node</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://s3.us-west-2.amazonaws.com/secure.notion-static.com/cc70e943-b5e8-470d-8d2f-e35b54dfed42/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;X-Amz-Credential=AKIAT73L2G45O3KS52Y5%2F20211009%2Fus-west-2%2Fs3%2Faws4_request&amp;X-Amz-Date=20211009T021735Z&amp;X-Amz-Expires=86400&amp;X-Amz-Signature=13c77713f44a98fa842c66af74906eb857e90e8da1b0d3de41c6e1cde64e0573&amp;X-Amz-SignedHeaders=host&amp;response-content-disposition=filename%20%3D%22Untitled.png%22"
+        data-srcset="https://s3.us-west-2.amazonaws.com/secure.notion-static.com/cc70e943-b5e8-470d-8d2f-e35b54dfed42/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;X-Amz-Credential=AKIAT73L2G45O3KS52Y5%2F20211009%2Fus-west-2%2Fs3%2Faws4_request&amp;X-Amz-Date=20211009T021735Z&amp;X-Amz-Expires=86400&amp;X-Amz-Signature=13c77713f44a98fa842c66af74906eb857e90e8da1b0d3de41c6e1cde64e0573&amp;X-Amz-SignedHeaders=host&amp;response-content-disposition=filename%20%3D%22Untitled.png%22, https://s3.us-west-2.amazonaws.com/secure.notion-static.com/cc70e943-b5e8-470d-8d2f-e35b54dfed42/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;X-Amz-Credential=AKIAT73L2G45O3KS52Y5%2F20211009%2Fus-west-2%2Fs3%2Faws4_request&amp;X-Amz-Date=20211009T021735Z&amp;X-Amz-Expires=86400&amp;X-Amz-Signature=13c77713f44a98fa842c66af74906eb857e90e8da1b0d3de41c6e1cde64e0573&amp;X-Amz-SignedHeaders=host&amp;response-content-disposition=filename%20%3D%22Untitled.png%22 1.5x, https://s3.us-west-2.amazonaws.com/secure.notion-static.com/cc70e943-b5e8-470d-8d2f-e35b54dfed42/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;X-Amz-Credential=AKIAT73L2G45O3KS52Y5%2F20211009%2Fus-west-2%2Fs3%2Faws4_request&amp;X-Amz-Date=20211009T021735Z&amp;X-Amz-Expires=86400&amp;X-Amz-Signature=13c77713f44a98fa842c66af74906eb857e90e8da1b0d3de41c6e1cde64e0573&amp;X-Amz-SignedHeaders=host&amp;response-content-disposition=filename%20%3D%22Untitled.png%22 2x"
+        data-sizes="auto"
+        alt="https://s3.us-west-2.amazonaws.com/secure.notion-static.com/cc70e943-b5e8-470d-8d2f-e35b54dfed42/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;X-Amz-Credential=AKIAT73L2G45O3KS52Y5%2F20211009%2Fus-west-2%2Fs3%2Faws4_request&amp;X-Amz-Date=20211009T021735Z&amp;X-Amz-Expires=86400&amp;X-Amz-Signature=13c77713f44a98fa842c66af74906eb857e90e8da1b0d3de41c6e1cde64e0573&amp;X-Amz-SignedHeaders=host&amp;response-content-disposition=filename%20%3D%22Untitled.png%22"
+        title="调度改造2.1" /></p>
+<p><strong>方案2：</strong></p>
+<p>每次调度对全量 node, 一旦某一个打分超过水位线, 则终止其他 node 打分</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://s3.us-west-2.amazonaws.com/secure.notion-static.com/a46f7af3-bd50-402d-ad84-a0ebc6fb41a9/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;X-Amz-Credential=AKIAT73L2G45O3KS52Y5%2F20211009%2Fus-west-2%2Fs3%2Faws4_request&amp;X-Amz-Date=20211009T021802Z&amp;X-Amz-Expires=86400&amp;X-Amz-Signature=96bee6946eb515e5554813590f64f34b88aaba57bbff6d4c03401b57a8b5e42f&amp;X-Amz-SignedHeaders=host&amp;response-content-disposition=filename%20%3D%22Untitled.png%22"
+        data-srcset="https://s3.us-west-2.amazonaws.com/secure.notion-static.com/a46f7af3-bd50-402d-ad84-a0ebc6fb41a9/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;X-Amz-Credential=AKIAT73L2G45O3KS52Y5%2F20211009%2Fus-west-2%2Fs3%2Faws4_request&amp;X-Amz-Date=20211009T021802Z&amp;X-Amz-Expires=86400&amp;X-Amz-Signature=96bee6946eb515e5554813590f64f34b88aaba57bbff6d4c03401b57a8b5e42f&amp;X-Amz-SignedHeaders=host&amp;response-content-disposition=filename%20%3D%22Untitled.png%22, https://s3.us-west-2.amazonaws.com/secure.notion-static.com/a46f7af3-bd50-402d-ad84-a0ebc6fb41a9/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;X-Amz-Credential=AKIAT73L2G45O3KS52Y5%2F20211009%2Fus-west-2%2Fs3%2Faws4_request&amp;X-Amz-Date=20211009T021802Z&amp;X-Amz-Expires=86400&amp;X-Amz-Signature=96bee6946eb515e5554813590f64f34b88aaba57bbff6d4c03401b57a8b5e42f&amp;X-Amz-SignedHeaders=host&amp;response-content-disposition=filename%20%3D%22Untitled.png%22 1.5x, https://s3.us-west-2.amazonaws.com/secure.notion-static.com/a46f7af3-bd50-402d-ad84-a0ebc6fb41a9/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;X-Amz-Credential=AKIAT73L2G45O3KS52Y5%2F20211009%2Fus-west-2%2Fs3%2Faws4_request&amp;X-Amz-Date=20211009T021802Z&amp;X-Amz-Expires=86400&amp;X-Amz-Signature=96bee6946eb515e5554813590f64f34b88aaba57bbff6d4c03401b57a8b5e42f&amp;X-Amz-SignedHeaders=host&amp;response-content-disposition=filename%20%3D%22Untitled.png%22 2x"
+        data-sizes="auto"
+        alt="https://s3.us-west-2.amazonaws.com/secure.notion-static.com/a46f7af3-bd50-402d-ad84-a0ebc6fb41a9/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;X-Amz-Credential=AKIAT73L2G45O3KS52Y5%2F20211009%2Fus-west-2%2Fs3%2Faws4_request&amp;X-Amz-Date=20211009T021802Z&amp;X-Amz-Expires=86400&amp;X-Amz-Signature=96bee6946eb515e5554813590f64f34b88aaba57bbff6d4c03401b57a8b5e42f&amp;X-Amz-SignedHeaders=host&amp;response-content-disposition=filename%20%3D%22Untitled.png%22"
+        title="调度改造1.2" /></p>
+<h3 id="priorityqueue-改造">PriorityQueue 改造</h3>
+<p>PriorityQueue 其实内部细分为多个 Queue 数据结构.</p>
+<ul>
+<li>ActiveQ 待调度队列</li>
+<li>BackOffQ Bind失败队列</li>
+<li>UnscheduledQ 调度失败队列</li>
+<li>其余与本次改造无关的队列(此处不一一列举)&hellip;</li>
+</ul>
+<p>当某一时刻出现大量调度失败的高优先级 bad pods 时，由于重调度组件和 priorityQueue 机制，会导致这些 bad pods 重新回到 activeQ 队列头, 导致低优先级的正常 pod 无法调度.</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://s3.us-west-2.amazonaws.com/secure.notion-static.com/620dec26-9db1-42b1-aa15-221f3923cfc0/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;X-Amz-Credential=AKIAT73L2G45O3KS52Y5%2F20211009%2Fus-west-2%2Fs3%2Faws4_request&amp;X-Amz-Date=20211009T021859Z&amp;X-Amz-Expires=86400&amp;X-Amz-Signature=3a6a04d2c8be2dbd707d9db382a210ff00fc7d2ee8eb711b85b6c5f778272567&amp;X-Amz-SignedHeaders=host&amp;response-content-disposition=filename%20%3D%22Untitled.png%22"
+        data-srcset="https://s3.us-west-2.amazonaws.com/secure.notion-static.com/620dec26-9db1-42b1-aa15-221f3923cfc0/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;X-Amz-Credential=AKIAT73L2G45O3KS52Y5%2F20211009%2Fus-west-2%2Fs3%2Faws4_request&amp;X-Amz-Date=20211009T021859Z&amp;X-Amz-Expires=86400&amp;X-Amz-Signature=3a6a04d2c8be2dbd707d9db382a210ff00fc7d2ee8eb711b85b6c5f778272567&amp;X-Amz-SignedHeaders=host&amp;response-content-disposition=filename%20%3D%22Untitled.png%22, https://s3.us-west-2.amazonaws.com/secure.notion-static.com/620dec26-9db1-42b1-aa15-221f3923cfc0/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;X-Amz-Credential=AKIAT73L2G45O3KS52Y5%2F20211009%2Fus-west-2%2Fs3%2Faws4_request&amp;X-Amz-Date=20211009T021859Z&amp;X-Amz-Expires=86400&amp;X-Amz-Signature=3a6a04d2c8be2dbd707d9db382a210ff00fc7d2ee8eb711b85b6c5f778272567&amp;X-Amz-SignedHeaders=host&amp;response-content-disposition=filename%20%3D%22Untitled.png%22 1.5x, https://s3.us-west-2.amazonaws.com/secure.notion-static.com/620dec26-9db1-42b1-aa15-221f3923cfc0/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;X-Amz-Credential=AKIAT73L2G45O3KS52Y5%2F20211009%2Fus-west-2%2Fs3%2Faws4_request&amp;X-Amz-Date=20211009T021859Z&amp;X-Amz-Expires=86400&amp;X-Amz-Signature=3a6a04d2c8be2dbd707d9db382a210ff00fc7d2ee8eb711b85b6c5f778272567&amp;X-Amz-SignedHeaders=host&amp;response-content-disposition=filename%20%3D%22Untitled.png%22 2x"
+        data-sizes="auto"
+        alt="https://s3.us-west-2.amazonaws.com/secure.notion-static.com/620dec26-9db1-42b1-aa15-221f3923cfc0/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;X-Amz-Credential=AKIAT73L2G45O3KS52Y5%2F20211009%2Fus-west-2%2Fs3%2Faws4_request&amp;X-Amz-Date=20211009T021859Z&amp;X-Amz-Expires=86400&amp;X-Amz-Signature=3a6a04d2c8be2dbd707d9db382a210ff00fc7d2ee8eb711b85b6c5f778272567&amp;X-Amz-SignedHeaders=host&amp;response-content-disposition=filename%20%3D%22Untitled.png%22"
+        title="调度 bad case" /></p>
+<p><strong>降级方案:</strong></p>
+<p>当 ActiveQ 出现大量积压时, 且存在 Unscheduled pods 时 PriorityQueue 降级为 FIFO Queue, 确保 bad pods 在下一个调度周期进入到队列尾, 保证 good pod 能被正常调度</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://s3.us-west-2.amazonaws.com/secure.notion-static.com/68a22bf1-2aa8-4411-95e0-491b38e5ad0e/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;X-Amz-Credential=AKIAT73L2G45O3KS52Y5%2F20211009%2Fus-west-2%2Fs3%2Faws4_request&amp;X-Amz-Date=20211009T021928Z&amp;X-Amz-Expires=86400&amp;X-Amz-Signature=42b05b27786551396c10767c9d09b76758afe8f98b4d1b530410f97624a932ac&amp;X-Amz-SignedHeaders=host&amp;response-content-disposition=filename%20%3D%22Untitled.png%22"
+        data-srcset="https://s3.us-west-2.amazonaws.com/secure.notion-static.com/68a22bf1-2aa8-4411-95e0-491b38e5ad0e/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;X-Amz-Credential=AKIAT73L2G45O3KS52Y5%2F20211009%2Fus-west-2%2Fs3%2Faws4_request&amp;X-Amz-Date=20211009T021928Z&amp;X-Amz-Expires=86400&amp;X-Amz-Signature=42b05b27786551396c10767c9d09b76758afe8f98b4d1b530410f97624a932ac&amp;X-Amz-SignedHeaders=host&amp;response-content-disposition=filename%20%3D%22Untitled.png%22, https://s3.us-west-2.amazonaws.com/secure.notion-static.com/68a22bf1-2aa8-4411-95e0-491b38e5ad0e/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;X-Amz-Credential=AKIAT73L2G45O3KS52Y5%2F20211009%2Fus-west-2%2Fs3%2Faws4_request&amp;X-Amz-Date=20211009T021928Z&amp;X-Amz-Expires=86400&amp;X-Amz-Signature=42b05b27786551396c10767c9d09b76758afe8f98b4d1b530410f97624a932ac&amp;X-Amz-SignedHeaders=host&amp;response-content-disposition=filename%20%3D%22Untitled.png%22 1.5x, https://s3.us-west-2.amazonaws.com/secure.notion-static.com/68a22bf1-2aa8-4411-95e0-491b38e5ad0e/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;X-Amz-Credential=AKIAT73L2G45O3KS52Y5%2F20211009%2Fus-west-2%2Fs3%2Faws4_request&amp;X-Amz-Date=20211009T021928Z&amp;X-Amz-Expires=86400&amp;X-Amz-Signature=42b05b27786551396c10767c9d09b76758afe8f98b4d1b530410f97624a932ac&amp;X-Amz-SignedHeaders=host&amp;response-content-disposition=filename%20%3D%22Untitled.png%22 2x"
+        data-sizes="auto"
+        alt="https://s3.us-west-2.amazonaws.com/secure.notion-static.com/68a22bf1-2aa8-4411-95e0-491b38e5ad0e/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;X-Amz-Credential=AKIAT73L2G45O3KS52Y5%2F20211009%2Fus-west-2%2Fs3%2Faws4_request&amp;X-Amz-Date=20211009T021928Z&amp;X-Amz-Expires=86400&amp;X-Amz-Signature=42b05b27786551396c10767c9d09b76758afe8f98b4d1b530410f97624a932ac&amp;X-Amz-SignedHeaders=host&amp;response-content-disposition=filename%20%3D%22Untitled.png%22"
+        title="降级方案流程图" /></p>
+</div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>Updated on 2021-10-09</span>
+            </div>
+            <div class="post-info-license"></div>
+        </div>
+        <div class="post-info-line">
+            <div class="post-info-md"><span>
+                            <a class="link-to-markdown" href="/kubernetes-scheduler-modified-in-meituan/index.md" target="_blank">Read Markdown</a>
+                        </span></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="Share on Twitter" data-sharer="twitter" data-url="https://example.com/kubernetes-scheduler-modified-in-meituan/" data-title="Kube-scheduler 调度模型与美团本地化改造" data-via="lexuscyborg103" data-hashtags="Kubernetes,Linux"><i class="fab fa-twitter fa-fw"></i></a><a href="javascript:void(0);" title="Share on 微博" data-sharer="weibo" data-url="https://example.com/kubernetes-scheduler-modified-in-meituan/" data-title="Kube-scheduler 调度模型与美团本地化改造"><i class="fab fa-weibo fa-fw"></i></a><a href="javascript:void(0);" title="Share on Evernote" data-sharer="evernote" data-url="https://example.com/kubernetes-scheduler-modified-in-meituan/" data-title="Kube-scheduler 调度模型与美团本地化改造"><i class="fab fa-evernote fa-fw"></i></a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw"></i>&nbsp;<a href="/tags/kubernetes/">Kubernetes</a>,&nbsp;<a href="/tags/linux/">Linux</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">Back</a></span>&nbsp;|&nbsp;<span><a href="/">Home</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/talk-about-cloud-based-release-platform/" class="prev" rel="prev" title="云原生下发布平台建设思考"><i class="fas fa-angle-left fa-fw"></i>云原生下发布平台建设思考</a></div>
+</div>
+</article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line"><i class="far fa-copyright fa-fw"></i><span itemprop="copyrightYear">2015 - 2021</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/" target="_blank">LexusLee</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="Back to Top">
+                <i class="fas fa-arrow-up fa-fw"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="View Comments">
+                <i class="fas fa-comment fa-fw"></i>
+            </a>
+        </div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery.js@1.2.0/dist/css/lightgallery.min.css"><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/smooth-scroll@16.1.3/dist/smooth-scroll.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/autocomplete.js@0.37.1/dist/autocomplete.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/algoliasearch@4.2.0/dist/algoliasearch-lite.umd.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lazysizes@5.2.2/lazysizes.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lightgallery.js@1.2.0/dist/js/lightgallery.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lg-thumbnail.js@1.2.0/dist/lg-thumbnail.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lg-zoom.js@1.2.0/dist/lg-zoom.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/clipboard@2.0.6/dist/clipboard.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sharer.js@0.4.0/sharer.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"Copy to clipboard","maxShownLines":10},"comment":{},"lightGallery":{"actualSize":false,"exThumbImage":"data-thumbnail","hideBarsDelay":2000,"selector":".lightgallery","speed":400,"thumbContHeight":80,"thumbWidth":80,"thumbnail":true},"search":{"algoliaAppID":"PASDMWALPK","algoliaIndex":"index.en","algoliaSearchKey":"b42948e51daaa93df92381c8e2ac0f93","highlightTag":"em","maxResultLength":10,"noResultsFound":"No results found","snippetLength":30,"type":"algolia"}};</script><script type="text/javascript" src="/js/theme.min.js"></script></body>
+</html>

@@ -4,7 +4,22 @@
         <link>https://example.com/categories/coding/</link>
         <description>Coding - Category - LexusLee&#39;s blog</description>
         <generator>Hugo -- gohugo.io</generator><language>en</language><managingEditor>lexuscyborg103@gmail.com (LexusLee)</managingEditor>
-            <webMaster>lexuscyborg103@gmail.com (LexusLee)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Sat, 02 Oct 2021 11:04:16 &#43;0800</lastBuildDate><atom:link href="https://example.com/categories/coding/" rel="self" type="application/rss+xml" /><item>
+            <webMaster>lexuscyborg103@gmail.com (LexusLee)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Sat, 09 Oct 2021 09:57:53 &#43;0800</lastBuildDate><atom:link href="https://example.com/categories/coding/" rel="self" type="application/rss+xml" /><item>
+    <title>Kube-scheduler 调度模型与美团本地化改造</title>
+    <link>https://example.com/kubernetes-scheduler-modified-in-meituan/</link>
+    <pubDate>Sat, 09 Oct 2021 09:57:53 &#43;0800</pubDate>
+    <author>Author</author>
+    <guid>https://example.com/kubernetes-scheduler-modified-in-meituan/</guid>
+    <description><![CDATA[背景 今天主要分享下我在美团 Hulk 团队调度系统组期间学习到的 k8s scheduler 调度模型及美团对于调度器相关改造
+Hulk 团队介绍 Hulk 是美团负责容器云平台的团队, 我所在的组是调度系统组下面的 k8s 小组. 主要负责所有 k8s 相关组件开发维护.
+Kube-scheduler 调度模型介绍 (本次介绍基于 k8s 1.16 版本)
+pod 是 k8s 工作负载的最小实体，也是 scheduler 调度的主要对象。
+k8s 调度器所做的工作，即将 pod 绑定到指定节点上，为 pod 选择合适的节点。
+Scheduler 会先 watch apiserver 获取其中待调度的 pod, 即 pod.spec.nodeName 字段为空的 pod 对象, 通过调用 pod informer 的 handler 并将该 pod 加入调度队列中。
+默认情况下, k8s 调度队列是一个 PriorityQueue, 并且当某些集群信息发生改变时, 调度器会对调度队列的内容进行一些特殊操作. 在这儿不论述.
+一次调度过程在判断一个 Node是否可作为目标机器时，主要分为三个阶段：
+ Predicates 预选阶段：硬性条件，过滤掉不满足条件的节点，这个过程称为 Predicates。这是固定先后顺序的一系列过滤条件，任何一个 Predicate 不符合则放弃该 Node。 Prioritites 优选阶段：软性条件，对通过的节点按照优先级排序，称之为 Priorities。每一个 Priority 都是一个影响因素，都有一定的权重。 Select 选定阶段：从优选列表中选择优先级最高的节点，称为 Select。选择的 Node 即为最终部署 Pod 的机器。  预选阶段 Scheduler 起 n 个 goroutine 并发对整个集群的所有 nodes 进行 predicates 串行运算过滤规则，直到最终过滤出符合条件的 nodes 列表]]></description>
+</item><item>
     <title>云原生下发布平台建设思考</title>
     <link>https://example.com/talk-about-cloud-based-release-platform/</link>
     <pubDate>Sat, 02 Oct 2021 11:04:16 &#43;0800</pubDate>
@@ -119,16 +134,5 @@ Ref https://github.com/kubernetes/kubernetes/issues/75482#issuecomment-511476698
 代码解读 出于分析上述问题的目的, 读了下 cronjob controller 的代码, 代码量不多, 可能由于没上 GA 的原因, 整个 controllor 代码的设计也比较过程式, 不会像其他组件用到一些比如 Informer, refractor之类的组件读起来相对晦涩
 下面开始解读下 release1.17 分支的 k8s cronjob controller 代码
  Controller struct  1 2 3 4 5 6 7  type Controller struct { kubeClient clientset.]]></description>
-</item><item>
-    <title>记一次升级 kube-proxy ipvs 引发的线上故障</title>
-    <link>https://example.com/kubeproxy-ipvs-accident/</link>
-    <pubDate>Mon, 29 Apr 2019 19:10:46 &#43;0000</pubDate>
-    <author>Author</author>
-    <guid>https://example.com/kubeproxy-ipvs-accident/</guid>
-    <description><![CDATA[背景 最近在升级集群的 kube-prxoy 并开启 ipvs mode, 引发了一些线上故障
-替换原因 由于豆瓣的集群使用 calico + kube-proxy iptables mode + puppet iptable 脚本管理
-三个组件共同操作同一份 iptables, 容易出现 race condition 问题, 并且还会互相抢占 iptables 锁, 是个 Mutex unsafe 的操作, 不易于维护.
-故打算尽量减少操作 iptables 的部分, 替换成 ipvs
-事故回溯 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24  @400000005cbea9a81eaf9164 W0423 13:58:54.514773 14016 server.go:195] WARNING: all flags other than --config, --write-config-to, and --cleanup are deprecated.]]></description>
 </item></channel>
 </rss>

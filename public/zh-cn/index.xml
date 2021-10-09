@@ -4,9 +4,16 @@
         <link>https://example.com/zh-cn/</link>
         <description>LexusLee personal blog, recording things you people wouldn&#39;t believe. Like attack ships on fire off the shoulder of Orion, c-beams glitter in the dark near the Tannhauser Gate.</description>
         <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>lexuscyborg103@gmail.com (LexusLee)</managingEditor>
-            <webMaster>lexuscyborg103@gmail.com (LexusLee)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Sat, 02 Oct 2021 11:04:16 &#43;0800</lastBuildDate>
+            <webMaster>lexuscyborg103@gmail.com (LexusLee)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Sat, 09 Oct 2021 09:57:53 &#43;0800</lastBuildDate>
             <atom:link href="https://example.com/zh-cn/index.xml" rel="self" type="application/rss+xml" />
         <item>
+    <title>Kube-scheduler 调度模型与美团本地化改造</title>
+    <link>https://example.com/zh-cn/kubernetes-scheduler-modified-in-meituan/</link>
+    <pubDate>Sat, 09 Oct 2021 09:57:53 &#43;0800</pubDate>
+    <author>作者</author>
+    <guid>https://example.com/zh-cn/kubernetes-scheduler-modified-in-meituan/</guid>
+    <description><![CDATA[背景 今天主要分享下我在美团 Hulk 团队调度系统组期间学习到的 k8s scheduler 调度模型及美团对于调度器相关改造 Hulk 团队介绍 Hulk 是美团负责容器云平台的团队, 我所在的组]]></description>
+</item><item>
     <title>云原生下发布平台建设思考</title>
     <link>https://example.com/zh-cn/talk-about-cloud-based-release-platform/</link>
     <pubDate>Sat, 02 Oct 2021 11:04:16 &#43;0800</pubDate>
@@ -74,12 +81,5 @@
     <author>作者</author>
     <guid>https://example.com/zh-cn/upgrade-dockerd-in-k8s/</guid>
     <description><![CDATA[背景 最近需要给 k8s 集群升级 docker, 预期升到 19.03.x. 遇到一些问题, 记录下 调试期间遇到的问题: 集群中的 ingress 是以 daemonsets 方式部署, 通过 node-selector 选择节点定死. 而 kubectl drain node 并不 evict daemonset pods.]]></description>
-</item><item>
-    <title>告警收敛设计</title>
-    <link>https://example.com/zh-cn/alert-convergence/</link>
-    <pubDate>Tue, 07 Jul 2020 22:30:07 &#43;0000</pubDate>
-    <author>作者</author>
-    <guid>https://example.com/zh-cn/alert-convergence/</guid>
-    <description><![CDATA[背景 最近在豆瓣做面向开发者的 op 报警系统, 最头疼的是下列几种情况 脉冲型报警 单个原因引起的报警发散 多个报警为同个诱因 由于目前现有的一些告警系统都]]></description>
 </item></channel>
 </rss>
