@@ -105,4 +105,5 @@ PriorityQueue 其实内部细分为多个 Queue 数据结构.
 
 当 ActiveQ 出现大量积压时, 且存在 Unscheduled pods 时 PriorityQueue 降级为 FIFO Queue, 确保 bad pods 在下一个调度周期进入到队列尾, 保证 good pod 能被正常调度
 
+![降级方案流程图](https://s3.us-west-2.amazonaws.com/secure.notion-static.com/68a22bf1-2aa8-4411-95e0-491b38e5ad0e/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAT73L2G45O3KS52Y5%2F20211009%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20211009T021928Z&X-Amz-Expires=86400&X-Amz-Signature=42b05b27786551396c10767c9d09b76758afe8f98b4d1b530410f97624a932ac&X-Amz-SignedHeaders=host&response-content-disposition=filename%20%3D%22Untitled.png%22)
 

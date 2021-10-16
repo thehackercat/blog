@@ -13,7 +13,7 @@ I usually like to dive into technical forums HackerNews, Wooyun, InfoQ, etc., an
 
 Currently my technology stack is focusing on cloud platform development, basically Kubernetes stuffs. The main languages I used mostly are Python/Golang. What Python attracts me is it has simple syntax sugar and very easy to use, the most often criticized defect of Python, slow interpreter, is getting well After Python 3.6 async came along, it gradually improved. However, when dealing with CPU-bound tasks, Golang performs better, I found out.
 
-Diving into Golang/Kubernetes/Service Mesh recently.
+Diving into CloudNative/Kubernetes/Service Mesh recently.
 
 Also I have a strong passion for interaction design. I feel that an app is for people, and should be relevant to human habits and follow a high-quality human aesthetic.
 
@@ -33,19 +33,18 @@ Of course, the article is limited by time and my superficial understanding of so
 
 You can share in the comments, or contact me by :(fas fa-share-square fa-fw): [email](mailto://lexuscyborg103@gmail.com) or :(fas fa-comment-dots fa-fw): [Twitter](https://twitter.com/lexuscyborg103).
 
-#### Film Festival
+#### I also blog there
 
-* :(fas fa-video fa-fw): 2018 Beijing International Film Festival
-* :(fas fa-video fa-fw): 2019 Beijing International Film Festival
-* :(fas fa-video fa-fw): 2019 Shanghai International Film Festival
-* :(fas fa-video fa-fw): 2019 Taibei Film Festival
+* Wechat: lexusscofieldlee
+* Juejin: https://juejin.cn/user/2612095360185543
+* Jianshu: https://www.jianshu.com/u/429597c212e8
 
 #### TODO List
 
-* Seen 3,000 movies before 30 years old.
+* Seen 2,000 movies before 30 years old.
 * Being a superhero for once.
-* Let the wind stop. 🌪
 * Contact with aliens once. 👽
+* Been to Adele's Live.
 * Been to Sicily.
-* See the aurora borealis once.
+* See the aurora borealis once. 🌟
 

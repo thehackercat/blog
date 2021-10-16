@@ -13,7 +13,7 @@
 
 目前技术栈集中在云平台开发，主要用到的语言是 Python/Golang，Python 吸引我在于他语法简洁语法糖易用，常被诟病的Python速度慢也在 Python3.6 之后的async出现后逐渐改善.不过在处理 CPU bound 任务时表现比较差, 这部分 Golang 则更好地解决了.
 
-近来对 Golang/Kubernetes/Service Mesh 感兴趣, 尝试 Dive into it.
+近来对 CloudNative/Kubernetes/Service Mesh 感兴趣, 尝试 Dive into it.
 
 在编程之外，我还喜欢刷些 Dribbble 、 Pinterest 等设计师论坛，对其中精妙的设计十分着迷，对交互设计也有极大的兴趣，感觉一个 app 是为人服务的，应该贴切人类的使用习惯并遵循人类优质的审美风格。
 
@@ -27,25 +27,23 @@
 
 二是技术上记录下我踩过的一些坑, 防止未来第二次掉入
 
-**希望这些我自己揣摩的东西能够真正对你产生帮助, 我也以次获取肯定, 一定会非常开心**
+**希望这些我自己揣摩的东西能够真正对你产生帮助, 我也以此获取肯定, 一定会非常开心**
 
-当然了, 写的文章受限于时间和我对一些原理浅薄的揣摩, 难免有错, 也望指正
+当然了, 写的文章受限于时间和个人理解, 难免有错, 也望指正
 
-可以在评论中交流, 或通过 :(fas fa-share-square fa-fw): [邮件](mailto://lexuscyborg103@gmail.com), :(fas fa-comment-dots fa-fw): [LexusLee@Twitter](https://twitter.com/lexuscyborg103) 我.
+欢迎在评论中交流, 或通过 :(fas fa-share-square fa-fw): [邮件](mailto://lexuscyborg103@gmail.com), :(fas fa-comment-dots fa-fw): [LexusLee@Twitter](https://twitter.com/lexuscyborg103) 我.
 
-#### 我去过的电影节
+#### 其他博客地址
 
-* :(fas fa-video fa-fw): 2018 北京国际电影节
-* :(fas fa-video fa-fw): 2019 北京国际电影节
-* :(fas fa-video fa-fw): 2019 上海国际电影节
-* :(fas fa-video fa-fw): 2019 台北电影节
+* 微信公众号: lexusscofieldlee
+* 掘金: https://juejin.cn/user/2612095360185543
+* 简书: https://www.jianshu.com/u/429597c212e8
+#### 近期想做的事
 
-#### 想做的事
-
-* 30 岁前看过 > 3000 部电影
+* 30 岁前看过 > 2000 部电影
 * 当一次超级英雄
-* 让风停下来 🌪
-* 接触过一次 👽
 * 去过一趟西西里
-* 看一次极光
+* 听一场 Adele 的 Live
+* 接触过一次 👽
+* 看一次极光 🌟
 
