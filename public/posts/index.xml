@@ -4,7 +4,29 @@
         <link>https://example.com/posts/</link>
         <description>All Posts | LexusLee&#39;s blog</description>
         <generator>Hugo -- gohugo.io</generator><language>en</language><managingEditor>lexuscyborg103@gmail.com (LexusLee)</managingEditor>
-            <webMaster>lexuscyborg103@gmail.com (LexusLee)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Sat, 09 Oct 2021 09:57:53 &#43;0800</lastBuildDate><atom:link href="https://example.com/posts/" rel="self" type="application/rss+xml" /><item>
+            <webMaster>lexuscyborg103@gmail.com (LexusLee)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Tue, 16 Nov 2021 11:46:09 &#43;0800</lastBuildDate><atom:link href="https://example.com/posts/" rel="self" type="application/rss+xml" /><item>
+    <title>从 Facebook 故障开始探索 BGP 工具使用</title>
+    <link>https://example.com/tools-to-explore-bgp/</link>
+    <pubDate>Tue, 16 Nov 2021 11:46:09 &#43;0800</pubDate>
+    <author>Author</author>
+    <guid>https://example.com/tools-to-explore-bgp/</guid>
+    <description><![CDATA[背景 上个月，Facebook 发生了一次由 BGP 引起的大型故障，从故障报告 中我确实看得云里雾里。所以近期阅读一些文章，期望深入学习。
+这篇博文将会分享一些我如何学习 BGP 的过程及用来查询 BGP 信息的相关工具使用。因为我对 BGP 不是那么了解，故文章难免有不精确的部分，希望多多交流。
+BGP 探索之路 如何发布BGP路由 之前我从没有开始接触 BGP 的原因之一是&ndash;我不知道如何在我的服务器上通过 BGP 发布路由。
+对于大多数网络协议，如果你愿意，都可以折腾，自己实现协议。例如，你可以。
+  发行你自己的TLS证书
+  编写你自己的HTTP服务器
+  编写你自己的TCP实现
+  为你的域名编写你自己的权威DNS服务器
+  建立你自己的证书颁发机构
+  但对于BGP，我认为除非你拥有自己的 ASN，否则不能自己发布路由，尽管可能可以在你的家庭网络上实现BGP，但我希望它们运行在真正的互联网上。
+于是我开始着手于如何在我的服务器上发布 BGP 路由。
+首先我们来谈谈 BGP 的一些术语。这部分我会简单的介绍，因为我对工具更感兴趣，而且网上有很多关于 BGP 的高水平资料（比如 cloudflare 的这篇帖子）。
+什么是 AS（autonomous system）？ 我们需要了解的第一件术语是 AS。每一个 AS 都是什么呢？
+参考这篇维基百科, 他们有以下特征，
+  由一个组织拥有的（通常是一个大型组织，如你的ISP，政府，大学，Facebook，等等）
+  他们能控制一组特定的 IP 地址（例如，我的 ISP 的 AS 包括 247,808 个IP地址）。]]></description>
+</item><item>
     <title>Kube-scheduler 调度模型与美团本地化改造</title>
     <link>https://example.com/kubernetes-scheduler-modified-in-meituan/</link>
     <pubDate>Sat, 09 Oct 2021 09:57:53 &#43;0800</pubDate>
@@ -162,17 +184,5 @@ Autopilot是Google在其内部云上使用的主要自动缩放器。 它提供�
     <guid>https://example.com/apps-liat-for-macbook/</guid>
     <description><![CDATA[Enumerate the list of apps that need to be installed on my migrated work computer at the moment. I&rsquo;ll consider adding it to the sync tool later.
 Develop  Vscode Sublime Sourcetree Github Desktop Iterm2 Postman Cyberduck Docker  Command-line  oh-my-zsh homebrew homebrew cask tmux ack ag bat autojump job fselect  Prototype  draw.io desktop XMind Sketch  Database  Sequel Pro (for MySql) Navicat (for PostgreSql) Redis Manager  IM  Wechat Qiye Wechat Slack  浏览器  Chrome  Browser  Typora Notion  RSS  Leaf  Wallpaper  Iruve  System tools  CleanMyMac Dozer  Password  1Password  Music  NetEase Music Spotify  Video Player  IINA  Util Tool  Paste Yoink Beyond Compare Handshake Quicklook  GTD  Fantastical 2   ]]></description>
-</item><item>
-    <title>升级 k8s 集群 docker</title>
-    <link>https://example.com/upgrade-dockerd-in-k8s/</link>
-    <pubDate>Fri, 10 Jul 2020 19:10:46 &#43;0000</pubDate>
-    <author>Author</author>
-    <guid>https://example.com/upgrade-dockerd-in-k8s/</guid>
-    <description><![CDATA[背景 最近需要给 k8s 集群升级 docker, 预期升到 19.03.x.
-遇到一些问题, 记录下
-调试期间遇到的问题: 集群中的 ingress 是以 daemonsets 方式部署, 通过 node-selector 选择节点定死.
-而 kubectl drain node 并不 evict daemonset pods. 故在升级/重启 dockerd 期间会造成 ingress 短暂不可用. 而现有的 lb 的 health check 不能 cover 这一点, 仍会有流量打入.会导致升级期间 ingress 流量黑洞问题.
-并且 dockerd 拉起来后, 有些 daemonsets 由于 ingress 自身 livenessProbe 等原因在 dockerd 升级期间持续 crashLoopbackoff 了, 一个原因是仍然 mount 一份旧的 docker overlay. 在 delete pod 重启后恢复. 故需要一个手段在升级后重启 ingress pods.
-Ref https://github.com/kubernetes/kubernetes/issues/75482#issuecomment-511476698]]></description>
 </item></channel>
 </rss>

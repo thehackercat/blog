@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1">
+        <title>从 Facebook 故障开始探索 BGP 工具使用 - LexusLee&#39;s blog</title><meta name="Description" content="LexusLee personal blog, recording things you people wouldn&#39;t believe. Like attack ships on fire off the shoulder of Orion, c-beams glitter in the dark near the Tannhauser Gate."><meta property="og:title" content="从 Facebook 故障开始探索 BGP 工具使用" />
+<meta property="og:description" content="背景 上个月，Facebook 发生了一次由 BGP 引起的大型故障，从故障报告 中我确实看得云里雾里。所以近期阅读一些文章，期望深入学习。
+这篇博文将会分享一些我如何学习 BGP 的过程及用来查询 BGP 信息的相关工具使用。因为我对 BGP 不是那么了解，故文章难免有不精确的部分，希望多多交流。
+BGP 探索之路 如何发布BGP路由 之前我从没有开始接触 BGP 的原因之一是&ndash;我不知道如何在我的服务器上通过 BGP 发布路由。
+对于大多数网络协议，如果你愿意，都可以折腾，自己实现协议。例如，你可以。
+  发行你自己的TLS证书
+  编写你自己的HTTP服务器
+  编写你自己的TCP实现
+  为你的域名编写你自己的权威DNS服务器
+  建立你自己的证书颁发机构
+  但对于BGP，我认为除非你拥有自己的 ASN，否则不能自己发布路由，尽管可能可以在你的家庭网络上实现BGP，但我希望它们运行在真正的互联网上。
+于是我开始着手于如何在我的服务器上发布 BGP 路由。
+首先我们来谈谈 BGP 的一些术语。这部分我会简单的介绍，因为我对工具更感兴趣，而且网上有很多关于 BGP 的高水平资料（比如 cloudflare 的这篇帖子）。
+什么是 AS（autonomous system）？ 我们需要了解的第一件术语是 AS。每一个 AS 都是什么呢？
+参考这篇维基百科, 他们有以下特征，
+  由一个组织拥有的（通常是一个大型组织，如你的ISP，政府，大学，Facebook，等等）
+  他们能控制一组特定的 IP 地址（例如，我的 ISP 的 AS 包括 247,808 个IP地址）。" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://example.com/tools-to-explore-bgp/" />
+<meta property="og:image" content="https://example.com/logo.png"/>
+<meta property="article:published_time" content="2021-11-16T11:46:09+08:00" />
+<meta property="article:modified_time" content="2021-11-16T11:46:09+08:00" />
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://example.com/logo.png"/>
+
+<meta name="twitter:title" content="从 Facebook 故障开始探索 BGP 工具使用"/>
+<meta name="twitter:description" content="背景 上个月，Facebook 发生了一次由 BGP 引起的大型故障，从故障报告 中我确实看得云里雾里。所以近期阅读一些文章，期望深入学习。
+这篇博文将会分享一些我如何学习 BGP 的过程及用来查询 BGP 信息的相关工具使用。因为我对 BGP 不是那么了解，故文章难免有不精确的部分，希望多多交流。
+BGP 探索之路 如何发布BGP路由 之前我从没有开始接触 BGP 的原因之一是&ndash;我不知道如何在我的服务器上通过 BGP 发布路由。
+对于大多数网络协议，如果你愿意，都可以折腾，自己实现协议。例如，你可以。
+  发行你自己的TLS证书
+  编写你自己的HTTP服务器
+  编写你自己的TCP实现
+  为你的域名编写你自己的权威DNS服务器
+  建立你自己的证书颁发机构
+  但对于BGP，我认为除非你拥有自己的 ASN，否则不能自己发布路由，尽管可能可以在你的家庭网络上实现BGP，但我希望它们运行在真正的互联网上。
+于是我开始着手于如何在我的服务器上发布 BGP 路由。
+首先我们来谈谈 BGP 的一些术语。这部分我会简单的介绍，因为我对工具更感兴趣，而且网上有很多关于 BGP 的高水平资料（比如 cloudflare 的这篇帖子）。
+什么是 AS（autonomous system）？ 我们需要了解的第一件术语是 AS。每一个 AS 都是什么呢？
+参考这篇维基百科, 他们有以下特征，
+  由一个组织拥有的（通常是一个大型组织，如你的ISP，政府，大学，Facebook，等等）
+  他们能控制一组特定的 IP 地址（例如，我的 ISP 的 AS 包括 247,808 个IP地址）。"/>
+<meta name="application-name" content="Nice to meet you">
+<meta name="apple-mobile-web-app-title" content="Nice to meet you"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="icon" href="/images/favicon.ico"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://example.com/tools-to-explore-bgp/" /><link rel="prev" href="https://example.com/kubernetes-scheduler-modified-in-meituan/" /><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/normalize.css@8.0.1/normalize.min.css"><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.13.0/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.7.2/animate.min.css"><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "从 Facebook 故障开始探索 BGP 工具使用",
+        "inLanguage": "en",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/example.com\/tools-to-explore-bgp\/"
+        },"image": ["https:\/\/example.com\/images\/Apple-Devices-Preview.png"],"genre": "posts","keywords": "Network, Linux","wordcount":  1185 ,
+        "url": "https:\/\/example.com\/tools-to-explore-bgp\/","datePublished": "2021-11-16T11:46:09+08:00","dateModified": "2021-11-16T11:46:09+08:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.","publisher": {
+            "@type": "Organization",
+            "name": "LexusLee","logo": {
+                    "@type": "ImageObject",
+                    "url": "https:\/\/example.com\/images\/avatar.png",
+                    "width":  552 ,
+                    "height":  608 
+                }},"author": {
+                "@type": "Person",
+                "name": "LexusLee"
+            },"description": ""
+    }
+    </script></head>
+    <body header-desktop="fixed" header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="LexusLee&#39;s blog"><span class="header-title-pre"><i class='far fa-kiss-wink-heart fa-fw'></i></span>Nice to meet you</a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/posts/"> Posts </a><a class="menu-item" href="/tags/"> Tags </a><a class="menu-item" href="/categories/"> Categories </a><a class="menu-item" href="/categories/documentation/"> Docs </a><a class="menu-item" href="/about/"> About </a><a class="menu-item" href="https://github.com/thehackercat" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i>  </a><span class="menu-item delimiter"></span><a href="javascript:void(0);" class="menu-item language" title="Select Language">English<i class="fas fa-chevron-right fa-fw"></i>
+                        <select class="language-select" id="language-select-desktop" onchange="location = this.value;"><option value="/tools-to-explore-bgp/" selected>English</option><option value="/zh-cn/tools-to-explore-bgp/">简体中文</option></select>
+                    </a><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="Search">
+                            <i class="fas fa-search fa-fw"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="Clear">
+                            <i class="fas fa-times-circle fa-fw"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <i class="fas fa-spinner fa-fw fa-spin"></i>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                    <i class="fas fa-adjust fa-fw"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="LexusLee&#39;s blog"><span class="header-title-pre"><i class='far fa-kiss-wink-heart fa-fw'></i></span>Nice to meet you</a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-mobile">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="Search">
+                            <i class="fas fa-search fa-fw"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="Clear">
+                            <i class="fas fa-times-circle fa-fw"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <i class="fas fa-spinner fa-fw fa-spin"></i>
+                        </span>
+                    </div>
+                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                        Cancel
+                    </a>
+                </div><a class="menu-item" href="/posts/" title="">Posts</a><a class="menu-item" href="/tags/" title="">Tags</a><a class="menu-item" href="/categories/" title="">Categories</a><a class="menu-item" href="/categories/documentation/" title="">Docs</a><a class="menu-item" href="/about/" title="">About</a><a class="menu-item" href="https://github.com/thehackercat" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i></a><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                <i class="fas fa-adjust fa-fw"></i>
+            </a><a href="javascript:void(0);" class="menu-item" title="Select Language">English<i class="fas fa-chevron-right fa-fw"></i>
+                    <select class="language-select" onchange="location = this.value;"><option value="/tools-to-explore-bgp/" selected>English</option><option value="/zh-cn/tools-to-explore-bgp/">简体中文</option></select>
+                </a></div>
+    </div>
+</header>
+<div class="search-dropdown desktop">
+    <div id="search-dropdown-desktop"></div>
+</div>
+<div class="search-dropdown mobile">
+    <div id="search-dropdown-mobile"></div>
+</div>
+<main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">Contents</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animated flipInX">从 Facebook 故障开始探索 BGP 工具使用</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw"></i>LexusLee</a></span>&nbsp;<span class="post-category">included in <a href="/categories/coding/"><i class="far fa-folder fa-fw"></i>Coding</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw"></i>&nbsp;<time datetime="2021-11-16">2021-11-16</time>&nbsp;<i class="fas fa-pencil-alt fa-fw"></i>&nbsp;1185 words&nbsp;
+                <i class="far fa-clock fa-fw"></i>&nbsp;6 minutes&nbsp;</div>
+        </div><div class="details toc" id="toc-static"  kept="">
+                <div class="details-summary toc-title">
+                    <span>Contents</span>
+                    <span><i class="details-icon fas fa-angle-right"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#背景">背景</a>
+      <ul>
+        <li><a href="#bgp-探索之路">BGP 探索之路</a>
+          <ul>
+            <li><a href="#如何发布bgp路由">如何发布BGP路由</a></li>
+            <li><a href="#什么是-asautonomous-system">什么是 AS（autonomous system）？</a></li>
+            <li><a href="#什么是-bgp-路由呢">什么是 BGP 路由呢</a></li>
+            <li><a href="#所以什么是-bgp-呢">所以什么是 BGP 呢</a></li>
+            <li><a href="#工具1用-bgpview-查看你的-isp-的-as">工具1：用 BGPView 查看你的 ISP 的 AS</a></li>
+            <li><a href="#工具2--traceroute--a-和-mtr--z">工具2:  <code>traceroute -A</code> 和 <code>mtr -z</code></a></li>
+            <li><a href="#工具3pch-looking-glass">工具3：PCH looking glass</a></li>
+            <li><a href="#更多的-bgp-looking-glasses">更多的 BGP looking glasses</a></li>
+            <li><a href="#工具4-bgplay">工具4: BGPlay</a></li>
+          </ul>
+        </li>
+        <li><a href="#总结">总结</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><h2 id="背景">背景</h2>
+<p>上个月，Facebook 发生了一次由 BGP 引起的大型故障，从<a href="https://engineering.fb.com/2021/10/05/networking-traffic/outage-details/" target="_blank" rel="noopener noreffer">故障报告</a> 中我确实看得云里雾里。所以近期阅读一些文章，期望深入学习。</p>
+<p>这篇博文将会分享一些我如何学习 BGP 的过程及用来查询 BGP 信息的相关工具使用。因为我对 BGP 不是那么了解，故文章难免有不精确的部分，希望多多交流。</p>
+<h3 id="bgp-探索之路">BGP 探索之路</h3>
+<h4 id="如何发布bgp路由">如何发布BGP路由</h4>
+<p>之前我从没有开始接触 BGP 的原因之一是&ndash;我不知道如何在我的服务器上通过 BGP 发布路由。</p>
+<p>对于大多数网络协议，如果你愿意，都可以折腾，自己实现协议。例如，你可以。</p>
+<ul>
+<li>
+<p>发行你自己的TLS证书</p>
+</li>
+<li>
+<p>编写你自己的HTTP服务器</p>
+</li>
+<li>
+<p>编写你自己的TCP实现</p>
+</li>
+<li>
+<p>为你的域名编写你自己的权威DNS服务器</p>
+</li>
+<li>
+<p>建立你自己的证书颁发机构</p>
+</li>
+</ul>
+<p>但对于BGP，我认为除非你拥有自己的 ASN，否则不能自己发布路由，尽管可能可以在你的家庭网络上实现BGP，但我希望它们运行在真正的互联网上。</p>
+<p>于是我开始着手于如何在我的服务器上发布 BGP 路由。</p>
+<p>首先我们来谈谈 BGP 的一些术语。这部分我会简单的介绍，因为我对工具更感兴趣，而且网上有很多关于 BGP 的高水平资料（比如 <a href="https://blog.cloudflare.com/october-2021-facebook-outage/" target="_blank" rel="noopener noreffer">cloudflare</a> 的这篇帖子）。</p>
+<h4 id="什么是-asautonomous-system">什么是 AS（autonomous system）？</h4>
+<p>我们需要了解的第一件术语是 AS。每一个 AS 都是什么呢？</p>
+<p>参考这篇<a href="https://zh.wikipedia.org/wiki/%E8%87%AA%E6%B2%BB%E7%B3%BB%E7%BB%9F" target="_blank" rel="noopener noreffer">维基百科</a>, 他们有以下特征，</p>
+<ol>
+<li>
+<p>由一个组织拥有的（通常是一个大型组织，如你的ISP，政府，大学，Facebook，等等）</p>
+</li>
+<li>
+<p>他们能控制一组特定的 IP 地址（例如，我的 ISP 的 AS 包括 247,808 个IP地址）。</p>
+</li>
+<li>
+<p>他们有一个固定标识的数字码（如1403）, 我们称为 ASN。</p>
+</li>
+</ol>
+<p>下面是我简单做一些 AS 相关的实验观察。</p>
+<ol>
+<li>
+<p>一些大型的科技公司其实并没有自己的 AS。例如，我在 BGPView 上查看了 Patreon，就我所知，他们没有自己的 AS &ndash; 他们的主站（patreon.com，104.16.6.49）在 Cloudflare 的 AS 中。</p>
+</li>
+<li>
+<p>一个 AS 可以包括许多国家的 IP。Facebook 的 AS（AS32934）肯定有新加坡、加拿大、中国、美国和其他国家的IP地址。</p>
+</li>
+<li>
+<p>似乎 IP 地址可以在一个以上的 AS 中。例如，如果我查找 209.216.230.240，它有 2 个 ASN 与之相关&ndash; AS6130 和 AS21581。显然，当这种情况发生时，可能会有路由规则就会有对应的优先算法&ndash;所以到该IP的数据包会被路由到 AS21581。</p>
+</li>
+</ol>
+<h4 id="什么是-bgp-路由呢">什么是 BGP 路由呢</h4>
+<p>互联网上有很多的路由设备。例如，我的 ISP 有所在云厂商提供的路由策略。</p>
+<p>当我向我的 ISP 发送一个数据包时（例如通过运行 ping 129.134.30.0），我的 ISP 的路由器需要弄清楚如何将我的数据包实际发送到 IP 地址 129.134.30.0</p>
+<p>路由器计算的方法是它有一个路由表 &ndash; 它有一堆IP范围的列表（比如129.134.30.0/23），以及它知道的通往该子网的路由。</p>
+<p>下面是一个 129.134.30.0/23 的真实路由的例子：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-shell" data-lang="shell">  <span class="m">11670</span> <span class="m">32934</span>
+    206.108.35.2 from 206.108.35.254 <span class="o">(</span>206.108.35.254<span class="o">)</span>
+      Origin IGP, metric 0, valid, external
+      Community: 3856:55000
+      Last update: Mon Oct  <span class="m">4</span> 21:17:33 <span class="m">2021</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>这条路由说明了通往 129.134.30.0 的一条路径是通过机器 206.108.35.2 ，这是在其本地网络上。所以路由器接下来可能会把我的 ping 包发送到 206.108.35.2，然后 206.108.35.2 会知道如何把它送到目标地址。</p>
+<p>其中开头的两个数字（11670 32934）是ASN。</p>
+<h4 id="所以什么是-bgp-呢">所以什么是 BGP 呢</h4>
+<p>我对 BGP 的理解比较模糊，但它是一个公司用来公布 BGP 路由的协议。</p>
+<p>如上个月发生在 Facebook 的故障是，他们发布了 BGP 广播，撤销了他们所有的 BGP 路由，所以世界上每一个路由器都删除了所有与 Facebook 有关的路由，所以没有流量可以到达那里。</p>
+<p>好了，现在我们已经涵盖了一些基本的术语，让我们来谈谈可以用来查看自治系统和 BGP 的工具吧!</p>
+<h4 id="工具1用-bgpview-查看你的-isp-的-as">工具1：用 BGPView 查看你的 ISP 的 AS</h4>
+<p>为了使 AS 这个东西不那么抽象，我通常使用一个叫 <a href="https://bgpview.io/" target="_blank" rel="noopener noreffer">BGPView</a> 的工具来查看一个真实的 AS。</p>
+<p>我的 ISP 拥有 <a href="https://bgpview.io/asn/4808" target="_blank" rel="noopener noreffer">AS4808</a>。<a href="https://bgpview.io/asn/4808#prefixes-v4" target="_blank" rel="noopener noreffer">这里</a>是我的 ISP 拥有的 IP 地址。</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://blog-1251445337.cos.ap-chengdu.myqcloud.com/bgp%E5%B7%A5%E5%85%B7%E6%8E%A2%E7%B4%A2/bgpview-01.png"
+        data-srcset="https://blog-1251445337.cos.ap-chengdu.myqcloud.com/bgp%E5%B7%A5%E5%85%B7%E6%8E%A2%E7%B4%A2/bgpview-01.png, https://blog-1251445337.cos.ap-chengdu.myqcloud.com/bgp%E5%B7%A5%E5%85%B7%E6%8E%A2%E7%B4%A2/bgpview-01.png 1.5x, https://blog-1251445337.cos.ap-chengdu.myqcloud.com/bgp%E5%B7%A5%E5%85%B7%E6%8E%A2%E7%B4%A2/bgpview-01.png 2x"
+        data-sizes="auto"
+        alt="https://blog-1251445337.cos.ap-chengdu.myqcloud.com/bgp%E5%B7%A5%E5%85%B7%E6%8E%A2%E7%B4%A2/bgpview-01.png"
+        title="bgpview-asn" /></p>
+<p>如果我查找我的计算机的公网 IPv4 地址，可以发现它是我的 ISP 拥有的 IP 地址之一 &ndash; 它在 <a href="https://bgpview.io/prefix/111.192.0.0/12" target="_blank" rel="noopener noreffer">111.192.0.0/12</a> 块中。</p>
+<p>BGPView 还提供了我的 ISP 与其他 AS 的连接情况的图表</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://blog-1251445337.cos.ap-chengdu.myqcloud.com/bgp%E5%B7%A5%E5%85%B7%E6%8E%A2%E7%B4%A2/bgpview-02.png"
+        data-srcset="https://blog-1251445337.cos.ap-chengdu.myqcloud.com/bgp%E5%B7%A5%E5%85%B7%E6%8E%A2%E7%B4%A2/bgpview-02.png, https://blog-1251445337.cos.ap-chengdu.myqcloud.com/bgp%E5%B7%A5%E5%85%B7%E6%8E%A2%E7%B4%A2/bgpview-02.png 1.5x, https://blog-1251445337.cos.ap-chengdu.myqcloud.com/bgp%E5%B7%A5%E5%85%B7%E6%8E%A2%E7%B4%A2/bgpview-02.png 2x"
+        data-sizes="auto"
+        alt="https://blog-1251445337.cos.ap-chengdu.myqcloud.com/bgp%E5%B7%A5%E5%85%B7%E6%8E%A2%E7%B4%A2/bgpview-02.png"
+        title="bgp连接图标" /></p>
+<h4 id="工具2--traceroute--a-和-mtr--z">工具2:  <code>traceroute -A</code> 和 <code>mtr -z</code></h4>
+<p>既然我们对 AS 有所了解。那么让我们看看我的网络请求会从哪些 AS 中穿过</p>
+<p><code>traceroute</code> 和 <code>mtr</code> 都能可以告诉你每个 IP 的 ASN 。</p>
+<p>具体用法是<code> traceroute -A</code> 和 <code>mtr -z</code>，分别。</p>
+<p>让我们看看我用 mtr 在访问 baidu.com 的路上经过了哪些 AS</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-shell" data-lang="shell">$ sudo mtr -z baidu.com
+                                            My traceroute  <span class="o">[</span>v0.94<span class="o">]</span>
+Bong <span class="o">(</span>10.255.2.107<span class="o">)</span> -&gt; baidu.com                                                     2021-11-16T13:12:47+0800
+Keys:  Help   Display mode   Restart statistics   Order of fields   quit
+                                                                     Packets               Pings
+ Host                                                              Loss%   Snt   Last   Avg  Best  Wrst StDev
+ 1. AS???    10.255.0.1                                             0.0%    <span class="m">86</span>    2.3  50.2   1.7 925.0 169.2
+ 2. AS4808   121.69.9.97                                            1.2%    <span class="m">86</span>    3.8  47.7   3.4 876.4 158.8
+ 3. AS4808   218.241.128.173                                        1.2%    <span class="m">86</span>    3.3  54.0   3.0 996.9 180.1
+ 4. AS4808   218.241.254.185                                        0.0%    <span class="m">86</span>    5.0  59.5   2.5 998.4 196.0
+ 5. AS4808   218.241.254.197                                        0.0%    <span class="m">86</span>    3.6  55.7   3.4 974.3 184.4
+ 6. AS4808   218.241.254.249                                        0.0%    <span class="m">86</span>    9.0  51.7   4.4 921.5 171.7
+ 7. AS4808   218.241.244.17                                        58.1%    <span class="m">86</span>   14.2  45.7   4.9 874.7 151.3
+ 8. AS4808   61.149.212.201                                        62.4%    <span class="m">86</span>  1003. 105.0   5.4 1003. 244.9
+ 9. AS4808   202.96.13.249                                          4.7%    <span class="m">86</span>    5.6  66.5   5.1 1010. 201.5
+10. AS4808   124.65.194.77                                         12.9%    <span class="m">85</span>   11.0  33.7   5.7 647.0 105.9
+11. AS4837   219.158.13.78                                          0.0%    <span class="m">85</span>    6.1  58.5   6.1 916.7 172.3
+12. AS4837   219.158.44.114                                        89.3%    <span class="m">85</span>   28.4  43.1   6.3 310.7 100.6
+13. AS4134   202.97.18.125                                         72.6%    <span class="m">85</span>    8.4  53.8   6.3 1026. 212.0
+14. AS23724  36.110.246.126                                        82.1%    <span class="m">85</span>    9.4  87.2   7.3 982.4 252.9
+15. <span class="o">(</span>waiting <span class="k">for</span> reply<span class="o">)</span>
+16. <span class="o">(</span>waiting <span class="k">for</span> reply<span class="o">)</span>
+17. <span class="o">(</span>waiting <span class="k">for</span> reply<span class="o">)</span>
+18. <span class="o">(</span>waiting <span class="k">for</span> reply<span class="o">)</span>
+19. <span class="o">(</span>waiting <span class="k">for</span> reply<span class="o">)</span>
+20. <span class="o">(</span>waiting <span class="k">for</span> reply<span class="o">)</span>
+21. AS23724  220.181.38.148                                         0.0%    <span class="m">85</span>    9.6  59.0   7.9 983.3 182.6
+</code></pre></td></tr></table>
+</div>
+</div><p>虽然看得眼花缭乱，但看起来网络数据包直接从我的 ISP 的AS（4808）到 Baidu 的 AS（23724），中间有一个 &ldquo;互联网交换&rdquo;。</p>
+<p><em>我不确定互联网交换是什么，但我知道它是互联网的一个极其重要的部分。不过这部分暂时不在文章中介绍了。我最好的猜测是，它是互联网中实现 &ldquo;对等 &ldquo;的部分&ndash; 就像 IX 是一个有巨大的交换机的机房，里面有无限的带宽，一堆不同的公司把他们的计算机放在那里，这样他们就可以互相发送数据包。</em></p>
+<h4 id="工具3pch-looking-glass">工具3：PCH looking glass</h4>
+<p>PCH（&ldquo;packet clearing house&rdquo;）是运行大量互联网交换点的组织。&ldquo;looking glass&rdquo; 似乎是一个通用术语，指的是让你从另一个人的电脑上运行网络命令的终端。有一些 looking glass 不支持 BGP，而我只对那些能显示 BGP 路由信息的 looking glass 工具感兴趣，本文只重点介绍这一部分。</p>
+<p>这里是常用的 PCH looking glass 地址：https://www.pch.net/tools/looking_glass/。</p>
+<p>我按下图随便选了一个选项进行 bgp 查询</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://blog-1251445337.cos.ap-chengdu.myqcloud.com/bgp%E5%B7%A5%E5%85%B7%E6%8E%A2%E7%B4%A2/pch-looking-glass-01.png"
+        data-srcset="https://blog-1251445337.cos.ap-chengdu.myqcloud.com/bgp%E5%B7%A5%E5%85%B7%E6%8E%A2%E7%B4%A2/pch-looking-glass-01.png, https://blog-1251445337.cos.ap-chengdu.myqcloud.com/bgp%E5%B7%A5%E5%85%B7%E6%8E%A2%E7%B4%A2/pch-looking-glass-01.png 1.5x, https://blog-1251445337.cos.ap-chengdu.myqcloud.com/bgp%E5%B7%A5%E5%85%B7%E6%8E%A2%E7%B4%A2/pch-looking-glass-01.png 2x"
+        data-sizes="auto"
+        alt="https://blog-1251445337.cos.ap-chengdu.myqcloud.com/bgp%E5%B7%A5%E5%85%B7%E6%8E%A2%E7%B4%A2/pch-looking-glass-01.png"
+        title="pch-looking-glass" /></p>
+<p><strong>Step1：&ldquo;show ip bgp summary&rdquo;</strong></p>
+<p>下面是输出结果。由于太长我删减了一些不重要内容。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-shell" data-lang="shell">From cache <span class="o">(</span>number of seconds old <span class="o">(</span>max 600<span class="o">))</span>: <span class="m">339</span>
+
+
+ IPv4 Unicast Summary:
+ BGP router identifier 74.80.118.4, <span class="nb">local</span> AS number <span class="m">3856</span> vrf-id <span class="m">0</span>
+ BGP table version <span class="m">3612368</span>
+ RIB entries 546990, using <span class="m">96</span> MiB of memory
+ Peers 150, using <span class="m">3064</span> KiB of memory
+ Peer groups 8, using <span class="m">512</span> bytes of memory
+
+ Neighbor        V         AS MsgRcvd MsgSent   TblVer  InQ OutQ  Up/Down State/PfxRcd
+ 206.108.34.3    <span class="m">4</span>       <span class="m">5769</span>   <span class="m">18732</span>   <span class="m">18160</span>        <span class="m">0</span>    <span class="m">0</span>    <span class="m">0</span> 01w5d14h          <span class="m">808</span>
+ ...
+ 206.220.231.55  <span class="m">4</span>       <span class="m">3856</span>   <span class="m">16515</span> <span class="m">1824368</span>        <span class="m">0</span>    <span class="m">0</span>    <span class="m">0</span> 06:52:52            <span class="m">0</span>
+ 74.80.118.1     <span class="m">4</span>         <span class="m">42</span>   <span class="m">18189</span>   <span class="m">18159</span>        <span class="m">0</span>    <span class="m">0</span>    <span class="m">0</span> 01w5d14h           <span class="m">49</span>
+
+ Total number of neighbors <span class="m">150</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>上述结果我的理解是，TORIX 会直接连接到我的 ISP, 并探测当前网络环境我的邻居 AS 共有哪些。</p>
+<p><strong>Step 2: “show ip bgp 129.134.30.0”</strong></p>
+<p>下面是挑选 129.134.30.0（Facebook 的一个IP地址）的 &ldquo;show ip bgp &ldquo;的输出。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-shell" data-lang="shell">BGP routing table entry <span class="k">for</span> 129.134.30.0/23
+Paths: <span class="o">(</span><span class="m">4</span> available, best <span class="c1">#3, table default)</span>
+  Advertised to non peer-group peers:
+  206.220.231.55
+  <span class="m">11670</span> <span class="m">32934</span>
+    206.108.35.3 from 206.108.35.253 <span class="o">(</span>206.108.35.253<span class="o">)</span>
+      Origin IGP, metric 0, valid, external
+      Community: 3856:55000
+      Last update: Mon Nov <span class="m">15</span> 11:46:18 <span class="m">2021</span>
+
+  <span class="m">11670</span> <span class="m">32934</span>
+    206.108.35.2 from 206.108.35.254 <span class="o">(</span>206.108.35.254<span class="o">)</span>
+      Origin IGP, metric 0, valid, external
+      Community: 3856:55000
+      Last update: Sat Nov  <span class="m">6</span> 11:55:40 <span class="m">2021</span>
+
+  <span class="m">32934</span>
+    206.108.35.2 from 206.108.35.2 <span class="o">(</span>157.240.58.182<span class="o">)</span>
+      Origin IGP, metric 0, valid, external, multipath, best <span class="o">(</span>Older Path<span class="o">)</span>
+      Community: 3856:55000
+      Last update: Wed Nov  <span class="m">3</span> 14:52:59 <span class="m">2021</span>
+
+  <span class="m">32934</span>
+    206.108.35.3 from 206.108.35.3 <span class="o">(</span>157.240.58.225<span class="o">)</span>
+      Origin IGP, metric 0, valid, external, multipath
+      Community: 3856:55000
+      Last update: Wed Nov  <span class="m">3</span> 14:52:59 <span class="m">2021</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>这似乎是在说，从该互联网交换中心到 Facebook 有 4 条路由路径。</p>
+<p>魁北克互联网交换中心似乎不感知 Facebook 该 ip 地址</p>
+<p>我也试过从魁北克互联网交换中心QIX做同样的事。但 QIX 似乎对 Facebook 一无所知 &ndash; 当我输入 129.134.30.0 时，它提示&quot;Network not in table&rdquo;。</p>
+<p>所以我想这就是为什么我必须要从 TORIX 访问 Facebook。</p>
+<h4 id="更多的-bgp-looking-glasses">更多的 BGP looking glasses</h4>
+<p>除以上之外，这里还有一些 BGP looking glasses 的网站，可以从其他角度给你提供类似的信息。他们似乎都支持相同的 show ip bgp 语法，也能有一定的参考性。</p>
+<ul>
+<li>
+<p><a href="http://www.routeviews.org/routeviews/index.php/collectors/">http://www.routeviews.org/routeviews/index.php/collectors/</a></p>
+</li>
+<li>
+<p><a href="http://www.routeservers.org/">http://www.routeservers.org/</a></p>
+</li>
+<li>
+<p><a href="https://lg.he.net/">https://lg.he.net/</a></p>
+</li>
+</ul>
+<p>下面是一个与这个名单上的一个服务器进行会话的例子：route-views.routeviews.org。这次我是通过 telnet 连接的，而不是通过web表单，但输出的格式看起来是一样的。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-shell" data-lang="shell">$ telnet route-views.routeviews.org
+
+route-views&gt;show ip bgp 31.13.80.36
+
+BGP routing table entry <span class="k">for</span> 31.13.80.0/24, version <span class="m">1053404087</span>
+Paths: <span class="o">(</span><span class="m">23</span> available, best <span class="c1">#2, table default)</span>
+  Not advertised to any peer
+  Refresh Epoch <span class="m">1</span>
+  <span class="m">3267</span> <span class="m">1299</span> <span class="m">32934</span>
+    194.85.40.15 from 194.85.40.15 <span class="o">(</span>185.141.126.1<span class="o">)</span>
+      Origin IGP, metric 0, localpref 100, valid, external
+      path 7FE0C3340190 RPKI State valid
+      rx pathid: 0, tx pathid: <span class="m">0</span>
+  Refresh Epoch <span class="m">1</span>
+  <span class="m">6939</span> <span class="m">32934</span>
+    64.71.137.241 from 64.71.137.241 <span class="o">(</span>216.218.252.164<span class="o">)</span>
+      Origin IGP, localpref 100, valid, external, best
+      path 7FE135DB6500 RPKI State valid
+      rx pathid: 0, tx pathid: 0x0
+  Refresh Epoch <span class="m">1</span>
+  <span class="m">701</span> <span class="m">174</span> <span class="m">32934</span>
+    137.39.3.55 from 137.39.3.55 <span class="o">(</span>137.39.3.55<span class="o">)</span>
+      Origin IGP, localpref 100, valid, external
+      path 7FE1604D3AF0 RPKI State valid
+      rx pathid: 0, tx pathid: <span class="m">0</span>
+  Refresh Epoch <span class="m">1</span>
+  <span class="m">20912</span> <span class="m">3257</span> <span class="m">1299</span> <span class="m">32934</span>
+    212.66.96.126 from 212.66.96.126 <span class="o">(</span>212.66.96.126<span class="o">)</span>
+      Origin IGP, localpref 100, valid, external
+      Community: 3257:8095 3257:30622 3257:50001 3257:53900 3257:53904 20912:65004
+      path 7FE1195AF140 RPKI State valid
+      rx pathid: 0, tx pathid: <span class="m">0</span>
+  Refresh Epoch <span class="m">1</span>
+  <span class="m">7660</span> <span class="m">2516</span> <span class="m">1299</span> <span class="m">32934</span>
+    203.181.248.168 from 203.181.248.168 <span class="o">(</span>203.181.248.168<span class="o">)</span>
+      Origin IGP, localpref 100, valid, external
+      Community: 2516:1030 7660:9001
+      path 7FE0D195E7D0 RPKI State valid
+      rx pathid: 0, tx pathid: <span class="m">0</span>
+
+</code></pre></td></tr></table>
+</div>
+</div><h4 id="工具4-bgplay">工具4: BGPlay</h4>
+<p>到目前为止，所有其他的工具都只是向我们展示了 Facebook 路由的当前状态，其中一切正常，但这第四个工具让我们看到了这个Facebook BGP 互联网故障的历史记录。</p>
+<p>这是一个 GUI 工具，所以我将贴上一堆屏幕截图。</p>
+<p>这个工具下载地址在 <a href="https://stat.ripe.net/special/bgplay">https://stat.ripe.net/special/bgplay</a> 。我输入了 IP 地址 129.134.30.12（Facebook的IP之一）进行验证。</p>
+<p>首先，让我们看看一切出错之前的状态。我在10月4日13:11:28点击了时间线，得到了这个结果。</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://jvns.ca/images/bgplay-before.png"
+        data-srcset="https://jvns.ca/images/bgplay-before.png, https://jvns.ca/images/bgplay-before.png 1.5x, https://jvns.ca/images/bgplay-before.png 2x"
+        data-sizes="auto"
+        alt="https://jvns.ca/images/bgplay-before.png"
+        title="bgplay-before" /></p>
+<p>最初发现这非常难以看懂。发生了什么事？但后来有人在 Twitter 上指出，下一个要看的地方是点击 Facebook 故障发生后的时间线（10月4日18点38分）</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://jvns.ca/images/bgplay-after.png"
+        data-srcset="https://jvns.ca/images/bgplay-after.png, https://jvns.ca/images/bgplay-after.png 1.5x, https://jvns.ca/images/bgplay-after.png 2x"
+        data-sizes="auto"
+        alt="https://jvns.ca/images/bgplay-after.png"
+        title="bgplay-after" /></p>
+<p>很明显，这张图有问题 &ndash; 所有的 BGP 路由都消失了！可以看到各个 AS 之间已经没有了连线！</p>
+<p>上面的文字显示了最后一条 Facebook BGP 路由的消失时间。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-shell" data-lang="shell">Type: W &gt; withdrawal Involving: 129.134.30.0/24
+Short description: The route 50869, 25091, <span class="m">32934</span> has been withdrawn.
+Date and time: 2021-10-04 16:02:33 Collected by: 20-91.206.53.12
+</code></pre></td></tr></table>
+</div>
+</div><p>如果我再点击 &ldquo;快进 &ldquo;按钮，就能看到 BGP 路由开始回来了，这是 FB 工程师开始进行故障恢复了。</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://jvns.ca/images/bgplay-return.png"
+        data-srcset="https://jvns.ca/images/bgplay-return.png, https://jvns.ca/images/bgplay-return.png 1.5x, https://jvns.ca/images/bgplay-return.png 2x"
+        data-sizes="auto"
+        alt="https://jvns.ca/images/bgplay-return.png"
+        title="bgplay-return" /></p>
+<p>可以看到，第一条恢复的是 BGP 路由规则是 <code>137409 32934</code>。</p>
+<p>但我不认为这实际上是第一个恢复的&ndash;在同一秒内（在2021-10-04 21:00:40）有很多路由规则同时在恢复，我认为 BGPlay 内部的排序是随机的。</p>
+<p>如果我再次点击 &ldquo;快进 &ldquo;按钮，越来越多的路由开始回来，路由开始恢复正常</p>
+<p>可以看到这个 GUI 工具还是十分有趣的，可以直观地带我们探索 Facebook 网络故障的过程。</p>
+<h3 id="总结">总结</h3>
+<p>至此，所有工具的介绍基本结束。也许你会看到一堆 BGP 相关术语和知识，或者一些工具的参考，如果你想（作为一个业余爱好者）实际发布 BGP 路由，这里有一些链接提供参考</p>
+<ul>
+<li><a href="https://labs.ripe.net/author/samir_jafferali/build-your-own-anycast-network-in-nine-steps/" target="_blank" rel="noopener noreffer">a guide to getting your own ASN</a></li>
+<li><a href="https://dn42.eu/Home" target="_blank" rel="noopener noreffer">dn42</a> seems to have a playground for BGP (it’s not on the public internet, but it does have other people on it which seems more fun than just doing BGP by yourself at home)</li>
+</ul>
+<p>我想还有很多BGP工具（比如PCH有一堆路由数据的每日快照，都是十分有趣的工具），但这篇文章已经很长了，而且我确实也没有逐个了解过这些工具。</p>
+<p>我对我作为一个没有专业网络知识的工程师可以得到这么多关于BGP的信息感到惊讶，我一直认为它是一个 &ldquo;秘密的网络向导 &ldquo;的东西，但显然有各种公共机器，任何人都可以直接telnet到那里，用来查看路由表! 还有各种资料！</p>
+<p>希望以后能更多的接触到 BGP 相关知识，再和你们做分享！</p>
+</div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>Updated on 2021-11-16</span>
+            </div>
+            <div class="post-info-license"></div>
+        </div>
+        <div class="post-info-line">
+            <div class="post-info-md"><span>
+                            <a class="link-to-markdown" href="/tools-to-explore-bgp/index.md" target="_blank">Read Markdown</a>
+                        </span></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="Share on Twitter" data-sharer="twitter" data-url="https://example.com/tools-to-explore-bgp/" data-title="从 Facebook 故障开始探索 BGP 工具使用" data-via="lexuscyborg103" data-hashtags="Network,Linux"><i class="fab fa-twitter fa-fw"></i></a><a href="javascript:void(0);" title="Share on 微博" data-sharer="weibo" data-url="https://example.com/tools-to-explore-bgp/" data-title="从 Facebook 故障开始探索 BGP 工具使用"><i class="fab fa-weibo fa-fw"></i></a><a href="javascript:void(0);" title="Share on Evernote" data-sharer="evernote" data-url="https://example.com/tools-to-explore-bgp/" data-title="从 Facebook 故障开始探索 BGP 工具使用"><i class="fab fa-evernote fa-fw"></i></a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw"></i>&nbsp;<a href="/tags/network/">Network</a>,&nbsp;<a href="/tags/linux/">Linux</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">Back</a></span>&nbsp;|&nbsp;<span><a href="/">Home</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/kubernetes-scheduler-modified-in-meituan/" class="prev" rel="prev" title="Kube-scheduler 调度模型与美团本地化改造"><i class="fas fa-angle-left fa-fw"></i>Kube-scheduler 调度模型与美团本地化改造</a></div>
+</div>
+</article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line"><i class="far fa-copyright fa-fw"></i><span itemprop="copyrightYear">2015 - 2021</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/" target="_blank">LexusLee</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="Back to Top">
+                <i class="fas fa-arrow-up fa-fw"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="View Comments">
+                <i class="fas fa-comment fa-fw"></i>
+            </a>
+        </div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery.js@1.2.0/dist/css/lightgallery.min.css"><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/smooth-scroll@16.1.3/dist/smooth-scroll.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/autocomplete.js@0.37.1/dist/autocomplete.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/algoliasearch@4.2.0/dist/algoliasearch-lite.umd.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lazysizes@5.2.2/lazysizes.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lightgallery.js@1.2.0/dist/js/lightgallery.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lg-thumbnail.js@1.2.0/dist/lg-thumbnail.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lg-zoom.js@1.2.0/dist/lg-zoom.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/clipboard@2.0.6/dist/clipboard.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sharer.js@0.4.0/sharer.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"Copy to clipboard","maxShownLines":10},"comment":{},"lightGallery":{"actualSize":false,"exThumbImage":"data-thumbnail","hideBarsDelay":2000,"selector":".lightgallery","speed":400,"thumbContHeight":80,"thumbWidth":80,"thumbnail":true},"search":{"algoliaAppID":"PASDMWALPK","algoliaIndex":"index.en","algoliaSearchKey":"b42948e51daaa93df92381c8e2ac0f93","highlightTag":"em","maxResultLength":10,"noResultsFound":"No results found","snippetLength":30,"type":"algolia"}};</script><script type="text/javascript" src="/js/theme.min.js"></script></body>
+</html>

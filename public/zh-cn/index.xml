@@ -4,9 +4,16 @@
         <link>https://example.com/zh-cn/</link>
         <description>LexusLee personal blog, recording things you people wouldn&#39;t believe. Like attack ships on fire off the shoulder of Orion, c-beams glitter in the dark near the Tannhauser Gate.</description>
         <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>lexuscyborg103@gmail.com (LexusLee)</managingEditor>
-            <webMaster>lexuscyborg103@gmail.com (LexusLee)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Sat, 09 Oct 2021 09:57:53 &#43;0800</lastBuildDate>
+            <webMaster>lexuscyborg103@gmail.com (LexusLee)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Tue, 16 Nov 2021 11:46:09 &#43;0800</lastBuildDate>
             <atom:link href="https://example.com/zh-cn/index.xml" rel="self" type="application/rss+xml" />
         <item>
+    <title>从 Facebook 故障开始探索 BGP 工具使用</title>
+    <link>https://example.com/zh-cn/tools-to-explore-bgp/</link>
+    <pubDate>Tue, 16 Nov 2021 11:46:09 &#43;0800</pubDate>
+    <author>作者</author>
+    <guid>https://example.com/zh-cn/tools-to-explore-bgp/</guid>
+    <description><![CDATA[背景 上个月，Facebook 发生了一次由 BGP 引起的大型故障，从故障报告 中我确实看得云里雾里。所以近期阅读一些文章，期望深入学习。 这篇博文将会分]]></description>
+</item><item>
     <title>Kube-scheduler 调度模型与美团本地化改造</title>
     <link>https://example.com/zh-cn/kubernetes-scheduler-modified-in-meituan/</link>
     <pubDate>Sat, 09 Oct 2021 09:57:53 &#43;0800</pubDate>
@@ -74,12 +81,5 @@
     <author>作者</author>
     <guid>https://example.com/zh-cn/apps-liat-for-macbook/</guid>
     <description><![CDATA[枚举目前我迁移工作电脑需要装的 app 清单。后续考虑加到同步工具里。 开发 Vscode Sublime Sourcetree Github Desktop Iterm2 Postman Cyberduck Docker 命令行 oh-my-zsh homebrew homebrew cask tmux ack ag bat autojump job fselect 画图 draw.io desktop XMind Sketch 数据库 Sequel Pro (for MySql) Navicat]]></description>
-</item><item>
-    <title>升级 k8s 集群 docker</title>
-    <link>https://example.com/zh-cn/upgrade-dockerd-in-k8s/</link>
-    <pubDate>Fri, 10 Jul 2020 19:10:46 &#43;0000</pubDate>
-    <author>作者</author>
-    <guid>https://example.com/zh-cn/upgrade-dockerd-in-k8s/</guid>
-    <description><![CDATA[背景 最近需要给 k8s 集群升级 docker, 预期升到 19.03.x. 遇到一些问题, 记录下 调试期间遇到的问题: 集群中的 ingress 是以 daemonsets 方式部署, 通过 node-selector 选择节点定死. 而 kubectl drain node 并不 evict daemonset pods.]]></description>
 </item></channel>
 </rss>

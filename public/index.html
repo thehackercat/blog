@@ -11,7 +11,7 @@
 <meta property="og:type" content="website" />
 <meta property="og:url" content="https://example.com/" />
 <meta property="og:image" content="https://example.com/logo.png"/>
-<meta property="og:updated_time" content="2021-10-09T10:22:22+08:00" />
+<meta property="og:updated_time" content="2021-11-16T11:46:09+08:00" />
 <meta name="twitter:card" content="summary_large_image"/>
 <meta name="twitter:image" content="https://example.com/logo.png"/>
 
@@ -105,6 +105,26 @@
         alt="/images/avatar.png"
         title="/images/avatar.png" /></a></div><h1 class="home-title">LexusLee's blog</h1><h2 class="home-subtitle"><div id="id-1" class="typeit"></div></h2><div class="links"><a href="https://github.com/thehackercat" title="GitHub" target="_blank" rel="noopener noreffer me"><i class="fab fa-github-alt fa-fw"></i></a><a href="https://twitter.com/lexuscyborg103" title="Twitter" target="_blank" rel="noopener noreffer me"><i class="fab fa-twitter fa-fw"></i></a><a href="https://www.instagram.com/thehackercat" title="Instagram" target="_blank" rel="noopener noreffer me"><i class="fab fa-instagram fa-fw"></i></a><a href="https://t.me/thehackercat" title="Telegram" target="_blank" rel="noopener noreffer me"><i class="fab fa-telegram-plane fa-fw"></i></a><a href="https://www.douban.com/people/thehackercat" title="豆瓣" target="_blank" rel="noopener noreffer me"><i data-svg-src="https://cdn.jsdelivr.net/npm/simple-icons@2.14.0/icons/douban.svg"></i></a><a href="mailto:lexuscyborg103@gmail.com" title="Email" rel=" me"><i class="far fa-envelope fa-fw"></i></a><a href="/index.xml" title="RSS" target="_blank" rel="noopener noreffer me"><i class="fas fa-rss fa-fw"></i></a></div></div>
 <article class="single summary" itemscope itemtype="http://schema.org/Article"><h1 class="single-title" itemprop="name headline">
+        <a href="/tools-to-explore-bgp/">从 Facebook 故障开始探索 BGP 工具使用</a>
+    </h1><div class="post-meta"><span class="post-author"><a href="/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw"></i>LexusLee</a></span>&nbsp;<span class="post-publish">published on <time datetime="2021-11-16">2021-11-16</time></span>&nbsp;<span class="post-category">included in <a href="/categories/coding/"><i class="far fa-folder fa-fw"></i>Coding</a></span></div><div class="content">背景 上个月，Facebook 发生了一次由 BGP 引起的大型故障，从故障报告 中我确实看得云里雾里。所以近期阅读一些文章，期望深入学习。
+这篇博文将会分享一些我如何学习 BGP 的过程及用来查询 BGP 信息的相关工具使用。因为我对 BGP 不是那么了解，故文章难免有不精确的部分，希望多多交流。
+BGP 探索之路 如何发布BGP路由 之前我从没有开始接触 BGP 的原因之一是&ndash;我不知道如何在我的服务器上通过 BGP 发布路由。
+对于大多数网络协议，如果你愿意，都可以折腾，自己实现协议。例如，你可以。
+  发行你自己的TLS证书
+  编写你自己的HTTP服务器
+  编写你自己的TCP实现
+  为你的域名编写你自己的权威DNS服务器
+  建立你自己的证书颁发机构
+  但对于BGP，我认为除非你拥有自己的 ASN，否则不能自己发布路由，尽管可能可以在你的家庭网络上实现BGP，但我希望它们运行在真正的互联网上。
+于是我开始着手于如何在我的服务器上发布 BGP 路由。
+首先我们来谈谈 BGP 的一些术语。这部分我会简单的介绍，因为我对工具更感兴趣，而且网上有很多关于 BGP 的高水平资料（比如 cloudflare 的这篇帖子）。
+什么是 AS（autonomous system）？ 我们需要了解的第一件术语是 AS。每一个 AS 都是什么呢？
+参考这篇维基百科, 他们有以下特征，
+  由一个组织拥有的（通常是一个大型组织，如你的ISP，政府，大学，Facebook，等等）
+  他们能控制一组特定的 IP 地址（例如，我的 ISP 的 AS 包括 247,808 个IP地址）。</div><div class="post-footer">
+        <a href="/tools-to-explore-bgp/">Read More</a><div class="post-tags">
+                <i class="fas fa-tags fa-fw"></i>&nbsp;<a href="/tags/network/">Network</a>,&nbsp;<a href="/tags/linux/">Linux</a></div></div>
+</article><article class="single summary" itemscope itemtype="http://schema.org/Article"><h1 class="single-title" itemprop="name headline">
         <a href="/kubernetes-scheduler-modified-in-meituan/">Kube-scheduler 调度模型与美团本地化改造</a>
     </h1><div class="post-meta"><span class="post-author"><a href="/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw"></i>LexusLee</a></span>&nbsp;<span class="post-publish">published on <time datetime="2021-10-09">2021-10-09</time></span>&nbsp;<span class="post-category">included in <a href="/categories/coding/"><i class="far fa-folder fa-fw"></i>Coding</a></span></div><div class="content">背景 今天主要分享下我在美团 Hulk 团队调度系统组期间学习到的 k8s scheduler 调度模型及美团对于调度器相关改造
 Hulk 团队介绍 Hulk 是美团负责容器云平台的团队, 我所在的组是调度系统组下面的 k8s 小组. 主要负责所有 k8s 相关组件开发维护.
@@ -160,23 +180,6 @@ Scuba 是Facebook的数据管理系统，用于大部分的实时分析。Scuba 
 虽然 Scuba 是为了支持性能分析而建立的，但它很快就成为了在其他时间敏感数据上执行探索性查询的首选系统。Facebook的许多团队都在使用Scuba。
  移动开发团队使用 Scuba 来跟踪哪些用户在运行不同的移动设备、操作系统和Facebook应用的版本。 广告开发团队利用 Scuba 来监控人们对广告的印象、点击和收入的变化。当出现下降时，他们可以迅速将其缩小到特定的国家、广告类型或服务器集群，并确定根本问题。 SRE 团队过使用 Scuba观察服务器错误。当发生峰值时，他们可以精确地指出是否是由于特定端点中的错误、特定数据中心或服务器集群中的服务，或数据中心的部分物理问题。 错误报告监测每小时运行数千次查询，以寻找Facebook用户报告的错误数量高峰，按几十个人口统计维度（位置、年龄、好友数等）进行分组。  总的来说，用户会先提出高级别的汇总查询，以识别数据中的有趣现象，然后再深入挖掘（因此被称为Scuba），以找到感兴趣的基础数据点。在上述所有情况下，能够沿着多个维度对数据进行临时分解是至关重要的。</div><div class="post-footer">
         <a href="/scuba-diving-into-data-at-facebook/">Read More</a></div>
-</article><article class="single summary" itemscope itemtype="http://schema.org/Article"><h1 class="single-title" itemprop="name headline">
-        <a href="/cloud-movie-projector/">云幕电影放映机</a>
-    </h1><div class="post-meta"><span class="post-author"><a href="/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw"></i>LexusLee</a></span>&nbsp;<span class="post-publish">published on <time datetime="2021-02-01">2021-02-01</time></span>&nbsp;<span class="post-category">included in <a href="/categories/gossip/"><i class="far fa-folder fa-fw"></i>Gossip</a></span></div><div class="content">难得出太阳的一天。
-北京的天总是阴沉沉的，有时候好像是要开启一场庭审，让我紧张得四肢发麻。
-二月的第一天，终于有了一些不同。
-敞亮的日光，透过大片鲜绿的树叶凶猛地穿透进来。
-一抬头，世界在光明刺眼的色调里猛涨。
-浑身暖洋洋。
-天上的云彩白的好像一个个凸出来的拳头。
-我希望它们沉下来，重重砸在我脸上。
-将我击碎打散，
-那下午便也不用上班。
-我给自己定了个目标，这一年里，要看够 1750 部电影。
-没想一个月过去了，只看到了 1518 部。
-要是电影可以投射在云层里，那我便天天都可以看电影了。</div><div class="post-footer">
-        <a href="/cloud-movie-projector/">Read More</a><div class="post-tags">
-                <i class="fas fa-tags fa-fw"></i>&nbsp;<a href="/tags/gossip/">Gossip</a></div></div>
 </article><ul class="pagination"><li class="page-item active">
                     <span class="page-link">
                         <a href="/">1</a>

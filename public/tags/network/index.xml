@@ -1,0 +1,30 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title>Network - Tag - LexusLee&#39;s blog</title>
+        <link>https://example.com/tags/network/</link>
+        <description>Network - Tag - LexusLee&#39;s blog</description>
+        <generator>Hugo -- gohugo.io</generator><language>en</language><managingEditor>lexuscyborg103@gmail.com (LexusLee)</managingEditor>
+            <webMaster>lexuscyborg103@gmail.com (LexusLee)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Tue, 16 Nov 2021 11:46:09 &#43;0800</lastBuildDate><atom:link href="https://example.com/tags/network/" rel="self" type="application/rss+xml" /><item>
+    <title>从 Facebook 故障开始探索 BGP 工具使用</title>
+    <link>https://example.com/tools-to-explore-bgp/</link>
+    <pubDate>Tue, 16 Nov 2021 11:46:09 &#43;0800</pubDate>
+    <author>Author</author>
+    <guid>https://example.com/tools-to-explore-bgp/</guid>
+    <description><![CDATA[背景 上个月，Facebook 发生了一次由 BGP 引起的大型故障，从故障报告 中我确实看得云里雾里。所以近期阅读一些文章，期望深入学习。
+这篇博文将会分享一些我如何学习 BGP 的过程及用来查询 BGP 信息的相关工具使用。因为我对 BGP 不是那么了解，故文章难免有不精确的部分，希望多多交流。
+BGP 探索之路 如何发布BGP路由 之前我从没有开始接触 BGP 的原因之一是&ndash;我不知道如何在我的服务器上通过 BGP 发布路由。
+对于大多数网络协议，如果你愿意，都可以折腾，自己实现协议。例如，你可以。
+  发行你自己的TLS证书
+  编写你自己的HTTP服务器
+  编写你自己的TCP实现
+  为你的域名编写你自己的权威DNS服务器
+  建立你自己的证书颁发机构
+  但对于BGP，我认为除非你拥有自己的 ASN，否则不能自己发布路由，尽管可能可以在你的家庭网络上实现BGP，但我希望它们运行在真正的互联网上。
+于是我开始着手于如何在我的服务器上发布 BGP 路由。
+首先我们来谈谈 BGP 的一些术语。这部分我会简单的介绍，因为我对工具更感兴趣，而且网上有很多关于 BGP 的高水平资料（比如 cloudflare 的这篇帖子）。
+什么是 AS（autonomous system）？ 我们需要了解的第一件术语是 AS。每一个 AS 都是什么呢？
+参考这篇维基百科, 他们有以下特征，
+  由一个组织拥有的（通常是一个大型组织，如你的ISP，政府，大学，Facebook，等等）
+  他们能控制一组特定的 IP 地址（例如，我的 ISP 的 AS 包括 247,808 个IP地址）。]]></description>
+</item></channel>
+</rss>
