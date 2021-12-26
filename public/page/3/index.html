@@ -11,7 +11,7 @@
 <meta property="og:type" content="website" />
 <meta property="og:url" content="https://example.com/" />
 <meta property="og:image" content="https://example.com/logo.png"/>
-<meta property="og:updated_time" content="2021-11-16T11:46:09+08:00" />
+<meta property="og:updated_time" content="2021-12-26T13:40:08+08:00" />
 <meta name="twitter:card" content="summary_large_image"/>
 <meta name="twitter:image" content="https://example.com/logo.png"/>
 
@@ -105,6 +105,14 @@
         alt="/images/avatar.png"
         title="/images/avatar.png" /></a></div><h1 class="home-title">LexusLee's blog</h1><h2 class="home-subtitle"><div id="id-1" class="typeit"></div></h2><div class="links"><a href="https://github.com/thehackercat" title="GitHub" target="_blank" rel="noopener noreffer me"><i class="fab fa-github-alt fa-fw"></i></a><a href="https://twitter.com/lexuscyborg103" title="Twitter" target="_blank" rel="noopener noreffer me"><i class="fab fa-twitter fa-fw"></i></a><a href="https://www.instagram.com/thehackercat" title="Instagram" target="_blank" rel="noopener noreffer me"><i class="fab fa-instagram fa-fw"></i></a><a href="https://t.me/thehackercat" title="Telegram" target="_blank" rel="noopener noreffer me"><i class="fab fa-telegram-plane fa-fw"></i></a><a href="https://www.douban.com/people/thehackercat" title="豆瓣" target="_blank" rel="noopener noreffer me"><i data-svg-src="https://cdn.jsdelivr.net/npm/simple-icons@2.14.0/icons/douban.svg"></i></a><a href="mailto:lexuscyborg103@gmail.com" title="Email" rel=" me"><i class="far fa-envelope fa-fw"></i></a><a href="/index.xml" title="RSS" target="_blank" rel="noopener noreffer me"><i class="fas fa-rss fa-fw"></i></a></div></div>
 <article class="single summary" itemscope itemtype="http://schema.org/Article"><h1 class="single-title" itemprop="name headline">
+        <a href="/alert-convergence/">告警收敛设计</a>
+    </h1><div class="post-meta"><span class="post-author"><a href="/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw"></i>LexusLee</a></span>&nbsp;<span class="post-publish">published on <time datetime="2020-07-07">2020-07-07</time></span>&nbsp;<span class="post-category">included in <a href="/categories/coding/"><i class="far fa-folder fa-fw"></i>Coding</a></span></div><div class="content">背景 最近在豆瓣做面向开发者的 op 报警系统, 最头疼的是下列几种情况
+ 脉冲型报警 单个原因引起的报警发散 多个报警为同个诱因  由于目前现有的一些告警系统都强依赖后面的监控 agent/cmdb , 比如 open-falcon/prometheus 虽然都支持了告警收敛这一套, 但要从豆瓣的 statsd+icinga 迁移到 alertManager 需要折腾一阵。而我实际只想要一个中间轻量的 alert exporter 去做告警聚合/收敛.
+所以我期望实现下列 feature:
+ 对于告警可配置梯度, 比如 apperr &gt; 50, 则立马报警不做 retry, 并且 notify_interval 为 1 分钟; 对于 50 &gt; apperr &gt; 20 则有3次 retry, retry 周期为 1 分钟, 报警周期为2分钟. 对于 apperr &lt; 1 则 retry 5 次, retry 周期 3 分钟, 报警周期 5 分钟. 告警配置中可用 与|或|非 的方式进行组合告警,告警收敛. 如  1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18  [rules] apperr - script: xxx - label: http, service, statsd, codeerr - warning_threshold: 0.</div><div class="post-footer">
+        <a href="/alert-convergence/">Read More</a><div class="post-tags">
+                <i class="fas fa-tags fa-fw"></i>&nbsp;<a href="/tags/architecture/">Architecture</a>,&nbsp;<a href="/tags/alert/">Alert</a></div></div>
+</article><article class="single summary" itemscope itemtype="http://schema.org/Article"><h1 class="single-title" itemprop="name headline">
         <a href="/ebpf-leanring1/">eBPF learning 01</a>
     </h1><div class="post-meta"><span class="post-author"><a href="/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw"></i>LexusLee</a></span>&nbsp;<span class="post-publish">published on <time datetime="2020-01-13">2020-01-13</time></span>&nbsp;<span class="post-category">included in <a href="/categories/coding/"><i class="far fa-folder fa-fw"></i>Coding</a></span></div><div class="content">(译) eBPF Tracing 简明教程与示例 背景    原文链接 http://www.brendangregg.com/blog/2019-01-01/learn-ebpf-tracing.html     原文作者 Brendan Gregg   出版时间 01 Jan 2019   翻译时间 11 Jan 2020    之前开 2019 ShangHai KubeConf 听了几场 eBPF 的分享, 最近才开始深入研究, 故打算把研究 Linux performance 的大佬 Brendan Gregg 的文章《Learn eBPF Tracing: Tutorial and Examples》 作为 eBPF 入门翻译一遍, 希望对其他非英语母语的开发者有帮助。
 译文 在 2019 年的 Linux Plumber&rsquo;s 大会上至少有 24 场关于 eBPF 的讲座, eBPF 迅速地成为了炙手可热的技术。所以也许你也计划在新的一年里开始学习 eBPF!</div><div class="post-footer">
@@ -161,23 +169,6 @@
 这几天下来，我逐渐开始认清自己，我实在是个坏人，你不要为我不安。
 啊你突然回来了，心跳好快，我不想写了，我有好多好多话跟你说，我看着你的眼睛，啥都说不出来，我想把你的美写下来，写不出，我想写诗，写雨，但满脑子想的都是你。</div><div class="post-footer">
         <a href="/badly-wanted/">Read More</a><div class="post-tags">
-                <i class="fas fa-tags fa-fw"></i>&nbsp;<a href="/tags/gossip/">Gossip</a></div></div>
-</article><article class="single summary" itemscope itemtype="http://schema.org/Article"><h1 class="single-title" itemprop="name headline">
-        <a href="/cutanzi-panda/">大醋坛子熊猫侠</a>
-    </h1><div class="post-meta"><span class="post-author"><a href="/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw"></i>LexusLee</a></span>&nbsp;<span class="post-publish">published on <time datetime="2019-08-01">2019-08-01</time></span>&nbsp;<span class="post-category">included in <a href="/categories/gossip/"><i class="far fa-folder fa-fw"></i>Gossip</a></span></div><div class="content">前天，我们吵架了，但主要是我一人暗暗生闷气。
-在此之前，我总认为自己已经是不依附于任何情感的，也鲜有真正让我生气的事儿。
-没想到在不经意间听到你提起那只臭猪的名字，忍不住暴跳如雷。
-我是惶恐的，极其自私的，真的。
-也许是我自己卑鄙无耻的胡猜，但一想到有一天会瞥见你清澈的晶状体房水里倒映的是别人的身影，我就懊恼。
-这些天你不怎么想理我，我能听到办公室的时针滴答滴答的毫无意义的钟摆。我把标记过的好多小说和电影都跳着翻了翻，却总是静不下心。我一度以为即便不再那么鲜活地见到你，我也能很平静地走过去，能逃遁到更远的地方去。
-王小波说的是对的，人是轻易不能知道自己的。
-人可以对别人有最细微的感觉，但对自己就迟钝得多。
-后知后觉地反应过来，耍的这些小脾气真的会让你担心。我以为自己会很得意，会觉得自己是被需要的，但才发现自己多么丑陋。我不愿意让你再焦心了。我喜欢看你笑，笑起来皱着鼻子，团成一只小饭团。可是我这么稀里糊涂地，又让你伤心了。
-我真是无可救药的大笨蛋，你说我这个人还有值得原谅的地方吗。
-我好难过，感觉自己有个什么决断做不出来，生闷气的那天晚上，我走到了很远的地方，看了很久的天空，夜晚的光收敛进漫天的星云中，我多希望里面会泄出金光，那我一定把你叫出来，想那些金萤的东西包裹住我们。
-你知不知道，有时候我脑洞很大，整个故事的来龙去脉，悲欢离合，我都想明白了，只是我还不能狠下心去告诉你，你一直在我理想生活的构建里。我多想告诉你我的秘密，我想把我所有感官，所有体验都分享给你，我是一个时刻沸腾着的人，永远滋滋地响，翻腾不休。但一想到你，小心翼翼地，我就能平静下来。
-明天就是星期五了，我真怕你从此不再理我，希望你明天能开始理我，要不，你可以吃掉我。</div><div class="post-footer">
-        <a href="/cutanzi-panda/">Read More</a><div class="post-tags">
                 <i class="fas fa-tags fa-fw"></i>&nbsp;<a href="/tags/gossip/">Gossip</a></div></div>
 </article><ul class="pagination"><li class="page-item ">
                     <span class="page-link">

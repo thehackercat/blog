@@ -4,9 +4,23 @@
         <link>https://example.com/</link>
         <description>LexusLee personal blog, recording things you people wouldn&#39;t believe. Like attack ships on fire off the shoulder of Orion, c-beams glitter in the dark near the Tannhauser Gate.</description>
         <generator>Hugo -- gohugo.io</generator><language>en</language><managingEditor>lexuscyborg103@gmail.com (LexusLee)</managingEditor>
-            <webMaster>lexuscyborg103@gmail.com (LexusLee)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Tue, 16 Nov 2021 11:46:09 &#43;0800</lastBuildDate>
+            <webMaster>lexuscyborg103@gmail.com (LexusLee)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Sun, 26 Dec 2021 13:40:08 &#43;0800</lastBuildDate>
             <atom:link href="https://example.com/index.xml" rel="self" type="application/rss+xml" />
         <item>
+    <title>《容器高手实战》笔记</title>
+    <link>https://example.com/container-travel-lesson-01/</link>
+    <pubDate>Sun, 26 Dec 2021 13:40:08 &#43;0800</pubDate>
+    <author>Author</author>
+    <guid>https://example.com/container-travel-lesson-01/</guid>
+    <description><![CDATA[背景 最近在接触《容器高手实战》这门课，作为有一定容器经验的工程师，从这个视角下，我会记录一些非基础的，但是不是需要回看一眼的课程笔记，用于分享。
+课程相关源码及笔记我放在这个这个链接中, 欢迎 fork &amp; comment~
+《容器高手实战课程》 源码及笔记, 共分为以下几个模块，下面将逐一介绍，
+ Cpu 内存 文件系统 一号进程 容器网络 容器 debug 工具 容器安全  容器 load Load Average 等于单位时间内正在运行的进程加上可运行队列的进程
+第一，不论计算机 CPU 是空闲还是满负载，Load Average 都是 Linux 进程调度器中可运行队列（Running Queue）里的一段时间的平均进程数目。
+第二，计算机上的 CPU 还有空闲的情况下，CPU Usage 可以直接反映到&quot;load average&quot;上，什么是 CPU 还有空闲呢？具体来说就是可运行队列中的进程数目小于 CPU 个数，这种情况下，单位时间进程 CPU Usage 相加的平均值应该就是&quot;load average&quot;的值。
+第三，计算机上的 CPU 满负载的情况下，计算机上的 CPU 已经是满负载了，同时还有更多的进程在排队需要 CPU 资源。这时&quot;load average&quot;就不能和 CPU Usage 等同了。
+比如对于单个 CPU 的系统，CPU Usage 最大只是有 100%，也就 1 个 CPU；而&quot;load average&quot;的值可以远远大于 1，因为&quot;load average&quot;看的是操作系统中可运行队列中进程的个数。]]></description>
+</item><item>
     <title>从 Facebook 故障开始探索 BGP 工具使用</title>
     <link>https://example.com/tools-to-explore-bgp/</link>
     <pubDate>Tue, 16 Nov 2021 11:46:09 &#43;0800</pubDate>
@@ -178,13 +192,5 @@ Autopilot是Google在其内部云上使用的主要自动缩放器。 它提供�
   通过Google的工作负载采样评估Autopilot算法的有效性；
   讨论为使我们的集群广泛采用Autopilot而采取的步骤。
   2 通过Borg管理云资源 Autopilot的目标和制约因素来自Google的Borg基础架构，并且针对Google的工作负载进行了调整。 我们在此处提供了两者的简要概述：有关Borg的更多详细信息，请参见[34]，有关工作负载的更多详细信息，请参见[26、27、31、35]。]]></description>
-</item><item>
-    <title>Awesome macOS apps list for developer</title>
-    <link>https://example.com/apps-liat-for-macbook/</link>
-    <pubDate>Fri, 25 Dec 2020 14:02:16 &#43;0800</pubDate>
-    <author>Author</author>
-    <guid>https://example.com/apps-liat-for-macbook/</guid>
-    <description><![CDATA[Enumerate the list of apps that need to be installed on my migrated work computer at the moment. I&rsquo;ll consider adding it to the sync tool later.
-Develop  Vscode Sublime Sourcetree Github Desktop Iterm2 Postman Cyberduck Docker  Command-line  oh-my-zsh homebrew homebrew cask tmux ack ag bat autojump job fselect  Prototype  draw.io desktop XMind Sketch  Database  Sequel Pro (for MySql) Navicat (for PostgreSql) Redis Manager  IM  Wechat Qiye Wechat Slack  浏览器  Chrome  Browser  Typora Notion  RSS  Leaf  Wallpaper  Iruve  System tools  CleanMyMac Dozer  Password  1Password  Music  NetEase Music Spotify  Video Player  IINA  Util Tool  Paste Yoink Beyond Compare Handshake Quicklook  GTD  Fantastical 2   ]]></description>
 </item></channel>
 </rss>

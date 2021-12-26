@@ -4,7 +4,21 @@
         <link>https://example.com/tags/linux/</link>
         <description>Linux - Tag - LexusLee&#39;s blog</description>
         <generator>Hugo -- gohugo.io</generator><language>en</language><managingEditor>lexuscyborg103@gmail.com (LexusLee)</managingEditor>
-            <webMaster>lexuscyborg103@gmail.com (LexusLee)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Tue, 16 Nov 2021 11:46:09 &#43;0800</lastBuildDate><atom:link href="https://example.com/tags/linux/" rel="self" type="application/rss+xml" /><item>
+            <webMaster>lexuscyborg103@gmail.com (LexusLee)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Sun, 26 Dec 2021 13:40:08 &#43;0800</lastBuildDate><atom:link href="https://example.com/tags/linux/" rel="self" type="application/rss+xml" /><item>
+    <title>《容器高手实战》笔记</title>
+    <link>https://example.com/container-travel-lesson-01/</link>
+    <pubDate>Sun, 26 Dec 2021 13:40:08 &#43;0800</pubDate>
+    <author>Author</author>
+    <guid>https://example.com/container-travel-lesson-01/</guid>
+    <description><![CDATA[背景 最近在接触《容器高手实战》这门课，作为有一定容器经验的工程师，从这个视角下，我会记录一些非基础的，但是不是需要回看一眼的课程笔记，用于分享。
+课程相关源码及笔记我放在这个这个链接中, 欢迎 fork &amp; comment~
+《容器高手实战课程》 源码及笔记, 共分为以下几个模块，下面将逐一介绍，
+ Cpu 内存 文件系统 一号进程 容器网络 容器 debug 工具 容器安全  容器 load Load Average 等于单位时间内正在运行的进程加上可运行队列的进程
+第一，不论计算机 CPU 是空闲还是满负载，Load Average 都是 Linux 进程调度器中可运行队列（Running Queue）里的一段时间的平均进程数目。
+第二，计算机上的 CPU 还有空闲的情况下，CPU Usage 可以直接反映到&quot;load average&quot;上，什么是 CPU 还有空闲呢？具体来说就是可运行队列中的进程数目小于 CPU 个数，这种情况下，单位时间进程 CPU Usage 相加的平均值应该就是&quot;load average&quot;的值。
+第三，计算机上的 CPU 满负载的情况下，计算机上的 CPU 已经是满负载了，同时还有更多的进程在排队需要 CPU 资源。这时&quot;load average&quot;就不能和 CPU Usage 等同了。
+比如对于单个 CPU 的系统，CPU Usage 最大只是有 100%，也就 1 个 CPU；而&quot;load average&quot;的值可以远远大于 1，因为&quot;load average&quot;看的是操作系统中可运行队列中进程的个数。]]></description>
+</item><item>
     <title>从 Facebook 故障开始探索 BGP 工具使用</title>
     <link>https://example.com/tools-to-explore-bgp/</link>
     <pubDate>Tue, 16 Nov 2021 11:46:09 &#43;0800</pubDate>
@@ -115,15 +129,5 @@ Scheduler 会先 watch apiserver 获取其中待调度的 pod, 即 pod.spec.node
 <li>模块中使用了 Elastic Search 进行监控，但是 ES 突然挂了，相关的 api 的调用报错导致级联的服务全部阻塞，那么应该要有规避由 ES 调用 raise 出的异常或者调用超时而导致整个模块或整个系统崩溃的保护措施。</li>
 <li>使用 AWS 或 阿里云 的 ECS 服务来作为 micro-service 的载体，但是 ECS 服务故障或者过载了导致整个业务链无法正常进行，那么应有对应的降级或者限制调用频度的方案来进行保护。</li>
 </ul>]]></description>
-</item><item>
-    <title>关于关闭 Socket 的一些坑</title>
-    <link>https://example.com/tcp-close-socket/</link>
-    <pubDate>Wed, 06 Sep 2017 20:36:51 &#43;0000</pubDate>
-    <author>Author</author>
-    <guid>https://example.com/tcp-close-socket/</guid>
-    <description><![CDATA[<h2 id="关于关闭-socket-的一些坑">关于关闭 Socket 的一些坑</h2>
-<div style="text-align: right">LexusLee</div>
-<h3 id="背景">背景</h3>
-<p>最近踩到一个 &ldquo;Socket 连接持续处于 Fin_Wait2 和 Close_Wait 状态无法关闭&rdquo; 的坑中。起因是在维护大量连接时调用 <code>socket.close()</code> 时，看到部分连接并没有正常关闭，而是从 <code>ESTABLISHED</code> 的状态变成 <code>FIN_WAIT2</code> 并且连接状态没有后续迁移，而对端的连接状态则是从 <code>ESTABLISHED</code> 变成了 <code>CLOSE_WAIT</code> 。</p>]]></description>
 </item></channel>
 </rss>

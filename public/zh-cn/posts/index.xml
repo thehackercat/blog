@@ -4,7 +4,14 @@
         <link>https://example.com/zh-cn/posts/</link>
         <description>所有文章 | LexusLee&#39;s blog</description>
         <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>lexuscyborg103@gmail.com (LexusLee)</managingEditor>
-            <webMaster>lexuscyborg103@gmail.com (LexusLee)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Tue, 16 Nov 2021 11:46:09 &#43;0800</lastBuildDate><atom:link href="https://example.com/zh-cn/posts/" rel="self" type="application/rss+xml" /><item>
+            <webMaster>lexuscyborg103@gmail.com (LexusLee)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Sun, 26 Dec 2021 13:40:08 &#43;0800</lastBuildDate><atom:link href="https://example.com/zh-cn/posts/" rel="self" type="application/rss+xml" /><item>
+    <title>《容器高手实战》笔记-01</title>
+    <link>https://example.com/zh-cn/container-travel-lesson-01/</link>
+    <pubDate>Sun, 26 Dec 2021 13:40:08 &#43;0800</pubDate>
+    <author>作者</author>
+    <guid>https://example.com/zh-cn/container-travel-lesson-01/</guid>
+    <description><![CDATA[背景 最近在接触《容器高手实战》这门课，作为有一定容器经验的工程师，从这个视角下，我会记录一些非基础的，但是不是需要回看一眼的课程笔记，用于分]]></description>
+</item><item>
     <title>从 Facebook 故障开始探索 BGP 工具使用</title>
     <link>https://example.com/zh-cn/tools-to-explore-bgp/</link>
     <pubDate>Tue, 16 Nov 2021 11:46:09 &#43;0800</pubDate>
@@ -72,12 +79,5 @@
     <author>作者</author>
     <guid>https://example.com/zh-cn/google-autopilot-scaling/</guid>
     <description><![CDATA[摘要 原文链接：https://dl.acm.org/doi/pdf/10.1145/3342195.3387524 在许多公共和私有云系统中，]]></description>
-</item><item>
-    <title>一名开发的 Macbook 常用 app 整理</title>
-    <link>https://example.com/zh-cn/apps-liat-for-macbook/</link>
-    <pubDate>Fri, 25 Dec 2020 14:02:16 &#43;0800</pubDate>
-    <author>作者</author>
-    <guid>https://example.com/zh-cn/apps-liat-for-macbook/</guid>
-    <description><![CDATA[枚举目前我迁移工作电脑需要装的 app 清单。后续考虑加到同步工具里。 开发 Vscode Sublime Sourcetree Github Desktop Iterm2 Postman Cyberduck Docker 命令行 oh-my-zsh homebrew homebrew cask tmux ack ag bat autojump job fselect 画图 draw.io desktop XMind Sketch 数据库 Sequel Pro (for MySql) Navicat]]></description>
 </item></channel>
 </rss>
