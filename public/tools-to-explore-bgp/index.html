@@ -23,10 +23,10 @@ BGP 探索之路 如何发布BGP路由 之前我从没有开始接触 BGP 的原
   由一个组织拥有的（通常是一个大型组织，如你的ISP，政府，大学，Facebook，等等）
   他们能控制一组特定的 IP 地址（例如，我的 ISP 的 AS 包括 247,808 个IP地址）。" />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://example.com/tools-to-explore-bgp/" />
-<meta property="og:image" content="https://example.com/logo.png"/>
+<meta property="og:url" content="https://example.com/tools-to-explore-bgp/" /><meta property="og:image" content="https://example.com/logo.png"/><meta property="article:section" content="posts" />
 <meta property="article:published_time" content="2021-11-16T11:46:09+08:00" />
 <meta property="article:modified_time" content="2021-11-16T14:13:14+08:00" />
+
 <meta name="twitter:card" content="summary_large_image"/>
 <meta name="twitter:image" content="https://example.com/logo.png"/>
 
@@ -79,7 +79,7 @@ BGP 探索之路 如何发布BGP路由 之前我从没有开始接触 BGP 的原
             <a href="/" title="LexusLee&#39;s blog"><span class="header-title-pre"><i class='far fa-kiss-wink-heart fa-fw'></i></span>Nice to meet you</a>
         </div>
         <div class="menu">
-            <div class="menu-inner"><a class="menu-item" href="/posts/"> Posts </a><a class="menu-item" href="/tags/"> Tags </a><a class="menu-item" href="/categories/"> Categories </a><a class="menu-item" href="/categories/documentation/"> Docs </a><a class="menu-item" href="/about/"> About </a><a class="menu-item" href="https://github.com/thehackercat" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i>  </a><span class="menu-item delimiter"></span><a href="javascript:void(0);" class="menu-item language" title="Select Language">English<i class="fas fa-chevron-right fa-fw"></i>
+            <div class="menu-inner"><a class="menu-item" href="/posts/"> Posts </a><a class="menu-item" href="/tags/"> Tags </a><a class="menu-item" href="/categories/"> Categories </a><a class="menu-item" href="/photo/"> Photo </a><a class="menu-item" href="/about/"> About </a><a class="menu-item" href="https://github.com/thehackercat" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i>  </a><span class="menu-item delimiter"></span><a href="javascript:void(0);" class="menu-item language" title="Select Language">English<i class="fas fa-chevron-right fa-fw"></i>
                         <select class="language-select" id="language-select-desktop" onchange="location = this.value;"><option value="/tools-to-explore-bgp/" selected>English</option><option value="/zh-cn/tools-to-explore-bgp/">简体中文</option></select>
                     </a><span class="menu-item search" id="search-desktop">
                         <input type="text" placeholder="Search titles or contents..." id="search-input-desktop">
@@ -124,7 +124,7 @@ BGP 探索之路 如何发布BGP路由 之前我从没有开始接触 BGP 的原
                     <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
                         Cancel
                     </a>
-                </div><a class="menu-item" href="/posts/" title="">Posts</a><a class="menu-item" href="/tags/" title="">Tags</a><a class="menu-item" href="/categories/" title="">Categories</a><a class="menu-item" href="/categories/documentation/" title="">Docs</a><a class="menu-item" href="/about/" title="">About</a><a class="menu-item" href="https://github.com/thehackercat" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i></a><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                </div><a class="menu-item" href="/posts/" title="">Posts</a><a class="menu-item" href="/tags/" title="">Tags</a><a class="menu-item" href="/categories/" title="">Categories</a><a class="menu-item" href="/photo/" title="">Photo</a><a class="menu-item" href="/about/" title="">About</a><a class="menu-item" href="https://github.com/thehackercat" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i></a><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
                 <i class="fas fa-adjust fa-fw"></i>
             </a><a href="javascript:void(0);" class="menu-item" title="Select Language">English<i class="fas fa-chevron-right fa-fw"></i>
                     <select class="language-select" onchange="location = this.value;"><option value="/tools-to-explore-bgp/" selected>English</option><option value="/zh-cn/tools-to-explore-bgp/">简体中文</option></select>
@@ -232,14 +232,14 @@ BGP 探索之路 如何发布BGP路由 之前我从没有开始接触 BGP 的原
 <p>下面是一个 129.134.30.0/23 的真实路由的例子：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-shell" data-lang="shell">  <span class="m">11670</span> <span class="m">32934</span>
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell">  <span class="m">11670</span> <span class="m">32934</span>
     206.108.35.2 from 206.108.35.254 <span class="o">(</span>206.108.35.254<span class="o">)</span>
       Origin IGP, metric 0, valid, external
       Community: 3856:55000
@@ -280,7 +280,7 @@ BGP 探索之路 如何发布BGP路由 之前我从没有开始接触 BGP 的原
 <p>让我们看看我用 mtr 在访问 baidu.com 的路上经过了哪些 AS</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -309,7 +309,7 @@ BGP 探索之路 如何发布BGP路由 之前我从没有开始接触 BGP 的原
 </span><span class="lnt">27
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-shell" data-lang="shell">$ sudo mtr -z baidu.com
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell">$ sudo mtr -z baidu.com
                                             My traceroute  <span class="o">[</span>v0.94<span class="o">]</span>
 Bong <span class="o">(</span>10.255.2.107<span class="o">)</span> -&gt; baidu.com                                                     2021-11-16T13:12:47+0800
 Keys:  Help   Display mode   Restart statistics   Order of fields   quit
@@ -356,7 +356,7 @@ Keys:  Help   Display mode   Restart statistics   Order of fields   quit
 <p>下面是输出结果。由于太长我删减了一些不重要内容。</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -375,7 +375,7 @@ Keys:  Help   Display mode   Restart statistics   Order of fields   quit
 </span><span class="lnt">17
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-shell" data-lang="shell">From cache <span class="o">(</span>number of seconds old <span class="o">(</span>max 600<span class="o">))</span>: <span class="m">339</span>
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell">From cache <span class="o">(</span>number of seconds old <span class="o">(</span>max 600<span class="o">))</span>: <span class="m">339</span>
 
 
  IPv4 Unicast Summary:
@@ -399,7 +399,7 @@ Keys:  Help   Display mode   Restart statistics   Order of fields   quit
 <p>下面是挑选 129.134.30.0（Facebook 的一个IP地址）的 &ldquo;show ip bgp &ldquo;的输出。</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -428,7 +428,7 @@ Keys:  Help   Display mode   Restart statistics   Order of fields   quit
 </span><span class="lnt">27
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-shell" data-lang="shell">BGP routing table entry <span class="k">for</span> 129.134.30.0/23
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell">BGP routing table entry <span class="k">for</span> 129.134.30.0/23
 Paths: <span class="o">(</span><span class="m">4</span> available, best <span class="c1">#3, table default)</span>
   Advertised to non peer-group peers:
   206.220.231.55
@@ -465,19 +465,19 @@ Paths: <span class="o">(</span><span class="m">4</span> available, best <span cl
 <p>除以上之外，这里还有一些 BGP looking glasses 的网站，可以从其他角度给你提供类似的信息。他们似乎都支持相同的 show ip bgp 语法，也能有一定的参考性。</p>
 <ul>
 <li>
-<p><a href="http://www.routeviews.org/routeviews/index.php/collectors/">http://www.routeviews.org/routeviews/index.php/collectors/</a></p>
+<p><a href="http://www.routeviews.org/routeviews/index.php/collectors/" target="_blank" rel="noopener noreffer">http://www.routeviews.org/routeviews/index.php/collectors/</a></p>
 </li>
 <li>
-<p><a href="http://www.routeservers.org/">http://www.routeservers.org/</a></p>
+<p><a href="http://www.routeservers.org/" target="_blank" rel="noopener noreffer">http://www.routeservers.org/</a></p>
 </li>
 <li>
-<p><a href="https://lg.he.net/">https://lg.he.net/</a></p>
+<p><a href="https://lg.he.net/" target="_blank" rel="noopener noreffer">https://lg.he.net/</a></p>
 </li>
 </ul>
 <p>下面是一个与这个名单上的一个服务器进行会话的例子：route-views.routeviews.org。这次我是通过 telnet 连接的，而不是通过web表单，但输出的格式看起来是一样的。</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -519,7 +519,7 @@ Paths: <span class="o">(</span><span class="m">4</span> available, best <span cl
 </span><span class="lnt">40
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-shell" data-lang="shell">$ telnet route-views.routeviews.org
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell">$ telnet route-views.routeviews.org
 
 route-views&gt;show ip bgp 31.13.80.36
 
@@ -564,7 +564,7 @@ Paths: <span class="o">(</span><span class="m">23</span> available, best <span c
 </div><h4 id="工具4-bgplay">工具4: BGPlay</h4>
 <p>到目前为止，所有其他的工具都只是向我们展示了 Facebook 路由的当前状态，其中一切正常，但这第四个工具让我们看到了这个Facebook BGP 互联网故障的历史记录。</p>
 <p>这是一个 GUI 工具，所以我将贴上一堆屏幕截图。</p>
-<p>这个工具下载地址在 <a href="https://stat.ripe.net/special/bgplay">https://stat.ripe.net/special/bgplay</a> 。我输入了 IP 地址 129.134.30.12（Facebook的IP之一）进行验证。</p>
+<p>这个工具下载地址在 <a href="https://stat.ripe.net/special/bgplay" target="_blank" rel="noopener noreffer">https://stat.ripe.net/special/bgplay</a> 。我输入了 IP 地址 129.134.30.12（Facebook的IP之一）进行验证。</p>
 <p>首先，让我们看看一切出错之前的状态。我在10月4日13:11:28点击了时间线，得到了这个结果。</p>
 <p><img
         class="lazyload"
@@ -587,12 +587,12 @@ Paths: <span class="o">(</span><span class="m">23</span> available, best <span c
 <p>上面的文字显示了最后一条 Facebook BGP 路由的消失时间。</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-shell" data-lang="shell">Type: W &gt; withdrawal Involving: 129.134.30.0/24
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell">Type: W &gt; withdrawal Involving: 129.134.30.0/24
 Short description: The route 50869, 25091, <span class="m">32934</span> has been withdrawn.
 Date and time: 2021-10-04 16:02:33 Collected by: 20-91.206.53.12
 </code></pre></td></tr></table>
@@ -650,7 +650,7 @@ Date and time: 2021-10-04 16:02:33 Collected by: 20-91.206.53.12
 </div>
 </article></div>
             </main><footer class="footer">
-        <div class="footer-container"><div class="footer-line"><i class="far fa-copyright fa-fw"></i><span itemprop="copyrightYear">2015 - 2021</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/" target="_blank">LexusLee</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        <div class="footer-container"><div class="footer-line"><i class="far fa-copyright fa-fw"></i><span itemprop="copyrightYear">2015 - 2022</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/" target="_blank">LexusLee</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
         </div>
     </footer></div>
 

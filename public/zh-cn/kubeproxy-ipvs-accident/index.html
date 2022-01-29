@@ -8,10 +8,10 @@
         <title>记一次升级 kube-proxy ipvs 引发的线上故障 - LexusLee&#39;s blog</title><meta name="Description" content="LexusLee personal blog, recording things you people wouldn&#39;t believe. Like attack ships on fire off the shoulder of Orion, c-beams glitter in the dark near the Tannhauser Gate."><meta property="og:title" content="记一次升级 kube-proxy ipvs 引发的线上故障" />
 <meta property="og:description" content="背景 最近在升级集群的 kube-prxoy 并开启 ipvs mode, 引发了一些线上故障 替换原因 由于豆瓣的集群使用 calico &#43; kube-proxy iptables mode &#43; puppet iptable 脚本管理 三个组件共同操作同一份 iptables, 容易出现 race condition 问题" />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://example.com/zh-cn/kubeproxy-ipvs-accident/" />
-<meta property="og:image" content="https://example.com/logo.png"/>
+<meta property="og:url" content="https://example.com/zh-cn/kubeproxy-ipvs-accident/" /><meta property="og:image" content="https://example.com/logo.png"/><meta property="article:section" content="posts" />
 <meta property="article:published_time" content="2019-04-29T19:10:46+00:00" />
 <meta property="article:modified_time" content="2020-07-14T14:49:15+08:00" />
+
 <meta name="twitter:card" content="summary_large_image"/>
 <meta name="twitter:image" content="https://example.com/logo.png"/>
 
@@ -139,7 +139,7 @@
 <h2 id="事故回溯">事故回溯</h2>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -165,7 +165,7 @@
 </span><span class="lnt">24
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">@400000005cbea9a81eaf9164 W0423 13:58:54.514773   14016 server.go:195] WARNING: all flags other than --config, --write-config-to, and --cleanup are deprecated. Please begin using a config file ASAP.
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback">@400000005cbea9a81eaf9164 W0423 13:58:54.514773   14016 server.go:195] WARNING: all flags other than --config, --write-config-to, and --cleanup are deprecated. Please begin using a config file ASAP.
 @400000005cbea9a81fe30854 W0423 13:58:54.534952   14016 server_others.go:287] Flag proxy-mode=&#34;&#34; unknown, assuming iptables proxy
 @400000005cbea9a81ff0bc24 I0423 13:58:54.535856   14016 server_others.go:140] Using iptables Proxier.
 @400000005cbea9a820d714e4 I0423 13:58:54.550947   14016 server_others.go:174] Tearing down inactive rules.
@@ -197,10 +197,10 @@ Failed to delete stale service IP 172.19.68.99 connections, error: error deletin
 <p>后续排查发现, 发现故障节点因为清理缘故 iptables 中少了这一条规则, docker bridge network 下的 container 向外发包时，没有做 SNAT, 对端收到包但无法正确回包，导致通信失败</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">-A POSTROUTING -s 172.17.0.0/16 ! -o docker0 -j MASQUERADE
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback">-A POSTROUTING -s 172.17.0.0/16 ! -o docker0 -j MASQUERADE
 </code></pre></td></tr></table>
 </div>
 </div><p>故所有依赖 docker0 访问的非 k8s container 均出现了网络异常.</p>
@@ -208,10 +208,10 @@ Failed to delete stale service IP 172.19.68.99 connections, error: error deletin
 <p>临时在节点上批量执行以下脚本刷上 iptables 规则</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">sudo iptables -t nat -I  POSTROUTING 3 -s 172.17.0.0/16 ! -o docker0 -j MASQUERADE
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback">sudo iptables -t nat -I  POSTROUTING 3 -s 172.17.0.0/16 ! -o docker0 -j MASQUERADE
 </code></pre></td></tr></table>
 </div>
 </div><h2 id="额外引发的另一个-dns-查询黑洞事故">额外引发的另一个 dns 查询黑洞事故</h2>
@@ -224,7 +224,7 @@ Failed to delete stale service IP 172.19.68.99 connections, error: error deletin
 </ul>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -244,7 +244,7 @@ Failed to delete stale service IP 172.19.68.99 connections, error: error deletin
 </span><span class="lnt">18
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">I0514 16:23:54.047540       1 graceful_termination.go:160] Trying to delete rs: 172.19.0.53:53/UDP/172.18.81.97:53
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback">I0514 16:23:54.047540       1 graceful_termination.go:160] Trying to delete rs: 172.19.0.53:53/UDP/172.18.81.97:53
 I0514 16:23:54.047603       1 graceful_termination.go:171] Not deleting, RS 172.19.0.53:53/UDP/172.18.81.97:53: 0 ActiveConn, 3 InactiveConn
 I0514 16:23:54.260987       1 graceful_termination.go:160] Trying to delete rs: 172.19.0.53:9153/TCP/172.18.81.97:9153
 I0514 16:23:54.261050       1 graceful_termination.go:174] Deleting rs: 172.19.0.53:9153/TCP/172.18.81.97:9153
@@ -298,7 +298,7 @@ I0514 16:37:09.605468       1 graceful_termination.go:93] lw: remote out of the 
 </div>
 </article></div>
             </main><footer class="footer">
-        <div class="footer-container"><div class="footer-line"><i class="far fa-copyright fa-fw"></i><span itemprop="copyrightYear">2015 - 2021</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/" target="_blank">LexusLee</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        <div class="footer-container"><div class="footer-line"><i class="far fa-copyright fa-fw"></i><span itemprop="copyrightYear">2015 - 2022</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/" target="_blank">LexusLee</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
         </div>
     </footer></div>
 

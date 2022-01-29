@@ -12,10 +12,10 @@
 不过其实我想知道的应该是 k8s 通信机制，它是怎么实现服务发现的，新建的 pod 是怎么感知到的，万一有些 pod 节点变更 vip 变了 k8s 是如何感知的。
 基于这个问题，做一下关于 k8s service&amp;kube-proxy 的分享。" />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://example.com/zh-cn/k8s-service-endpoints/" />
-<meta property="og:image" content="https://example.com/logo.png"/>
+<meta property="og:url" content="https://example.com/zh-cn/k8s-service-endpoints/" /><meta property="og:image" content="https://example.com/logo.png"/><meta property="article:section" content="posts" />
 <meta property="article:published_time" content="2018-09-14T19:10:46+00:00" />
 <meta property="article:modified_time" content="2020-07-14T14:49:15+08:00" />
+
 <meta name="twitter:card" content="summary_large_image"/>
 <meta name="twitter:image" content="https://example.com/logo.png"/>
 
@@ -149,7 +149,7 @@
 <p>首先我建了一个 <code>replcas = 4</code>  <code>lebel: app=service_test_pod</code>的 python server deployment 来打出当前 pod 的 Hostname</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -174,41 +174,41 @@
 </span><span class="lnt">23
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="k">apiVersion</span><span class="p">:</span><span class="w">  </span>apps/v1<span class="w">
-</span><span class="w"></span><span class="k">kind</span><span class="p">:</span><span class="w"> </span>Deployment<span class="w">
-</span><span class="w"></span><span class="k">metadata</span><span class="p">:</span><span class="w">
-</span><span class="w">  </span><span class="k">name</span><span class="p">:</span><span class="w"> </span>service-test<span class="w">
-</span><span class="w"></span><span class="k">spec</span><span class="p">:</span><span class="w">
-</span><span class="w">  </span><span class="k">replicas</span><span class="p">:</span><span class="w"> </span><span class="m">4</span><span class="w">
-</span><span class="w">  </span><span class="k">selector</span><span class="p">:</span><span class="w">
-</span><span class="w">    </span><span class="k">matchLabels</span><span class="p">:</span><span class="w">
-</span><span class="w">      </span><span class="k">app</span><span class="p">:</span><span class="w"> </span>service_test_pod<span class="w">
-</span><span class="w">  </span><span class="k">template</span><span class="p">:</span><span class="w">
-</span><span class="w">    </span><span class="k">metadata</span><span class="p">:</span><span class="w">
-</span><span class="w">      </span><span class="k">labels</span><span class="p">:</span><span class="w">
-</span><span class="w">        </span><span class="k">app</span><span class="p">:</span><span class="w"> </span>service_test_pod<span class="w">
-</span><span class="w">    </span><span class="k">spec</span><span class="p">:</span><span class="w">
-</span><span class="w">      </span><span class="k">containers</span><span class="p">:</span><span class="w">
-</span><span class="w">      </span>- <span class="k">name</span><span class="p">:</span><span class="w"> </span>simple-http<span class="w">
-</span><span class="w">        </span><span class="k">image</span><span class="p">:</span><span class="w"> </span>python<span class="p">:</span><span class="m">2.7</span><span class="w">
-</span><span class="w">        </span><span class="k">imagePullPolicy</span><span class="p">:</span><span class="w"> </span>IfNotPresent<span class="w">
-</span><span class="w">        </span><span class="k">command</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&#34;/bin/bash&#34;</span><span class="p">]</span><span class="w">
-</span><span class="w">        </span><span class="k">args</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&#34;-c&#34;</span><span class="p">,</span><span class="w"> </span><span class="s2">&#34;echo \&#34;&lt;p&gt;Hello from $(hostname)&lt;/p&gt;\&#34; &gt; index.html; python -m SimpleHTTPServer 9999&#34;</span><span class="p">]</span><span class="w">
-</span><span class="w">        </span><span class="k">ports</span><span class="p">:</span><span class="w">
-</span><span class="w">        </span>- <span class="k">name</span><span class="p">:</span><span class="w"> </span>http<span class="w">
-</span><span class="w">          </span><span class="k">containerPort</span><span class="p">:</span><span class="w"> </span><span class="m">9999</span><span class="w">
+<pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="nt">apiVersion</span><span class="p">:</span><span class="w">  </span><span class="l">apps/v1</span><span class="w">
+</span><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">Deployment</span><span class="w">
+</span><span class="w"></span><span class="nt">metadata</span><span class="p">:</span><span class="w">
+</span><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">service-test</span><span class="w">
+</span><span class="w"></span><span class="nt">spec</span><span class="p">:</span><span class="w">
+</span><span class="w">  </span><span class="nt">replicas</span><span class="p">:</span><span class="w"> </span><span class="m">4</span><span class="w">
+</span><span class="w">  </span><span class="nt">selector</span><span class="p">:</span><span class="w">
+</span><span class="w">    </span><span class="nt">matchLabels</span><span class="p">:</span><span class="w">
+</span><span class="w">      </span><span class="nt">app</span><span class="p">:</span><span class="w"> </span><span class="l">service_test_pod</span><span class="w">
+</span><span class="w">  </span><span class="nt">template</span><span class="p">:</span><span class="w">
+</span><span class="w">    </span><span class="nt">metadata</span><span class="p">:</span><span class="w">
+</span><span class="w">      </span><span class="nt">labels</span><span class="p">:</span><span class="w">
+</span><span class="w">        </span><span class="nt">app</span><span class="p">:</span><span class="w"> </span><span class="l">service_test_pod</span><span class="w">
+</span><span class="w">    </span><span class="nt">spec</span><span class="p">:</span><span class="w">
+</span><span class="w">      </span><span class="nt">containers</span><span class="p">:</span><span class="w">
+</span><span class="w">      </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">simple-http</span><span class="w">
+</span><span class="w">        </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l">python:2.7</span><span class="w">
+</span><span class="w">        </span><span class="nt">imagePullPolicy</span><span class="p">:</span><span class="w"> </span><span class="l">IfNotPresent</span><span class="w">
+</span><span class="w">        </span><span class="nt">command</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&#34;/bin/bash&#34;</span><span class="p">]</span><span class="w">
+</span><span class="w">        </span><span class="nt">args</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&#34;-c&#34;</span><span class="p">,</span><span class="w"> </span><span class="s2">&#34;echo \&#34;&lt;p&gt;Hello from $(hostname)&lt;/p&gt;\&#34; &gt; index.html; python -m SimpleHTTPServer 9999&#34;</span><span class="p">]</span><span class="w">
+</span><span class="w">        </span><span class="nt">ports</span><span class="p">:</span><span class="w">
+</span><span class="w">        </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">http</span><span class="w">
+</span><span class="w">          </span><span class="nt">containerPort</span><span class="p">:</span><span class="w"> </span><span class="m">9999</span><span class="w">
 </span></code></pre></td></tr></table>
 </div>
 </div><p>可以看到启动了4个 pod</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">service-test-69764ddb4c-4hr2x                                     1/1       Running             0          8s        172.18.234.21    brand6
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback">service-test-69764ddb4c-4hr2x                                     1/1       Running             0          8s        172.18.234.21    brand6
 service-test-69764ddb4c-gstft                                     1/1       Running             0          8s        172.18.83.225    belba2
 service-test-69764ddb4c-nnv29                                     1/1       Running             0          8s        172.18.156.140   brand2
 service-test-69764ddb4c-vx5pn                                     0/1       ContainerCreating   0          8s        &lt;none&gt;           belba3
@@ -217,11 +217,11 @@ service-test-69764ddb4c-vx5pn                                     0/1       Cont
 </div><p>我必须挨个 curl 才能得到他们的 hostname</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-shell" data-lang="shell">lilingzhi@belba1 ~/k8s/test $ curl 172.18.234.21:9999
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell">lilingzhi@belba1 ~/k8s/test $ curl 172.18.234.21:9999
 &lt;p&gt;Hello from service-test-69764ddb4c-4hr2x&lt;/p&gt;
 </code></pre></td></tr></table>
 </div>
@@ -246,23 +246,23 @@ service-test-69764ddb4c-vx5pn                                     0/1       Cont
 <p>那么我新建一个 service 给刚刚的 4 个 pod</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-shell" data-lang="shell">lilingzhi@belba1 ~/k8s/test $ kubectl expose deployment service-test --type<span class="o">=</span><span class="s2">&#34;NodePort&#34;</span> --port <span class="m">9098</span> --target-port<span class="o">=</span><span class="m">9999</span>
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell">lilingzhi@belba1 ~/k8s/test $ kubectl expose deployment service-test --type<span class="o">=</span><span class="s2">&#34;NodePort&#34;</span> --port <span class="m">9098</span> --target-port<span class="o">=</span><span class="m">9999</span>
 service/service-test exposed
 </code></pre></td></tr></table>
 </div>
 </div><p>可以看到</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-shell" data-lang="shell">lilingzhi@belba1 ~/k8s/test $ kubectl get service -o wide
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell">lilingzhi@belba1 ~/k8s/test $ kubectl get service -o wide
 NAME                   TYPE        CLUSTER-IP      EXTERNAL-IP   PORT<span class="o">(</span>S<span class="o">)</span>                               AGE       SELECTOR
 service-test           NodePort    172.19.97.3     &lt;none&gt;        9098:30255/TCP                        16s       <span class="nv">app</span><span class="o">=</span>service_test_pod
 </code></pre></td></tr></table>
@@ -271,12 +271,12 @@ service-test           NodePort    172.19.97.3     &lt;none&gt;        9098:3025
 <p>再看下 endpoints</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-shell" data-lang="shell">lilingzhi@belba1 ~/k8s/test $ kubectl get endpoints -o wide
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell">lilingzhi@belba1 ~/k8s/test $ kubectl get endpoints -o wide
 NAME                   ENDPOINTS                                                               AGE
 service-test           172.18.156.140:9999,172.18.193.66:9999,172.18.234.21:9999 + <span class="m">1</span> more...   3m
 </code></pre></td></tr></table>
@@ -285,7 +285,7 @@ service-test           172.18.156.140:9999,172.18.193.66:9999,172.18.234.21:9999
 <p>通过不断 curl service ip:port 会发现请求已经均衡到4个 pod 上了</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
@@ -295,7 +295,7 @@ service-test           172.18.156.140:9999,172.18.193.66:9999,172.18.234.21:9999
 </span><span class="lnt">8
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-shell" data-lang="shell">lilingzhi@belba1 ~/k8s/test $ curl 172.19.97.3:9098
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell">lilingzhi@belba1 ~/k8s/test $ curl 172.19.97.3:9098
 &lt;p&gt;Hello from service-test-69764ddb4c-4hr2x&lt;/p&gt;
 lilingzhi@belba1 ~/k8s/test $ curl 172.19.97.3:9098
 &lt;p&gt;Hello from service-test-69764ddb4c-gstft&lt;/p&gt;
@@ -308,7 +308,7 @@ lilingzhi@belba1 ~/k8s/test $ curl 172.19.97.3:9098
 </div><p>由于 k8s service 路由是通过 kube-proxy 决定的，默认是走的 iptables 转发的(可换成用户态 proxy 或 ipvs)，所以查一下相应的 iptables 规则</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
@@ -316,7 +316,7 @@ lilingzhi@belba1 ~/k8s/test $ curl 172.19.97.3:9098
 </span><span class="lnt">6
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-shell" data-lang="shell">$ sudo iptables -L -v -n -t nat
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell">$ sudo iptables -L -v -n -t nat
 
 Chain KUBE-SERVICES <span class="o">(</span><span class="m">2</span> references<span class="o">)</span>
     <span class="m">0</span>     <span class="m">0</span> KUBE-MARK-MASQ  tcp  --  *      *      !172.18.0.0/16        172.19.97.3          /* default/service-test: cluster IP */ tcp dpt:9098
@@ -327,7 +327,7 @@ Chain KUBE-SERVICES <span class="o">(</span><span class="m">2</span> references<
 </div><p>看到有条 <code>chain KUBE-SVC-LY73ZDGF4KGO4YFJ</code> 定义了 service-test 的转发规则，于是查看相应的 chain</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
@@ -335,7 +335,7 @@ Chain KUBE-SERVICES <span class="o">(</span><span class="m">2</span> references<
 </span><span class="lnt">6
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-shell" data-lang="shell">Chain KUBE-SVC-LY73ZDGF4KGO4YFJ <span class="o">(</span><span class="m">2</span> references<span class="o">)</span>
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell">Chain KUBE-SVC-LY73ZDGF4KGO4YFJ <span class="o">(</span><span class="m">2</span> references<span class="o">)</span>
  pkts bytes target     prot opt in     out     <span class="nb">source</span>               destination
     <span class="m">0</span>     <span class="m">0</span> KUBE-SEP-2T6K76SEPIPV3QKW  all  --  *      *       0.0.0.0/0            0.0.0.0/0            /* default/service-test: */ statistic mode random probability 0.25000000000
     <span class="m">0</span>     <span class="m">0</span> KUBE-SEP-75XULILUFIHXBBLY  all  --  *      *       0.0.0.0/0            0.0.0.0/0            /* default/service-test: */ statistic mode random probability 0.33332999982
@@ -347,13 +347,13 @@ Chain KUBE-SERVICES <span class="o">(</span><span class="m">2</span> references<
 <p>那么我们挑其中一条子 chain <code>KUBE-SEP-2T6K76SEPIPV3QKW</code> 跟进去看看</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-shell" data-lang="shell">Chain KUBE-SEP-2T6K76SEPIPV3QKW <span class="o">(</span><span class="m">1</span> references<span class="o">)</span>
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell">Chain KUBE-SEP-2T6K76SEPIPV3QKW <span class="o">(</span><span class="m">1</span> references<span class="o">)</span>
  pkts bytes target     prot opt in     out     <span class="nb">source</span>               destination
     <span class="m">0</span>     <span class="m">0</span> KUBE-MARK-MASQ  all  --  *      *       172.18.156.140       0.0.0.0/0            /* default/service-test: */
     <span class="m">0</span>     <span class="m">0</span> DNAT       tcp  --  *      *       0.0.0.0/0            0.0.0.0/0            /* default/service-test: */ tcp to:172.18.156.140:9999
@@ -374,7 +374,7 @@ Chain KUBE-SERVICES <span class="o">(</span><span class="m">2</span> references<
 <p>kube-proxy 会作为 daemon 跑在每个节点上，对 api-server 中的 service &amp; endpoint 进行 watch ,一旦检测到更新则往 iptables 里全量推送新的转发规则，那么我们根据 <code>kubernetes/cmd/kube-proxy/proxy.go</code> 里找到 kube-proxy 真正的入口函数 <code>Run()</code></p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -397,7 +397,7 @@ Chain KUBE-SERVICES <span class="o">(</span><span class="m">2</span> references<
 </span><span class="lnt">21
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">func</span> <span class="p">(</span><span class="nx">s</span> <span class="o">*</span><span class="nx">ProxyServer</span><span class="p">)</span> <span class="nf">Run</span><span class="p">()</span> <span class="kt">error</span> <span class="p">{</span>
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="kd">func</span> <span class="p">(</span><span class="nx">s</span> <span class="o">*</span><span class="nx">ProxyServer</span><span class="p">)</span> <span class="nf">Run</span><span class="p">()</span> <span class="kt">error</span> <span class="p">{</span>
     <span class="o">...</span>
 	<span class="nx">serviceConfig</span> <span class="o">:=</span> <span class="nx">config</span><span class="p">.</span><span class="nf">NewServiceConfig</span><span class="p">(</span><span class="nx">informerFactory</span><span class="p">.</span><span class="nf">Core</span><span class="p">().</span><span class="nf">V1</span><span class="p">().</span><span class="nf">Services</span><span class="p">(),</span> <span class="nx">s</span><span class="p">.</span><span class="nx">ConfigSyncPeriod</span><span class="p">)</span>
 	<span class="nx">serviceConfig</span><span class="p">.</span><span class="nf">RegisterEventHandler</span><span class="p">(</span><span class="nx">s</span><span class="p">.</span><span class="nx">ServiceEventHandler</span><span class="p">)</span>
@@ -430,7 +430,7 @@ Chain KUBE-SERVICES <span class="o">(</span><span class="m">2</span> references<
 <p>接着我们先看下 service 的  <code>NewServiceConfig</code> 这个函数，因为 endpoint 估计也是类似的。</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -450,7 +450,7 @@ Chain KUBE-SERVICES <span class="o">(</span><span class="m">2</span> references<
 </span><span class="lnt">18
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-go" data-lang="go"><span class="c1">// NewServiceConfig creates a new ServiceConfig.
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="c1">// NewServiceConfig creates a new ServiceConfig.
 </span><span class="c1"></span><span class="kd">func</span> <span class="nf">NewServiceConfig</span><span class="p">(</span><span class="nx">serviceInformer</span> <span class="nx">coreinformers</span><span class="p">.</span><span class="nx">ServiceInformer</span><span class="p">,</span> <span class="nx">resyncPeriod</span> <span class="nx">time</span><span class="p">.</span><span class="nx">Duration</span><span class="p">)</span> <span class="o">*</span><span class="nx">ServiceConfig</span> <span class="p">{</span>
 	<span class="nx">result</span> <span class="o">:=</span> <span class="o">&amp;</span><span class="nx">ServiceConfig</span><span class="p">{</span>
 		<span class="nx">lister</span><span class="p">:</span>       <span class="nx">serviceInformer</span><span class="p">.</span><span class="nf">Lister</span><span class="p">(),</span>
@@ -473,13 +473,13 @@ Chain KUBE-SERVICES <span class="o">(</span><span class="m">2</span> references<
 </div><p>看到它结构体里就两个对象 <code>lister</code> 和 <code>listerSynced</code>，所以我们接着看下 <code>serviceInformer</code></p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">type</span> <span class="nx">ServiceInformer</span> <span class="kd">interface</span> <span class="p">{</span>
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="kd">type</span> <span class="nx">ServiceInformer</span> <span class="kd">interface</span> <span class="p">{</span>
 	<span class="nf">Informer</span><span class="p">()</span> <span class="nx">cache</span><span class="p">.</span><span class="nx">SharedIndexInformer</span>
 	<span class="nf">Lister</span><span class="p">()</span> <span class="nx">v1</span><span class="p">.</span><span class="nx">ServiceLister</span>
 <span class="p">}</span>
@@ -489,7 +489,7 @@ Chain KUBE-SERVICES <span class="o">(</span><span class="m">2</span> references<
 <p>接着回来看注册进去的回调函数，举个栗子，这儿的 <code>UpdateFunc: result.handleUpdateService</code> 最终会调到 <code>iptables.go</code> 里的 <code>OnServiceUpdate</code></p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -514,7 +514,7 @@ Chain KUBE-SERVICES <span class="o">(</span><span class="m">2</span> references<
 </span><span class="lnt">23
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">func</span> <span class="p">(</span><span class="nx">c</span> <span class="o">*</span><span class="nx">ServiceConfig</span><span class="p">)</span> <span class="nf">handleUpdateService</span><span class="p">(</span><span class="nx">oldObj</span><span class="p">,</span> <span class="nx">newObj</span> <span class="kd">interface</span><span class="p">{})</span> <span class="p">{</span>
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="kd">func</span> <span class="p">(</span><span class="nx">c</span> <span class="o">*</span><span class="nx">ServiceConfig</span><span class="p">)</span> <span class="nf">handleUpdateService</span><span class="p">(</span><span class="nx">oldObj</span><span class="p">,</span> <span class="nx">newObj</span> <span class="kd">interface</span><span class="p">{})</span> <span class="p">{</span>
 	<span class="nx">oldService</span><span class="p">,</span> <span class="nx">ok</span> <span class="o">:=</span> <span class="nx">oldObj</span><span class="p">.(</span><span class="o">*</span><span class="nx">v1</span><span class="p">.</span><span class="nx">Service</span><span class="p">)</span>
 	<span class="k">if</span> <span class="p">!</span><span class="nx">ok</span> <span class="p">{</span>
 		<span class="nx">utilruntime</span><span class="p">.</span><span class="nf">HandleError</span><span class="p">(</span><span class="nx">fmt</span><span class="p">.</span><span class="nf">Errorf</span><span class="p">(</span><span class="s">&#34;unexpected object type: %v&#34;</span><span class="p">,</span> <span class="nx">oldObj</span><span class="p">))</span>
@@ -542,7 +542,7 @@ Chain KUBE-SERVICES <span class="o">(</span><span class="m">2</span> references<
 </div><p>所以监听到变更之后调用的这个 <code>proxier.syncRunner.Run()</code> 是什么呢，得看下这个 <code>syncRunner</code> 在做什么</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -573,7 +573,7 @@ Chain KUBE-SERVICES <span class="o">(</span><span class="m">2</span> references<
 </span><span class="lnt">29
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-go" data-lang="go"><span class="nx">proxier</span><span class="p">.</span><span class="nx">syncRunner</span> <span class="p">=</span> <span class="nx">async</span><span class="p">.</span><span class="nf">NewBoundedFrequencyRunner</span><span class="p">(</span><span class="s">&#34;sync-runner&#34;</span><span class="p">,</span> <span class="nx">proxier</span><span class="p">.</span><span class="nx">syncProxyRules</span><span class="p">,</span> <span class="nx">minSyncPeriod</span><span class="p">,</span> <span class="nx">syncPeriod</span><span class="p">,</span> <span class="nx">burstSyncs</span><span class="p">)</span>
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="nx">proxier</span><span class="p">.</span><span class="nx">syncRunner</span> <span class="p">=</span> <span class="nx">async</span><span class="p">.</span><span class="nf">NewBoundedFrequencyRunner</span><span class="p">(</span><span class="s">&#34;sync-runner&#34;</span><span class="p">,</span> <span class="nx">proxier</span><span class="p">.</span><span class="nx">syncProxyRules</span><span class="p">,</span> <span class="nx">minSyncPeriod</span><span class="p">,</span> <span class="nx">syncPeriod</span><span class="p">,</span> <span class="nx">burstSyncs</span><span class="p">)</span>
 
 <span class="kd">func</span> <span class="p">(</span><span class="nx">bfr</span> <span class="o">*</span><span class="nx">BoundedFrequencyRunner</span><span class="p">)</span> <span class="nf">Run</span><span class="p">()</span> <span class="p">{</span>
 	<span class="c1">// If it takes a lot of time to run the underlying function, noone is really
@@ -649,7 +649,7 @@ Chain KUBE-SERVICES <span class="o">(</span><span class="m">2</span> references<
 </div>
 </article></div>
             </main><footer class="footer">
-        <div class="footer-container"><div class="footer-line"><i class="far fa-copyright fa-fw"></i><span itemprop="copyrightYear">2015 - 2021</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/" target="_blank">LexusLee</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        <div class="footer-container"><div class="footer-line"><i class="far fa-copyright fa-fw"></i><span itemprop="copyrightYear">2015 - 2022</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/" target="_blank">LexusLee</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
         </div>
     </footer></div>
 

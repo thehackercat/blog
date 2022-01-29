@@ -10,10 +10,10 @@
 背景
 最近项目要用到 Whoosh 一个 Python 编写的索引检索模块，发现比较少中文资料并且看了学长的代码也好多不懂，故自己照着官网文档撸了一遍，把我自己的理解和官网一些不太清楚的解释写下来。" />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://example.com/zh-cn/whoosh-search/" />
-<meta property="og:image" content="https://example.com/logo.png"/>
+<meta property="og:url" content="https://example.com/zh-cn/whoosh-search/" /><meta property="og:image" content="https://example.com/logo.png"/><meta property="article:section" content="posts" />
 <meta property="article:published_time" content="2017-04-26T03:33:27+00:00" />
 <meta property="article:modified_time" content="2020-07-14T14:49:15+08:00" />
+
 <meta name="twitter:card" content="summary_large_image"/>
 <meta name="twitter:image" content="https://example.com/logo.png"/>
 
@@ -160,11 +160,11 @@
 <p>举个栗子，以下代码创建了一个包含 &ldquo;title&rdquo; 和 &ldquo;path&rdquo; 和 &ldquo;content&rdquo; 三个 Fields 的 <em>schema</em> 对象</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-python" data-lang="python"><span class="kn">from</span> <span class="nn">whoosh.fields</span> <span class="kn">import</span> <span class="n">Schema</span><span class="p">,</span> <span class="n">TEXT</span><span class="p">,</span> <span class="n">ID</span>
+<pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="kn">from</span> <span class="nn">whoosh.fields</span> <span class="kn">import</span> <span class="n">Schema</span><span class="p">,</span> <span class="n">TEXT</span><span class="p">,</span> <span class="n">ID</span>
 <span class="n">schema</span> <span class="o">=</span> <span class="n">Schema</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="n">TEXT</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="n">ID</span><span class="p">,</span> <span class="n">content</span><span class="o">=</span><span class="n">TEXT</span><span class="p">)</span>
 </code></pre></td></tr></table>
 </div>
@@ -172,7 +172,7 @@
 <p>一旦创建好了 <em>schema</em> 对象，接着就是使用 create_in 方法来创建 <em>schema</em> 的索引</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
@@ -180,7 +180,7 @@
 </span><span class="lnt">6
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-python" data-lang="python"><span class="kn">import</span> <span class="nn">os.path</span>
+<pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="kn">import</span> <span class="nn">os.path</span>
 <span class="kn">from</span> <span class="nn">whoosh.index</span> <span class="kn">import</span> <span class="n">create_in</span>
 
 <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="s2">&#34;index&#34;</span><span class="p">):</span>
@@ -191,7 +191,7 @@
 </div><p>接着可以用以下两种方法打开一个已创建的索引</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
@@ -201,7 +201,7 @@
 </span><span class="lnt">8
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-python" data-lang="python"><span class="c1"># 方法一 使用FileStorage对象</span>
+<pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="c1"># 方法一 使用FileStorage对象</span>
 <span class="kn">from</span> <span class="nn">whoosh.filedb.filestore</span> <span class="kn">import</span> <span class="n">FileStorage</span>
 <span class="n">storage</span> <span class="o">=</span> <span class="n">FileStorage</span><span class="p">(</span><span class="n">idx_path</span><span class="p">)</span>  <span class="c1">#idx_path 为索引路径</span>
 <span class="n">idx</span> <span class="o">=</span> <span class="n">storage</span><span class="o">.</span><span class="n">open_index</span><span class="p">(</span><span class="n">indexname</span><span class="o">=</span><span class="n">indexname</span><span class="p">,</span> <span class="n">schema</span><span class="o">=</span><span class="n">schema</span><span class="p">)</span>
@@ -215,7 +215,7 @@
 <p>一旦有了 <em>index</em> 对象，我们就需要在 index 里写入需要被检索的信息，所以 IndexWriter 对象就是用来提供一个 add_document(**kwargs) 方法来在之前声明的各种 Fields 里写入数据</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
@@ -224,7 +224,7 @@
 </span><span class="lnt">7
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-python" data-lang="python"><span class="n">writer</span> <span class="o">=</span> <span class="n">idx</span><span class="o">.</span><span class="n">writer</span><span class="p">()</span>  <span class="c1">#IndexWriter对象</span>
+<pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="n">writer</span> <span class="o">=</span> <span class="n">idx</span><span class="o">.</span><span class="n">writer</span><span class="p">()</span>  <span class="c1">#IndexWriter对象</span>
 <span class="n">writer</span><span class="o">.</span><span class="n">add_document</span><span class="p">(</span>
 	<span class="n">title</span><span class="o">=</span><span class="sa">u</span><span class="s2">&#34;Document Title&#34;</span><span class="p">,</span>
     <span class="n">path</span><span class="o">=</span><span class="sa">u</span><span class="s2">&#34;/a&#34;</span><span class="p">,</span>
@@ -241,32 +241,32 @@
 <p>如果有一个 Field 同时要被当做索引并保存之，那么可以用一个 unicode 值来做索引同时保存另一个对象</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-python" data-lang="python"><span class="n">writer</span><span class="o">.</span><span class="n">add_document</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="sa">u</span><span class="s2">&#34;Title to be indexed&#34;</span><span class="p">,</span> <span class="n">_stored_title</span><span class="o">=</span><span class="sa">u</span><span class="s2">&#34;Stored title&#34;</span><span class="p">)</span>
+<pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="n">writer</span><span class="o">.</span><span class="n">add_document</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="sa">u</span><span class="s2">&#34;Title to be indexed&#34;</span><span class="p">,</span> <span class="n">_stored_title</span><span class="o">=</span><span class="sa">u</span><span class="s2">&#34;Stored title&#34;</span><span class="p">)</span>
 </code></pre></td></tr></table>
 </div>
 </div><p>如果需要异步处理可以创建异步的 IndexWriter 对象</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-python" data-lang="python"><span class="kn">from</span> <span class="nn">whoosh.writing</span> <span class="kn">import</span> <span class="n">AsyncWriter</span>
+<pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="kn">from</span> <span class="nn">whoosh.writing</span> <span class="kn">import</span> <span class="n">AsyncWriter</span>
 <span class="n">writer</span> <span class="o">=</span> <span class="n">AsyncWriter</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="n">index</span><span class="p">)</span>
 </code></pre></td></tr></table>
 </div>
 </div><p>如果需要Buffer进行处理可以创建 BufferedWriter 对象</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-python" data-lang="python"><span class="kn">from</span> <span class="nn">whoosh.writing</span> <span class="kn">import</span> <span class="n">BufferedWriter</span>
+<pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="kn">from</span> <span class="nn">whoosh.writing</span> <span class="kn">import</span> <span class="n">BufferedWriter</span>
 <span class="c1"># period是多次commit的最大间隔时间，limit是需要缓存的最大数量</span>
 <span class="n">writer</span> <span class="o">=</span> <span class="n">BufferedWriter</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="n">index</span><span class="p">,</span> <span class="n">period</span><span class="o">=</span><span class="mi">120</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
 </code></pre></td></tr></table>
@@ -275,34 +275,34 @@
 <p>在开始搜索索引之前，我们需要创建 <em>searcher</em> 对象</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-python" data-lang="python"><span class="n">searcher</span> <span class="o">=</span> <span class="n">idx</span><span class="o">.</span><span class="n">sercher</span><span class="p">()</span>
+<pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="n">searcher</span> <span class="o">=</span> <span class="n">idx</span><span class="o">.</span><span class="n">sercher</span><span class="p">()</span>
 </code></pre></td></tr></table>
 </div>
 </div><p>但是一般来说不会这么创建搜索器 <em>searcher</em> ，这样做没法来索引检索完成后关闭搜索器释放内存(只要知道 searcher 很吃内存就行)，我们一般用 with 来创建 <em>searcher</em> 对象从来保证搜索器使用完毕后可以被正确关闭</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-python" data-lang="python"><span class="k">with</span> <span class="n">idx</span><span class="o">.</span><span class="n">sercher</span><span class="p">()</span> <span class="k">as</span> <span class="n">searcher</span><span class="p">:</span>
+<pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="k">with</span> <span class="n">idx</span><span class="o">.</span><span class="n">sercher</span><span class="p">()</span> <span class="k">as</span> <span class="n">searcher</span><span class="p">:</span>
     <span class="o">...</span>
 </code></pre></td></tr></table>
 </div>
 </div><p>以上写法等同于</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-python" data-lang="python"><span class="k">try</span><span class="p">:</span>
+<pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="k">try</span><span class="p">:</span>
 	<span class="n">searcher</span> <span class="o">=</span> <span class="n">idx</span><span class="o">.</span><span class="n">searcher</span><span class="p">()</span>
 	<span class="o">...</span>
 <span class="k">finally</span><span class="p">:</span>
@@ -313,12 +313,12 @@
 <p>举个栗子</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-python" data-lang="python"><span class="c1"># 直接构造查询对象</span>
+<pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="c1"># 直接构造查询对象</span>
 <span class="kn">from</span> <span class="nn">whoosh.query</span> <span class="kn">import</span> <span class="o">*</span>
 <span class="n">myquery</span> <span class="o">=</span> <span class="n">And</span><span class="p">([</span><span class="n">Term</span><span class="p">(</span><span class="s2">&#34;content&#34;</span><span class="p">,</span> <span class="sa">u</span><span class="s2">&#34;apple&#34;</span><span class="p">),</span> <span class="n">Term</span><span class="p">(</span><span class="s2">&#34;content&#34;</span><span class="p">,</span> <span class="s2">&#34;bear&#34;</span><span class="p">)])</span>
 </code></pre></td></tr></table>
@@ -326,13 +326,13 @@
 </div><p>默认的 <em>QueryParser</em> 允许使用查询原语 AND 和 OR 和 NOT 就像 SQL 一样简单！</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-python" data-lang="python"><span class="c1"># 使用解析器解析查询字段</span>
+<pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="c1"># 使用解析器解析查询字段</span>
 <span class="kn">from</span> <span class="nn">whoosh.qparser</span> <span class="kn">import</span> <span class="n">QueryParser</span>
 <span class="n">parser</span> <span class="o">=</span> <span class="n">QueryParser</span><span class="p">(</span><span class="s2">&#34;content&#34;</span><span class="p">,</span> <span class="n">idx</span><span class="o">.</span><span class="n">schema</span><span class="p">)</span>
 <span class="n">myquery</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">querystring</span><span class="p">)</span>
@@ -341,23 +341,23 @@
 </div><p>构造完查询对象后，就可以使用搜索器的 search() 方法来进行检索</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-python" data-lang="python"><span class="n">results</span> <span class="o">=</span> <span class="n">searcher</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">myquery</span><span class="p">)</span>
-<span class="k">print</span><span class="p">(</span><span class="n">results</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="n">results</span> <span class="o">=</span> <span class="n">searcher</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">myquery</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">results</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
 <span class="p">{</span><span class="s2">&#34;title&#34;</span><span class="p">:</span> <span class="s2">&#34;Document&#34;</span><span class="p">,</span> <span class="s2">&#34;content&#34;</span><span class="p">:</span> <span class="s2">&#34;Hello Whoosh&#34;</span><span class="p">}</span>
 </code></pre></td></tr></table>
 </div>
 </div><p>更通常的我们使用分页查询 search_page() 的方法</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-python" data-lang="python"><span class="n">results</span> <span class="o">=</span> <span class="n">searcher</span><span class="o">.</span><span class="n">search_page</span><span class="p">(</span><span class="n">myquery</span><span class="p">,</span> <span class="n">page_num</span><span class="p">,</span> <span class="n">page_len</span><span class="p">)</span>
+<pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="n">results</span> <span class="o">=</span> <span class="n">searcher</span><span class="o">.</span><span class="n">search_page</span><span class="p">(</span><span class="n">myquery</span><span class="p">,</span> <span class="n">page_num</span><span class="p">,</span> <span class="n">page_len</span><span class="p">)</span>
 </code></pre></td></tr></table>
 </div>
 </div><h4 id="结合-jieba-分词使用">结合 jieba 分词使用</h4>
@@ -373,7 +373,7 @@
 <p>使用的是 Whoosh 的 StandardAnalyzer ，是英文的分词器。为了对接上 jieba，做中文分词，需要把 TEXT(analyzer=analysis.StandardAnalyzer()) 换成 jieba 的 ChineseAnalyzer 即可</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -400,12 +400,12 @@
 </span><span class="lnt">25
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-python" data-lang="python"><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">unicode_literals</span>
+<pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">unicode_literals</span>
 <span class="kn">from</span> <span class="nn">jieba.analyse</span> <span class="kn">import</span> <span class="n">ChineseAnalyzer</span>
 
 <span class="n">analyzer</span> <span class="o">=</span> <span class="n">ChineseAnalyzer</span><span class="p">()</span>
 
-<span class="n">schema</span> <span class="o">=</span> <span class="n">Schema</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="n">TEXT</span><span class="p">(</span><span class="n">stored</span><span class="o">=</span><span class="bp">True</span><span class="p">),</span> <span class="n">path</span><span class="o">=</span><span class="n">ID</span><span class="p">(</span><span class="n">stored</span><span class="o">=</span><span class="bp">True</span><span class="p">),</span> <span class="n">content</span><span class="o">=</span><span class="n">TEXT</span><span class="p">(</span><span class="n">stored</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">analyzer</span><span class="o">=</span><span class="n">analyzer</span><span class="p">))</span>
+<span class="n">schema</span> <span class="o">=</span> <span class="n">Schema</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="n">TEXT</span><span class="p">(</span><span class="n">stored</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span> <span class="n">path</span><span class="o">=</span><span class="n">ID</span><span class="p">(</span><span class="n">stored</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span> <span class="n">content</span><span class="o">=</span><span class="n">TEXT</span><span class="p">(</span><span class="n">stored</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">analyzer</span><span class="o">=</span><span class="n">analyzer</span><span class="p">))</span>
 
 <span class="n">idx</span> <span class="o">=</span> <span class="n">create_in</span><span class="p">(</span><span class="s2">&#34;test&#34;</span><span class="p">,</span> <span class="n">schema</span><span class="p">)</span>
 <span class="n">writer</span> <span class="o">=</span> <span class="n">idx</span><span class="o">.</span><span class="n">writer</span><span class="p">()</span>
@@ -419,12 +419,12 @@
 <span class="n">parser</span> <span class="o">=</span> <span class="n">QueryParser</span><span class="p">(</span><span class="s2">&#34;content&#34;</span><span class="p">,</span> <span class="n">schema</span><span class="o">=</span><span class="n">idx</span><span class="o">.</span><span class="n">schema</span><span class="p">)</span>
 
 <span class="k">for</span> <span class="n">keyword</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&#34;水果&#34;</span><span class="p">,</span><span class="s2">&#34;你&#34;</span><span class="p">,</span><span class="s2">&#34;first&#34;</span><span class="p">,</span><span class="s2">&#34;中文&#34;</span><span class="p">,</span><span class="s2">&#34;交换机&#34;</span><span class="p">,</span><span class="s2">&#34;交换&#34;</span><span class="p">):</span>
-    <span class="k">print</span><span class="p">(</span><span class="s2">&#34;result of &#34;</span><span class="p">,</span><span class="n">keyword</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&#34;result of &#34;</span><span class="p">,</span><span class="n">keyword</span><span class="p">)</span>
     <span class="n">q</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">keyword</span><span class="p">)</span>
     <span class="n">results</span> <span class="o">=</span> <span class="n">searcher</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">q</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">hit</span> <span class="ow">in</span> <span class="n">results</span><span class="p">:</span>
-        <span class="k">print</span><span class="p">(</span><span class="n">hit</span><span class="o">.</span><span class="n">highlights</span><span class="p">(</span><span class="s2">&#34;content&#34;</span><span class="p">))</span>
-    <span class="k">print</span><span class="p">(</span><span class="s2">&#34;=&#34;</span><span class="o">*</span><span class="mi">10</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">hit</span><span class="o">.</span><span class="n">highlights</span><span class="p">(</span><span class="s2">&#34;content&#34;</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&#34;=&#34;</span><span class="o">*</span><span class="mi">10</span><span class="p">)</span>
 </code></pre></td></tr></table>
 </div>
 </div><p>还是很方便的。</p></div><div class="post-footer" id="post-footer">
@@ -460,7 +460,7 @@
                 Please enable JavaScript to view the comments powered by <a href="https://valine.js.org/">Valine</a>.
             </noscript></div></article></div>
             </main><footer class="footer">
-        <div class="footer-container"><div class="footer-line"><i class="far fa-copyright fa-fw"></i><span itemprop="copyrightYear">2015 - 2021</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/" target="_blank">LexusLee</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        <div class="footer-container"><div class="footer-line"><i class="far fa-copyright fa-fw"></i><span itemprop="copyrightYear">2015 - 2022</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/" target="_blank">LexusLee</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
         </div>
     </footer></div>
 

@@ -8,10 +8,10 @@
         <title>Django REST Framework 2-请求和响应 - LexusLee&#39;s blog</title><meta name="Description" content="LexusLee personal blog, recording things you people wouldn&#39;t believe. Like attack ships on fire off the shoulder of Orion, c-beams glitter in the dark near the Tannhauser Gate."><meta property="og:title" content="Django REST Framework 2-请求和响应" />
 <meta property="og:description" content="请求与响应 请求对象 DRF 提供了一个 request 对象，它继承自 HttpRequest 并且提供了更丰富的对 request 的解析处理的方法。其中最核心的是 request 对象的 request.data 属性，它看起来和 Django 的requ" />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://example.com/zh-cn/drf-tutorial-2/" />
-<meta property="og:image" content="https://example.com/logo.png"/>
+<meta property="og:url" content="https://example.com/zh-cn/drf-tutorial-2/" /><meta property="og:image" content="https://example.com/logo.png"/><meta property="article:section" content="posts" />
 <meta property="article:published_time" content="2016-04-02T02:01:33+08:00" />
 <meta property="article:modified_time" content="2020-07-14T14:49:15+08:00" />
+
 <meta name="twitter:card" content="summary_large_image"/>
 <meta name="twitter:image" content="https://example.com/logo.png"/>
 
@@ -143,11 +143,11 @@
 <p>DRF 提供了一个 <code>request</code> 对象，它继承自 <code>HttpRequest</code> 并且提供了更丰富的对 request 的解析处理的方法。其中最核心的是 <code>request</code> 对象的 <code>request.data</code> 属性，它看起来和 Django 的<code>request.POST</code> 相似，但是在处理 Web API 上更强大些。</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-python" data-lang="python"><span class="n">request</span><span class="o">.</span><span class="n">POST</span>  <span class="c1"># Only handles form data.  Only works for &#39;POST&#39; method.</span>
+<pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="n">request</span><span class="o">.</span><span class="n">POST</span>  <span class="c1"># Only handles form data.  Only works for &#39;POST&#39; method.</span>
 <span class="n">request</span><span class="o">.</span><span class="n">data</span>  <span class="c1"># Handles arbitrary data.  Works for &#39;POST&#39;, &#39;PUT&#39; and &#39;PATCH&#39; methods.</span>
 </code></pre></td></tr></table>
 </div>
@@ -156,10 +156,10 @@
 <p>DRF 也提供了一个 <code>response</code> 对象，它能把未 render 的对象(数据)通过一定方式转化为正确的数据格式返回给客户端。</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-python" data-lang="python"><span class="k">return</span> <span class="n">Response</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>  <span class="c1"># Renders to content type as requested by the client.</span>
+<pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="k">return</span> <span class="n">Response</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>  <span class="c1"># Renders to content type as requested by the client.</span>
 </code></pre></td></tr></table>
 </div>
 </div><h3 id="状态码">状态码</h3>
@@ -177,7 +177,7 @@
 <p>接着在 <code>douban/views.py</code> 中加入以下代码:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -229,7 +229,7 @@
 </span><span class="lnt">50
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-python" data-lang="python"><span class="ch">#!/usr/bin/python</span>
+<pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="ch">#!/usr/bin/python</span>
 <span class="c1"># -*- coding: utf-8 -*-</span>
 
 <span class="kn">from</span> <span class="nn">rest_framework</span> <span class="kn">import</span> <span class="n">status</span>
@@ -245,7 +245,7 @@
 </span><span class="s2">    &#34;&#34;&#34;</span>
     <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;GET&#39;</span><span class="p">:</span>
         <span class="n">movies</span> <span class="o">=</span> <span class="n">Movies</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
-        <span class="n">serializer</span> <span class="o">=</span> <span class="n">MoviesSerializer</span><span class="p">(</span><span class="n">movies</span><span class="p">,</span> <span class="n">many</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+        <span class="n">serializer</span> <span class="o">=</span> <span class="n">MoviesSerializer</span><span class="p">(</span><span class="n">movies</span><span class="p">,</span> <span class="n">many</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">Response</span><span class="p">(</span><span class="n">serializer</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
 
     <span class="k">elif</span> <span class="n">request</span><span class="o">.</span><span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;POST&#39;</span><span class="p">:</span>
@@ -291,25 +291,25 @@
 <p>我们所需做的就是在 views 中添加 <code>format</code> 关键字:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-python" data-lang="python"><span class="k">def</span> <span class="nf">movies_list</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">format</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+<pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="k">def</span> <span class="nf">movies_list</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 </code></pre></td></tr></table>
 </div>
 </div><p>还有</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-python" data-lang="python"><span class="k">def</span> <span class="nf">movies_detail</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">pk</span><span class="p">,</span> <span class="n">format</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+<pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="k">def</span> <span class="nf">movies_detail</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">pk</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 </code></pre></td></tr></table>
 </div>
 </div><p>然后在 <code>douban/urls.py</code> 中加入 <code>format_suffix_patterns</code> :</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -324,7 +324,7 @@
 </span><span class="lnt">13
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-python" data-lang="python"><span class="ch">#!/usr/bin/python</span>
+<pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="ch">#!/usr/bin/python</span>
 <span class="c1"># -*- coding: utf-8 -*-</span>
 
 <span class="kn">from</span> <span class="nn">django.conf.urls</span> <span class="kn">import</span> <span class="n">url</span>
@@ -344,10 +344,10 @@
 <p>在终端中输入</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-bash" data-lang="bash">$ python manage.py runserver
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash">$ python manage.py runserver
 </code></pre></td></tr></table>
 </div>
 </div><p>接着来浏览器中访问 <code>http://127.0.0.1/dbmovies/</code></p>
@@ -364,7 +364,7 @@
 <p>在表单中选择 Media type 为 json 格式并输入</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
@@ -374,7 +374,7 @@
 </span><span class="lnt">8
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-json" data-lang="json"><span class="p">{</span>
+<pre tabindex="0" class="chroma"><code class="language-json" data-lang="json"><span class="p">{</span>
     <span class="nt">&#34;id&#34;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
     <span class="nt">&#34;title&#34;</span><span class="p">:</span> <span class="s2">&#34;Carol&#34;</span><span class="p">,</span>
     <span class="nt">&#34;year&#34;</span><span class="p">:</span> <span class="s2">&#34;2015&#34;</span><span class="p">,</span>
@@ -439,7 +439,7 @@
                 Please enable JavaScript to view the comments powered by <a href="https://valine.js.org/">Valine</a>.
             </noscript></div></article></div>
             </main><footer class="footer">
-        <div class="footer-container"><div class="footer-line"><i class="far fa-copyright fa-fw"></i><span itemprop="copyrightYear">2015 - 2021</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/" target="_blank">LexusLee</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        <div class="footer-container"><div class="footer-line"><i class="far fa-copyright fa-fw"></i><span itemprop="copyrightYear">2015 - 2022</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/" target="_blank">LexusLee</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
         </div>
     </footer></div>
 

@@ -10,10 +10,10 @@
 背景
 最近公司新购置了好几台 Linux 服务器然后配置一些服务的时候很不习惯，估计是我平时自己的 zsh &#43; oh-my-zsh 用多了，故想整理下 .bash_rc 和 .zshrc 我个人的一些配置，这些配置包含了一些 alias 快捷命令和命令行系统配置，可以让终端变得快捷易用，今晚再写个 shell 脚本实现快速修改 .bash_rc 的配置。" />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://example.com/zh-cn/terminal-config/" />
-<meta property="og:image" content="https://example.com/logo.png"/>
+<meta property="og:url" content="https://example.com/zh-cn/terminal-config/" /><meta property="og:image" content="https://example.com/logo.png"/><meta property="article:section" content="posts" />
 <meta property="article:published_time" content="2017-03-30T15:29:19+00:00" />
 <meta property="article:modified_time" content="2020-07-14T14:49:15+08:00" />
+
 <meta name="twitter:card" content="summary_large_image"/>
 <meta name="twitter:image" content="https://example.com/logo.png"/>
 
@@ -145,14 +145,14 @@
 <p>终端不自动执行命令</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-bash" data-lang="bash"><span class="c1"># If not running interactively, don&#39;t do anything</span>
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="c1"># If not running interactively, don&#39;t do anything</span>
 <span class="k">case</span> <span class="nv">$-</span> in
     *i*<span class="o">)</span> <span class="p">;;</span>
       *<span class="o">)</span> <span class="k">return</span><span class="p">;;</span>
@@ -164,11 +164,11 @@
 <p>.bash_history 文件(同理 .zsh_history )不重写而是使用附加模式记录命令</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-bash" data-lang="bash"><span class="c1"># append to the history file, don&#39;t overwrite it</span>
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="c1"># append to the history file, don&#39;t overwrite it</span>
 <span class="nb">shopt</span> -s histappend
 </code></pre></td></tr></table>
 </div>
@@ -177,10 +177,10 @@
 <p>增加 .bash_history 、 .zsh_history 文件记录阈值，超过阈值后自动清空</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-bash" data-lang="bash"><span class="nv">HISTFILESIZE</span><span class="o">=</span><span class="m">2000</span>
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="nv">HISTFILESIZE</span><span class="o">=</span><span class="m">2000</span>
 </code></pre></td></tr></table>
 </div>
 </div></li>
@@ -188,12 +188,12 @@
 <p>根据命令行长短自动调节终端行列显示排版</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-bash" data-lang="bash"><span class="c1"># check the window size after each command and, if necessary,</span>
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="c1"># check the window size after each command and, if necessary,</span>
 <span class="c1"># update the values of LINES and COLUMNS.</span>
 <span class="nb">shopt</span> -s checkwinsize
 </code></pre></td></tr></table>
@@ -203,7 +203,7 @@
 <p>开启适合编程的命令行提示 feature</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
@@ -212,7 +212,7 @@
 </span><span class="lnt">7
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-bash" data-lang="bash"><span class="k">if</span> ! <span class="nb">shopt</span> -oq posix<span class="p">;</span> <span class="k">then</span>
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="k">if</span> ! <span class="nb">shopt</span> -oq posix<span class="p">;</span> <span class="k">then</span>
   <span class="k">if</span> <span class="o">[</span> -f /usr/share/bash-completion/bash_completion <span class="o">]</span><span class="p">;</span> <span class="k">then</span>
     . /usr/share/bash-completion/bash_completion
   <span class="k">elif</span> <span class="o">[</span> -f /etc/bash_completion <span class="o">]</span><span class="p">;</span> <span class="k">then</span>
@@ -227,13 +227,13 @@
 <p>比较容易懂。</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-bash" data-lang="bash"><span class="nb">alias</span> <span class="nv">cls</span><span class="o">=</span><span class="s1">&#39;clear&#39;</span>
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="nb">alias</span> <span class="nv">cls</span><span class="o">=</span><span class="s1">&#39;clear&#39;</span>
 <span class="nb">alias</span> <span class="nv">vi</span><span class="o">=</span><span class="s1">&#39;vim&#39;</span>
 <span class="nb">alias</span> <span class="nv">ll</span><span class="o">=</span><span class="s1">&#39;ls -l&#39;</span>
 <span class="nb">alias</span> <span class="nv">la</span><span class="o">=</span><span class="s1">&#39;ls -a&#39;</span>
@@ -245,12 +245,12 @@
 <p>这部分让 ls 和 grep 都带有关键字亮色的提示，让 alert 提示的错误信息在终端中显示起来更友好。</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-bash" data-lang="bash"><span class="nb">alias</span> <span class="nv">ls</span><span class="o">=</span><span class="s1">&#39;ls --color=auto&#39;</span>
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="nb">alias</span> <span class="nv">ls</span><span class="o">=</span><span class="s1">&#39;ls --color=auto&#39;</span>
 <span class="nb">alias</span> <span class="nv">grep</span><span class="o">=</span><span class="s1">&#39;grep --color=auto&#39;</span>
 <span class="nb">alias</span> <span class="nv">alert</span><span class="o">=</span><span class="s1">&#39;notify-send --urgency=low -i &#34;$([ $? = 0 ] &amp;&amp; echo terminal || echo error)&#34; &#34;$(history|tail -n1|sed -e &#39;</span><span class="se">\&#39;</span><span class="s1">&#39;s/^\s*[0-9]\+\s*//;s/[;&amp;|]\s*alert$//&#39;</span><span class="se">\&#39;</span><span class="s1">&#39;)&#34;&#39;</span>
 </code></pre></td></tr></table>
@@ -261,13 +261,13 @@
 <p>这部分增加了在 MacOS 系统中显示和隐藏文件的快捷命令，和在终端中切换 bash 和 zsh 的快捷命令。</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-bash" data-lang="bash"><span class="nb">alias</span> <span class="nv">showfile</span><span class="o">=</span><span class="s1">&#39;defaults write com.apple.finder AppleShowAllFiles -boolean true ; killall Finde    r&#39;</span>
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="nb">alias</span> <span class="nv">showfile</span><span class="o">=</span><span class="s1">&#39;defaults write com.apple.finder AppleShowAllFiles -boolean true ; killall Finde    r&#39;</span>
 <span class="nb">alias</span> <span class="nv">hidefile</span><span class="o">=</span><span class="s1">&#39;defaults write com.apple.finder AppleShowAllFiles -boolean false ; killall Find    er&#39;</span>
 <span class="nb">alias</span> <span class="nv">switchbash</span><span class="o">=</span><span class="s1">&#39;chsh -s /bin/bash&#39;</span>
 <span class="nb">alias</span> <span class="nv">switchzsh</span><span class="o">=</span><span class="s1">&#39;chsh -s /bin/zsh&#39;</span>
@@ -308,7 +308,7 @@
                 Please enable JavaScript to view the comments powered by <a href="https://valine.js.org/">Valine</a>.
             </noscript></div></article></div>
             </main><footer class="footer">
-        <div class="footer-container"><div class="footer-line"><i class="far fa-copyright fa-fw"></i><span itemprop="copyrightYear">2015 - 2021</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/" target="_blank">LexusLee</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        <div class="footer-container"><div class="footer-line"><i class="far fa-copyright fa-fw"></i><span itemprop="copyrightYear">2015 - 2022</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/" target="_blank">LexusLee</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
         </div>
     </footer></div>
 

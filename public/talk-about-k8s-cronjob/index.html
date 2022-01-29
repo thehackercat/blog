@@ -12,10 +12,10 @@
 下面开始解读下 release1.17 分支的 k8s cronjob controller 代码
  Controller struct  1 2 3 4 5 6 7  type Controller struct { kubeClient clientset." />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://example.com/talk-about-k8s-cronjob/" />
-<meta property="og:image" content="https://example.com/logo.png"/>
+<meta property="og:url" content="https://example.com/talk-about-k8s-cronjob/" /><meta property="og:image" content="https://example.com/logo.png"/><meta property="article:section" content="posts" />
 <meta property="article:published_time" content="2019-12-14T13:57:32+00:00" />
 <meta property="article:modified_time" content="2020-07-14T14:49:15+08:00" />
+
 <meta name="twitter:card" content="summary_large_image"/>
 <meta name="twitter:image" content="https://example.com/logo.png"/>
 
@@ -57,7 +57,7 @@
             <a href="/" title="LexusLee&#39;s blog"><span class="header-title-pre"><i class='far fa-kiss-wink-heart fa-fw'></i></span>Nice to meet you</a>
         </div>
         <div class="menu">
-            <div class="menu-inner"><a class="menu-item" href="/posts/"> Posts </a><a class="menu-item" href="/tags/"> Tags </a><a class="menu-item" href="/categories/"> Categories </a><a class="menu-item" href="/categories/documentation/"> Docs </a><a class="menu-item" href="/about/"> About </a><a class="menu-item" href="https://github.com/thehackercat" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i>  </a><span class="menu-item delimiter"></span><a href="javascript:void(0);" class="menu-item language" title="Select Language">English<i class="fas fa-chevron-right fa-fw"></i>
+            <div class="menu-inner"><a class="menu-item" href="/posts/"> Posts </a><a class="menu-item" href="/tags/"> Tags </a><a class="menu-item" href="/categories/"> Categories </a><a class="menu-item" href="/photo/"> Photo </a><a class="menu-item" href="/about/"> About </a><a class="menu-item" href="https://github.com/thehackercat" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i>  </a><span class="menu-item delimiter"></span><a href="javascript:void(0);" class="menu-item language" title="Select Language">English<i class="fas fa-chevron-right fa-fw"></i>
                         <select class="language-select" id="language-select-desktop" onchange="location = this.value;"><option value="/talk-about-k8s-cronjob/" selected>English</option><option value="/zh-cn/talk-about-k8s-cronjob/">简体中文</option></select>
                     </a><span class="menu-item search" id="search-desktop">
                         <input type="text" placeholder="Search titles or contents..." id="search-input-desktop">
@@ -102,7 +102,7 @@
                     <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
                         Cancel
                     </a>
-                </div><a class="menu-item" href="/posts/" title="">Posts</a><a class="menu-item" href="/tags/" title="">Tags</a><a class="menu-item" href="/categories/" title="">Categories</a><a class="menu-item" href="/categories/documentation/" title="">Docs</a><a class="menu-item" href="/about/" title="">About</a><a class="menu-item" href="https://github.com/thehackercat" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i></a><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                </div><a class="menu-item" href="/posts/" title="">Posts</a><a class="menu-item" href="/tags/" title="">Tags</a><a class="menu-item" href="/categories/" title="">Categories</a><a class="menu-item" href="/photo/" title="">Photo</a><a class="menu-item" href="/about/" title="">About</a><a class="menu-item" href="https://github.com/thehackercat" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i></a><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
                 <i class="fas fa-adjust fa-fw"></i>
             </a><a href="javascript:void(0);" class="menu-item" title="Select Language">English<i class="fas fa-chevron-right fa-fw"></i>
                     <select class="language-select" onchange="location = this.value;"><option value="/talk-about-k8s-cronjob/" selected>English</option><option value="/zh-cn/talk-about-k8s-cronjob/">简体中文</option></select>
@@ -154,7 +154,7 @@
 </ul>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
@@ -163,7 +163,7 @@
 </span><span class="lnt">7
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">type</span> <span class="nx">Controller</span> <span class="kd">struct</span> <span class="p">{</span>
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="kd">type</span> <span class="nx">Controller</span> <span class="kd">struct</span> <span class="p">{</span>
 	<span class="nx">kubeClient</span> <span class="nx">clientset</span><span class="p">.</span><span class="nx">Interface</span>
 	<span class="nx">jobControl</span> <span class="nx">jobControlInterface</span>
 	<span class="nx">sjControl</span>  <span class="nx">sjControlInterface</span>
@@ -178,7 +178,7 @@
 </ul>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
@@ -189,7 +189,7 @@
 </span><span class="lnt">9
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-go" data-lang="go"><span class="c1">// Run starts the main goroutine responsible for watching and syncing jobs.
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="c1">// Run starts the main goroutine responsible for watching and syncing jobs.
 </span><span class="c1"></span><span class="kd">func</span> <span class="p">(</span><span class="nx">jm</span> <span class="o">*</span><span class="nx">Controller</span><span class="p">)</span> <span class="nf">Run</span><span class="p">(</span><span class="nx">stopCh</span> <span class="o">&lt;-</span><span class="kd">chan</span> <span class="kd">struct</span><span class="p">{})</span> <span class="p">{</span>
 	<span class="k">defer</span> <span class="nx">utilruntime</span><span class="p">.</span><span class="nf">HandleCrash</span><span class="p">()</span>
 	<span class="nx">klog</span><span class="p">.</span><span class="nf">Infof</span><span class="p">(</span><span class="s">&#34;Starting CronJob Manager&#34;</span><span class="p">)</span>
@@ -206,7 +206,7 @@
 </ul>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -255,7 +255,7 @@
 </span><span class="lnt">47
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-go" data-lang="go"><span class="c1">// syncAll lists all the CronJobs and Jobs and reconciles them.
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="c1">// syncAll lists all the CronJobs and Jobs and reconciles them.
 </span><span class="c1"></span><span class="kd">func</span> <span class="p">(</span><span class="nx">jm</span> <span class="o">*</span><span class="nx">Controller</span><span class="p">)</span> <span class="nf">syncAll</span><span class="p">()</span> <span class="p">{</span>
 	<span class="c1">// List children (Jobs) before parents (CronJob).
 </span><span class="c1"></span>	<span class="c1">// This guarantees that if we see any Job that got orphaned by the GC orphan finalizer,
@@ -315,7 +315,7 @@
 <p>主调度函数 syncOne</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">  1
+<pre tabindex="0" class="chroma"><code><span class="lnt">  1
 </span><span class="lnt">  2
 </span><span class="lnt">  3
 </span><span class="lnt">  4
@@ -445,133 +445,133 @@
 </span><span class="lnt">128
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">func</span> <span class="nf">syncOne</span><span class="p">(</span><span class="nx">sj</span> <span class="o">*</span><span class="nx">batchv1beta1</span><span class="p">.</span><span class="nx">CronJob</span><span class="p">,</span> <span class="nx">js</span> <span class="p">[]</span><span class="nx">batchv1</span><span class="p">.</span><span class="nx">Job</span><span class="p">,</span> <span class="nx">now</span> <span class="nx">time</span><span class="p">.</span><span class="nx">Time</span><span class="p">,</span> <span class="nx">jc</span> <span class="nx">jobControlInterface</span><span class="p">,</span> <span class="nx">sjc</span> <span class="nx">sjControlInterface</span><span class="p">,</span> <span class="nx">recorder</span> <span class="nx">record</span><span class="p">.</span><span class="nx">EventRecorder</span><span class="p">)</span> <span class="p">{</span>
- <span class="nx">nameForLog</span> <span class="o">:=</span> <span class="nx">fmt</span><span class="p">.</span><span class="nf">Sprintf</span><span class="p">(</span><span class="s">&#34;%s/%s&#34;</span><span class="p">,</span> <span class="nx">sj</span><span class="p">.</span><span class="nx">Namespace</span><span class="p">,</span> <span class="nx">sj</span><span class="p">.</span><span class="nx">Name</span><span class="p">)</span>
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="kd">func</span> <span class="nf">syncOne</span><span class="p">(</span><span class="nx">sj</span> <span class="o">*</span><span class="nx">batchv1beta1</span><span class="p">.</span><span class="nx">CronJob</span><span class="p">,</span> <span class="nx">js</span> <span class="p">[]</span><span class="nx">batchv1</span><span class="p">.</span><span class="nx">Job</span><span class="p">,</span> <span class="nx">now</span> <span class="nx">time</span><span class="p">.</span><span class="nx">Time</span><span class="p">,</span> <span class="nx">jc</span> <span class="nx">jobControlInterface</span><span class="p">,</span> <span class="nx">sjc</span> <span class="nx">sjControlInterface</span><span class="p">,</span> <span class="nx">recorder</span> <span class="nx">record</span><span class="p">.</span><span class="nx">EventRecorder</span><span class="p">)</span> <span class="p">{</span>
+	<span class="nx">nameForLog</span> <span class="o">:=</span> <span class="nx">fmt</span><span class="p">.</span><span class="nf">Sprintf</span><span class="p">(</span><span class="s">&#34;%s/%s&#34;</span><span class="p">,</span> <span class="nx">sj</span><span class="p">.</span><span class="nx">Namespace</span><span class="p">,</span> <span class="nx">sj</span><span class="p">.</span><span class="nx">Name</span><span class="p">)</span>
 
   <span class="c1">// 首先在之前的 batchv1.Job slice 中顺序查找是否有当前 cronJob 的子 job 并且看看是否有不在 jobActive 列表中的孤儿，以及已经执行完成但是还在 Active 列表中的 job，根据 job 状态记录 event (UnexpectedJob, SawCompletedJob)，删掉不对应的状态
-</span><span class="c1"></span> <span class="nx">childrenJobs</span> <span class="o">:=</span> <span class="nb">make</span><span class="p">(</span><span class="kd">map</span><span class="p">[</span><span class="nx">types</span><span class="p">.</span><span class="nx">UID</span><span class="p">]</span><span class="kt">bool</span><span class="p">)</span>
- <span class="k">for</span> <span class="nx">_</span><span class="p">,</span> <span class="nx">j</span> <span class="o">:=</span> <span class="k">range</span> <span class="nx">js</span> <span class="p">{</span>
-     <span class="nx">childrenJobs</span><span class="p">[</span><span class="nx">j</span><span class="p">.</span><span class="nx">ObjectMeta</span><span class="p">.</span><span class="nx">UID</span><span class="p">]</span> <span class="p">=</span> <span class="kc">true</span>
-     <span class="nx">found</span> <span class="o">:=</span> <span class="nf">inActiveList</span><span class="p">(</span><span class="o">*</span><span class="nx">sj</span><span class="p">,</span> <span class="nx">j</span><span class="p">.</span><span class="nx">ObjectMeta</span><span class="p">.</span><span class="nx">UID</span><span class="p">)</span>
-     <span class="k">if</span> <span class="p">!</span><span class="nx">found</span> <span class="o">&amp;&amp;</span> <span class="p">!</span><span class="nf">IsJobFinished</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">j</span><span class="p">)</span> <span class="p">{</span>
-         <span class="nx">recorder</span><span class="p">.</span><span class="nf">Eventf</span><span class="p">(</span><span class="nx">sj</span><span class="p">,</span> <span class="nx">v1</span><span class="p">.</span><span class="nx">EventTypeWarning</span><span class="p">,</span> <span class="s">&#34;UnexpectedJob&#34;</span><span class="p">,</span> <span class="s">&#34;Saw a job that the controller did not create or forgot: %s&#34;</span><span class="p">,</span> <span class="nx">j</span><span class="p">.</span><span class="nx">Name</span><span class="p">)</span>
-     <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="nx">found</span> <span class="o">&amp;&amp;</span> <span class="nf">IsJobFinished</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">j</span><span class="p">)</span> <span class="p">{</span>
-         <span class="nx">_</span><span class="p">,</span> <span class="nx">status</span> <span class="o">:=</span> <span class="nf">getFinishedStatus</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">j</span><span class="p">)</span>
-         <span class="nf">deleteFromActiveList</span><span class="p">(</span><span class="nx">sj</span><span class="p">,</span> <span class="nx">j</span><span class="p">.</span><span class="nx">ObjectMeta</span><span class="p">.</span><span class="nx">UID</span><span class="p">)</span>
-         <span class="nx">recorder</span><span class="p">.</span><span class="nf">Eventf</span><span class="p">(</span><span class="nx">sj</span><span class="p">,</span> <span class="nx">v1</span><span class="p">.</span><span class="nx">EventTypeNormal</span><span class="p">,</span> <span class="s">&#34;SawCompletedJob&#34;</span><span class="p">,</span> <span class="s">&#34;Saw completed job: %s, status: %v&#34;</span><span class="p">,</span> <span class="nx">j</span><span class="p">.</span><span class="nx">Name</span><span class="p">,</span> <span class="nx">status</span><span class="p">)</span>
-     <span class="p">}</span>
- <span class="p">}</span>
+</span><span class="c1"></span>	<span class="nx">childrenJobs</span> <span class="o">:=</span> <span class="nb">make</span><span class="p">(</span><span class="kd">map</span><span class="p">[</span><span class="nx">types</span><span class="p">.</span><span class="nx">UID</span><span class="p">]</span><span class="kt">bool</span><span class="p">)</span>
+	<span class="k">for</span> <span class="nx">_</span><span class="p">,</span> <span class="nx">j</span> <span class="o">:=</span> <span class="k">range</span> <span class="nx">js</span> <span class="p">{</span>
+		<span class="nx">childrenJobs</span><span class="p">[</span><span class="nx">j</span><span class="p">.</span><span class="nx">ObjectMeta</span><span class="p">.</span><span class="nx">UID</span><span class="p">]</span> <span class="p">=</span> <span class="kc">true</span>
+		<span class="nx">found</span> <span class="o">:=</span> <span class="nf">inActiveList</span><span class="p">(</span><span class="o">*</span><span class="nx">sj</span><span class="p">,</span> <span class="nx">j</span><span class="p">.</span><span class="nx">ObjectMeta</span><span class="p">.</span><span class="nx">UID</span><span class="p">)</span>
+		<span class="k">if</span> <span class="p">!</span><span class="nx">found</span> <span class="o">&amp;&amp;</span> <span class="p">!</span><span class="nf">IsJobFinished</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">j</span><span class="p">)</span> <span class="p">{</span>
+			<span class="nx">recorder</span><span class="p">.</span><span class="nf">Eventf</span><span class="p">(</span><span class="nx">sj</span><span class="p">,</span> <span class="nx">v1</span><span class="p">.</span><span class="nx">EventTypeWarning</span><span class="p">,</span> <span class="s">&#34;UnexpectedJob&#34;</span><span class="p">,</span> <span class="s">&#34;Saw a job that the controller did not create or forgot: %s&#34;</span><span class="p">,</span> <span class="nx">j</span><span class="p">.</span><span class="nx">Name</span><span class="p">)</span>
+		<span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="nx">found</span> <span class="o">&amp;&amp;</span> <span class="nf">IsJobFinished</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">j</span><span class="p">)</span> <span class="p">{</span>
+			<span class="nx">_</span><span class="p">,</span> <span class="nx">status</span> <span class="o">:=</span> <span class="nf">getFinishedStatus</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">j</span><span class="p">)</span>
+			<span class="nf">deleteFromActiveList</span><span class="p">(</span><span class="nx">sj</span><span class="p">,</span> <span class="nx">j</span><span class="p">.</span><span class="nx">ObjectMeta</span><span class="p">.</span><span class="nx">UID</span><span class="p">)</span>
+			<span class="nx">recorder</span><span class="p">.</span><span class="nf">Eventf</span><span class="p">(</span><span class="nx">sj</span><span class="p">,</span> <span class="nx">v1</span><span class="p">.</span><span class="nx">EventTypeNormal</span><span class="p">,</span> <span class="s">&#34;SawCompletedJob&#34;</span><span class="p">,</span> <span class="s">&#34;Saw completed job: %s, status: %v&#34;</span><span class="p">,</span> <span class="nx">j</span><span class="p">.</span><span class="nx">Name</span><span class="p">,</span> <span class="nx">status</span><span class="p">)</span>
+		<span class="p">}</span>
+	<span class="p">}</span>
 
- <span class="c1">// 接着判断 Active 列表中是否有不在当前 cronjob 子 job 里的 job, 如果有则记录 MissingJob event 并从 Active 列表中移除
-</span><span class="c1"></span> <span class="k">for</span> <span class="nx">_</span><span class="p">,</span> <span class="nx">j</span> <span class="o">:=</span> <span class="k">range</span> <span class="nx">sj</span><span class="p">.</span><span class="nx">Status</span><span class="p">.</span><span class="nx">Active</span> <span class="p">{</span>
-     <span class="k">if</span> <span class="nx">found</span> <span class="o">:=</span> <span class="nx">childrenJobs</span><span class="p">[</span><span class="nx">j</span><span class="p">.</span><span class="nx">UID</span><span class="p">];</span> <span class="p">!</span><span class="nx">found</span> <span class="p">{</span>
-         <span class="nx">recorder</span><span class="p">.</span><span class="nf">Eventf</span><span class="p">(</span><span class="nx">sj</span><span class="p">,</span> <span class="nx">v1</span><span class="p">.</span><span class="nx">EventTypeNormal</span><span class="p">,</span> <span class="s">&#34;MissingJob&#34;</span><span class="p">,</span> <span class="s">&#34;Active job went missing: %v&#34;</span><span class="p">,</span> <span class="nx">j</span><span class="p">.</span><span class="nx">Name</span><span class="p">)</span>
-         <span class="nf">deleteFromActiveList</span><span class="p">(</span><span class="nx">sj</span><span class="p">,</span> <span class="nx">j</span><span class="p">.</span><span class="nx">UID</span><span class="p">)</span>
-     <span class="p">}</span>
- <span class="p">}</span>
+	<span class="c1">// 接着判断 Active 列表中是否有不在当前 cronjob 子 job 里的 job, 如果有则记录 MissingJob event 并从 Active 列表中移除
+</span><span class="c1"></span>	<span class="k">for</span> <span class="nx">_</span><span class="p">,</span> <span class="nx">j</span> <span class="o">:=</span> <span class="k">range</span> <span class="nx">sj</span><span class="p">.</span><span class="nx">Status</span><span class="p">.</span><span class="nx">Active</span> <span class="p">{</span>
+		<span class="k">if</span> <span class="nx">found</span> <span class="o">:=</span> <span class="nx">childrenJobs</span><span class="p">[</span><span class="nx">j</span><span class="p">.</span><span class="nx">UID</span><span class="p">];</span> <span class="p">!</span><span class="nx">found</span> <span class="p">{</span>
+			<span class="nx">recorder</span><span class="p">.</span><span class="nf">Eventf</span><span class="p">(</span><span class="nx">sj</span><span class="p">,</span> <span class="nx">v1</span><span class="p">.</span><span class="nx">EventTypeNormal</span><span class="p">,</span> <span class="s">&#34;MissingJob&#34;</span><span class="p">,</span> <span class="s">&#34;Active job went missing: %v&#34;</span><span class="p">,</span> <span class="nx">j</span><span class="p">.</span><span class="nx">Name</span><span class="p">)</span>
+			<span class="nf">deleteFromActiveList</span><span class="p">(</span><span class="nx">sj</span><span class="p">,</span> <span class="nx">j</span><span class="p">.</span><span class="nx">UID</span><span class="p">)</span>
+		<span class="p">}</span>
+	<span class="p">}</span>
 
   <span class="c1">// 更新 cronjob 的状态
-</span><span class="c1"></span> <span class="nx">updatedSJ</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">sjc</span><span class="p">.</span><span class="nf">UpdateStatus</span><span class="p">(</span><span class="nx">sj</span><span class="p">)</span>
- <span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
-     <span class="nx">klog</span><span class="p">.</span><span class="nf">Errorf</span><span class="p">(</span><span class="s">&#34;Unable to update status for %s (rv = %s): %v&#34;</span><span class="p">,</span> <span class="nx">nameForLog</span><span class="p">,</span> <span class="nx">sj</span><span class="p">.</span><span class="nx">ResourceVersion</span><span class="p">,</span> <span class="nx">err</span><span class="p">)</span>
-     <span class="k">return</span>
- <span class="p">}</span>
- <span class="o">*</span><span class="nx">sj</span> <span class="p">=</span> <span class="o">*</span><span class="nx">updatedSJ</span>
+</span><span class="c1"></span>	<span class="nx">updatedSJ</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">sjc</span><span class="p">.</span><span class="nf">UpdateStatus</span><span class="p">(</span><span class="nx">sj</span><span class="p">)</span>
+	<span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+		<span class="nx">klog</span><span class="p">.</span><span class="nf">Errorf</span><span class="p">(</span><span class="s">&#34;Unable to update status for %s (rv = %s): %v&#34;</span><span class="p">,</span> <span class="nx">nameForLog</span><span class="p">,</span> <span class="nx">sj</span><span class="p">.</span><span class="nx">ResourceVersion</span><span class="p">,</span> <span class="nx">err</span><span class="p">)</span>
+		<span class="k">return</span>
+	<span class="p">}</span>
+	<span class="o">*</span><span class="nx">sj</span> <span class="p">=</span> <span class="o">*</span><span class="nx">updatedSJ</span>
 
   <span class="c1">// 判断 cronjob 是否被删除, 若被删除则停止调度该 cronjob
-</span><span class="c1"></span> <span class="k">if</span> <span class="nx">sj</span><span class="p">.</span><span class="nx">DeletionTimestamp</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
-     <span class="c1">// The CronJob is being deleted.
-</span><span class="c1"></span>     <span class="c1">// Don&#39;t do anything other than updating status.
-</span><span class="c1"></span>     <span class="k">return</span>
- <span class="p">}</span>
+</span><span class="c1"></span>	<span class="k">if</span> <span class="nx">sj</span><span class="p">.</span><span class="nx">DeletionTimestamp</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+		<span class="c1">// The CronJob is being deleted.
+</span><span class="c1"></span>		<span class="c1">// Don&#39;t do anything other than updating status.
+</span><span class="c1"></span>		<span class="k">return</span>
+	<span class="p">}</span>
 
   <span class="c1">// 判断 cronjob 是否被暂停, 若被暂停则停止调度该 cronjob
-</span><span class="c1"></span> <span class="k">if</span> <span class="nx">sj</span><span class="p">.</span><span class="nx">Spec</span><span class="p">.</span><span class="nx">Suspend</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="o">&amp;&amp;</span> <span class="o">*</span><span class="nx">sj</span><span class="p">.</span><span class="nx">Spec</span><span class="p">.</span><span class="nx">Suspend</span> <span class="p">{</span>
-     <span class="nx">klog</span><span class="p">.</span><span class="nf">V</span><span class="p">(</span><span class="mi">4</span><span class="p">).</span><span class="nf">Infof</span><span class="p">(</span><span class="s">&#34;Not starting job for %s because it is suspended&#34;</span><span class="p">,</span> <span class="nx">nameForLog</span><span class="p">)</span>
-     <span class="k">return</span>
- <span class="p">}</span>
+</span><span class="c1"></span>	<span class="k">if</span> <span class="nx">sj</span><span class="p">.</span><span class="nx">Spec</span><span class="p">.</span><span class="nx">Suspend</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="o">&amp;&amp;</span> <span class="o">*</span><span class="nx">sj</span><span class="p">.</span><span class="nx">Spec</span><span class="p">.</span><span class="nx">Suspend</span> <span class="p">{</span>
+		<span class="nx">klog</span><span class="p">.</span><span class="nf">V</span><span class="p">(</span><span class="mi">4</span><span class="p">).</span><span class="nf">Infof</span><span class="p">(</span><span class="s">&#34;Not starting job for %s because it is suspended&#34;</span><span class="p">,</span> <span class="nx">nameForLog</span><span class="p">)</span>
+		<span class="k">return</span>
+	<span class="p">}</span>
 
   <span class="c1">// getRecentUnmetScheduleTimes 是按 crontab 计算出的 job 执行时间表
 </span><span class="c1"></span>  <span class="c1">// 主要是根据配置的 unix cron table 计算出下一次 schedule 时间并做一些有效性判断
-</span><span class="c1"></span> <span class="nx">times</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nf">getRecentUnmetScheduleTimes</span><span class="p">(</span><span class="o">*</span><span class="nx">sj</span><span class="p">,</span> <span class="nx">now</span><span class="p">)</span>
- <span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
-     <span class="nx">recorder</span><span class="p">.</span><span class="nf">Eventf</span><span class="p">(</span><span class="nx">sj</span><span class="p">,</span> <span class="nx">v1</span><span class="p">.</span><span class="nx">EventTypeWarning</span><span class="p">,</span> <span class="s">&#34;FailedNeedsStart&#34;</span><span class="p">,</span> <span class="s">&#34;Cannot determine if job needs to be started: %v&#34;</span><span class="p">,</span> <span class="nx">err</span><span class="p">)</span>
-     <span class="nx">klog</span><span class="p">.</span><span class="nf">Errorf</span><span class="p">(</span><span class="s">&#34;Cannot determine if %s needs to be started: %v&#34;</span><span class="p">,</span> <span class="nx">nameForLog</span><span class="p">,</span> <span class="nx">err</span><span class="p">)</span>
-     <span class="k">return</span>
- <span class="p">}</span>
- <span class="c1">// 若没有取到该 cronjob 的 table 时间表, 则认为该 job nextSchedule time 可能不合理, 停止调度该 cronjob
-</span><span class="c1"></span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="nx">times</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span> <span class="p">{</span>
-     <span class="nx">klog</span><span class="p">.</span><span class="nf">V</span><span class="p">(</span><span class="mi">4</span><span class="p">).</span><span class="nf">Infof</span><span class="p">(</span><span class="s">&#34;No unmet start times for %s&#34;</span><span class="p">,</span> <span class="nx">nameForLog</span><span class="p">)</span>
-     <span class="k">return</span>
- <span class="p">}</span>
+</span><span class="c1"></span>	<span class="nx">times</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nf">getRecentUnmetScheduleTimes</span><span class="p">(</span><span class="o">*</span><span class="nx">sj</span><span class="p">,</span> <span class="nx">now</span><span class="p">)</span>
+	<span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+		<span class="nx">recorder</span><span class="p">.</span><span class="nf">Eventf</span><span class="p">(</span><span class="nx">sj</span><span class="p">,</span> <span class="nx">v1</span><span class="p">.</span><span class="nx">EventTypeWarning</span><span class="p">,</span> <span class="s">&#34;FailedNeedsStart&#34;</span><span class="p">,</span> <span class="s">&#34;Cannot determine if job needs to be started: %v&#34;</span><span class="p">,</span> <span class="nx">err</span><span class="p">)</span>
+		<span class="nx">klog</span><span class="p">.</span><span class="nf">Errorf</span><span class="p">(</span><span class="s">&#34;Cannot determine if %s needs to be started: %v&#34;</span><span class="p">,</span> <span class="nx">nameForLog</span><span class="p">,</span> <span class="nx">err</span><span class="p">)</span>
+		<span class="k">return</span>
+	<span class="p">}</span>
+	<span class="c1">// 若没有取到该 cronjob 的 table 时间表, 则认为该 job nextSchedule time 可能不合理, 停止调度该 cronjob
+</span><span class="c1"></span>	<span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="nx">times</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span> <span class="p">{</span>
+		<span class="nx">klog</span><span class="p">.</span><span class="nf">V</span><span class="p">(</span><span class="mi">4</span><span class="p">).</span><span class="nf">Infof</span><span class="p">(</span><span class="s">&#34;No unmet start times for %s&#34;</span><span class="p">,</span> <span class="nx">nameForLog</span><span class="p">)</span>
+		<span class="k">return</span>
+	<span class="p">}</span>
   <span class="c1">// 若取到时间表, 则计算出最近一次需要执行的时间, 若最近一次执行时间超过了 currentTime + StartingDeadlineSeconds 则标记为 tooLate 停止调度并记录 event
-</span><span class="c1"></span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="nx">times</span><span class="p">)</span> <span class="p">&gt;</span> <span class="mi">1</span> <span class="p">{</span>
-     <span class="nx">klog</span><span class="p">.</span><span class="nf">V</span><span class="p">(</span><span class="mi">4</span><span class="p">).</span><span class="nf">Infof</span><span class="p">(</span><span class="s">&#34;Multiple unmet start times for %s so only starting last one&#34;</span><span class="p">,</span> <span class="nx">nameForLog</span><span class="p">)</span>
- <span class="p">}</span>
+</span><span class="c1"></span>	<span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="nx">times</span><span class="p">)</span> <span class="p">&gt;</span> <span class="mi">1</span> <span class="p">{</span>
+		<span class="nx">klog</span><span class="p">.</span><span class="nf">V</span><span class="p">(</span><span class="mi">4</span><span class="p">).</span><span class="nf">Infof</span><span class="p">(</span><span class="s">&#34;Multiple unmet start times for %s so only starting last one&#34;</span><span class="p">,</span> <span class="nx">nameForLog</span><span class="p">)</span>
+	<span class="p">}</span>
 
- <span class="nx">scheduledTime</span> <span class="o">:=</span> <span class="nx">times</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="nx">times</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
- <span class="nx">tooLate</span> <span class="o">:=</span> <span class="kc">false</span>
- <span class="k">if</span> <span class="nx">sj</span><span class="p">.</span><span class="nx">Spec</span><span class="p">.</span><span class="nx">StartingDeadlineSeconds</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
-     <span class="nx">tooLate</span> <span class="p">=</span> <span class="nx">scheduledTime</span><span class="p">.</span><span class="nf">Add</span><span class="p">(</span><span class="nx">time</span><span class="p">.</span><span class="nx">Second</span> <span class="o">*</span> <span class="nx">time</span><span class="p">.</span><span class="nf">Duration</span><span class="p">(</span><span class="o">*</span><span class="nx">sj</span><span class="p">.</span><span class="nx">Spec</span><span class="p">.</span><span class="nx">StartingDeadlineSeconds</span><span class="p">)).</span><span class="nf">Before</span><span class="p">(</span><span class="nx">now</span><span class="p">)</span>
- <span class="p">}</span>
- <span class="k">if</span> <span class="nx">tooLate</span> <span class="p">{</span>
-     <span class="nx">klog</span><span class="p">.</span><span class="nf">V</span><span class="p">(</span><span class="mi">4</span><span class="p">).</span><span class="nf">Infof</span><span class="p">(</span><span class="s">&#34;Missed starting window for %s&#34;</span><span class="p">,</span> <span class="nx">nameForLog</span><span class="p">)</span>
-     <span class="nx">recorder</span><span class="p">.</span><span class="nf">Eventf</span><span class="p">(</span><span class="nx">sj</span><span class="p">,</span> <span class="nx">v1</span><span class="p">.</span><span class="nx">EventTypeWarning</span><span class="p">,</span> <span class="s">&#34;MissSchedule&#34;</span><span class="p">,</span> <span class="s">&#34;Missed scheduled time to start a job: %s&#34;</span><span class="p">,</span> <span class="nx">scheduledTime</span><span class="p">.</span><span class="nf">Format</span><span class="p">(</span><span class="nx">time</span><span class="p">.</span><span class="nx">RFC1123Z</span><span class="p">))</span>
-     <span class="k">return</span>
- <span class="p">}</span>
+	<span class="nx">scheduledTime</span> <span class="o">:=</span> <span class="nx">times</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="nx">times</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+	<span class="nx">tooLate</span> <span class="o">:=</span> <span class="kc">false</span>
+	<span class="k">if</span> <span class="nx">sj</span><span class="p">.</span><span class="nx">Spec</span><span class="p">.</span><span class="nx">StartingDeadlineSeconds</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+		<span class="nx">tooLate</span> <span class="p">=</span> <span class="nx">scheduledTime</span><span class="p">.</span><span class="nf">Add</span><span class="p">(</span><span class="nx">time</span><span class="p">.</span><span class="nx">Second</span> <span class="o">*</span> <span class="nx">time</span><span class="p">.</span><span class="nf">Duration</span><span class="p">(</span><span class="o">*</span><span class="nx">sj</span><span class="p">.</span><span class="nx">Spec</span><span class="p">.</span><span class="nx">StartingDeadlineSeconds</span><span class="p">)).</span><span class="nf">Before</span><span class="p">(</span><span class="nx">now</span><span class="p">)</span>
+	<span class="p">}</span>
+	<span class="k">if</span> <span class="nx">tooLate</span> <span class="p">{</span>
+		<span class="nx">klog</span><span class="p">.</span><span class="nf">V</span><span class="p">(</span><span class="mi">4</span><span class="p">).</span><span class="nf">Infof</span><span class="p">(</span><span class="s">&#34;Missed starting window for %s&#34;</span><span class="p">,</span> <span class="nx">nameForLog</span><span class="p">)</span>
+		<span class="nx">recorder</span><span class="p">.</span><span class="nf">Eventf</span><span class="p">(</span><span class="nx">sj</span><span class="p">,</span> <span class="nx">v1</span><span class="p">.</span><span class="nx">EventTypeWarning</span><span class="p">,</span> <span class="s">&#34;MissSchedule&#34;</span><span class="p">,</span> <span class="s">&#34;Missed scheduled time to start a job: %s&#34;</span><span class="p">,</span> <span class="nx">scheduledTime</span><span class="p">.</span><span class="nf">Format</span><span class="p">(</span><span class="nx">time</span><span class="p">.</span><span class="nx">RFC1123Z</span><span class="p">))</span>
+		<span class="k">return</span>
+	<span class="p">}</span>
   <span class="c1">// 若当前 cronjob 设置了并发策略则按照对应的并发策略进行并行 job 调度
-</span><span class="c1"></span> <span class="k">if</span> <span class="nx">sj</span><span class="p">.</span><span class="nx">Spec</span><span class="p">.</span><span class="nx">ConcurrencyPolicy</span> <span class="o">==</span> <span class="nx">batchv1beta1</span><span class="p">.</span><span class="nx">ForbidConcurrent</span> <span class="o">&amp;&amp;</span> <span class="nb">len</span><span class="p">(</span><span class="nx">sj</span><span class="p">.</span><span class="nx">Status</span><span class="p">.</span><span class="nx">Active</span><span class="p">)</span> <span class="p">&gt;</span> <span class="mi">0</span> <span class="p">{</span>
-     <span class="nx">klog</span><span class="p">.</span><span class="nf">V</span><span class="p">(</span><span class="mi">4</span><span class="p">).</span><span class="nf">Infof</span><span class="p">(</span><span class="s">&#34;Not starting job for %s because of prior execution still running and concurrency policy is Forbid&#34;</span><span class="p">,</span> <span class="nx">nameForLog</span><span class="p">)</span>
-     <span class="k">return</span>
- <span class="p">}</span>
- <span class="k">if</span> <span class="nx">sj</span><span class="p">.</span><span class="nx">Spec</span><span class="p">.</span><span class="nx">ConcurrencyPolicy</span> <span class="o">==</span> <span class="nx">batchv1beta1</span><span class="p">.</span><span class="nx">ReplaceConcurrent</span> <span class="p">{</span>
-     <span class="k">for</span> <span class="nx">_</span><span class="p">,</span> <span class="nx">j</span> <span class="o">:=</span> <span class="k">range</span> <span class="nx">sj</span><span class="p">.</span><span class="nx">Status</span><span class="p">.</span><span class="nx">Active</span> <span class="p">{</span>
-         <span class="nx">klog</span><span class="p">.</span><span class="nf">V</span><span class="p">(</span><span class="mi">4</span><span class="p">).</span><span class="nf">Infof</span><span class="p">(</span><span class="s">&#34;Deleting job %s of %s that was still running at next scheduled start time&#34;</span><span class="p">,</span> <span class="nx">j</span><span class="p">.</span><span class="nx">Name</span><span class="p">,</span> <span class="nx">nameForLog</span><span class="p">)</span>
+</span><span class="c1"></span>	<span class="k">if</span> <span class="nx">sj</span><span class="p">.</span><span class="nx">Spec</span><span class="p">.</span><span class="nx">ConcurrencyPolicy</span> <span class="o">==</span> <span class="nx">batchv1beta1</span><span class="p">.</span><span class="nx">ForbidConcurrent</span> <span class="o">&amp;&amp;</span> <span class="nb">len</span><span class="p">(</span><span class="nx">sj</span><span class="p">.</span><span class="nx">Status</span><span class="p">.</span><span class="nx">Active</span><span class="p">)</span> <span class="p">&gt;</span> <span class="mi">0</span> <span class="p">{</span>
+		<span class="nx">klog</span><span class="p">.</span><span class="nf">V</span><span class="p">(</span><span class="mi">4</span><span class="p">).</span><span class="nf">Infof</span><span class="p">(</span><span class="s">&#34;Not starting job for %s because of prior execution still running and concurrency policy is Forbid&#34;</span><span class="p">,</span> <span class="nx">nameForLog</span><span class="p">)</span>
+		<span class="k">return</span>
+	<span class="p">}</span>
+	<span class="k">if</span> <span class="nx">sj</span><span class="p">.</span><span class="nx">Spec</span><span class="p">.</span><span class="nx">ConcurrencyPolicy</span> <span class="o">==</span> <span class="nx">batchv1beta1</span><span class="p">.</span><span class="nx">ReplaceConcurrent</span> <span class="p">{</span>
+		<span class="k">for</span> <span class="nx">_</span><span class="p">,</span> <span class="nx">j</span> <span class="o">:=</span> <span class="k">range</span> <span class="nx">sj</span><span class="p">.</span><span class="nx">Status</span><span class="p">.</span><span class="nx">Active</span> <span class="p">{</span>
+			<span class="nx">klog</span><span class="p">.</span><span class="nf">V</span><span class="p">(</span><span class="mi">4</span><span class="p">).</span><span class="nf">Infof</span><span class="p">(</span><span class="s">&#34;Deleting job %s of %s that was still running at next scheduled start time&#34;</span><span class="p">,</span> <span class="nx">j</span><span class="p">.</span><span class="nx">Name</span><span class="p">,</span> <span class="nx">nameForLog</span><span class="p">)</span>
 
-         <span class="nx">job</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">jc</span><span class="p">.</span><span class="nf">GetJob</span><span class="p">(</span><span class="nx">j</span><span class="p">.</span><span class="nx">Namespace</span><span class="p">,</span> <span class="nx">j</span><span class="p">.</span><span class="nx">Name</span><span class="p">)</span>
-         <span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
-             <span class="nx">recorder</span><span class="p">.</span><span class="nf">Eventf</span><span class="p">(</span><span class="nx">sj</span><span class="p">,</span> <span class="nx">v1</span><span class="p">.</span><span class="nx">EventTypeWarning</span><span class="p">,</span> <span class="s">&#34;FailedGet&#34;</span><span class="p">,</span> <span class="s">&#34;Get job: %v&#34;</span><span class="p">,</span> <span class="nx">err</span><span class="p">)</span>
-             <span class="k">return</span>
-         <span class="p">}</span>
-         <span class="k">if</span> <span class="p">!</span><span class="nf">deleteJob</span><span class="p">(</span><span class="nx">sj</span><span class="p">,</span> <span class="nx">job</span><span class="p">,</span> <span class="nx">jc</span><span class="p">,</span> <span class="nx">recorder</span><span class="p">)</span> <span class="p">{</span>
-             <span class="k">return</span>
-         <span class="p">}</span>
-     <span class="p">}</span>
- <span class="p">}</span>
+			<span class="nx">job</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">jc</span><span class="p">.</span><span class="nf">GetJob</span><span class="p">(</span><span class="nx">j</span><span class="p">.</span><span class="nx">Namespace</span><span class="p">,</span> <span class="nx">j</span><span class="p">.</span><span class="nx">Name</span><span class="p">)</span>
+			<span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+				<span class="nx">recorder</span><span class="p">.</span><span class="nf">Eventf</span><span class="p">(</span><span class="nx">sj</span><span class="p">,</span> <span class="nx">v1</span><span class="p">.</span><span class="nx">EventTypeWarning</span><span class="p">,</span> <span class="s">&#34;FailedGet&#34;</span><span class="p">,</span> <span class="s">&#34;Get job: %v&#34;</span><span class="p">,</span> <span class="nx">err</span><span class="p">)</span>
+				<span class="k">return</span>
+			<span class="p">}</span>
+			<span class="k">if</span> <span class="p">!</span><span class="nf">deleteJob</span><span class="p">(</span><span class="nx">sj</span><span class="p">,</span> <span class="nx">job</span><span class="p">,</span> <span class="nx">jc</span><span class="p">,</span> <span class="nx">recorder</span><span class="p">)</span> <span class="p">{</span>
+				<span class="k">return</span>
+			<span class="p">}</span>
+		<span class="p">}</span>
+	<span class="p">}</span>
 
   <span class="c1">// 根据CronJob Spec中JobTemplate的配置获取Job对象，其中Job对象的名字会加上scheduledTime计算出的Hash，目前是unix timestamp
-</span><span class="c1"></span> <span class="nx">jobReq</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nf">getJobFromTemplate</span><span class="p">(</span><span class="nx">sj</span><span class="p">,</span> <span class="nx">scheduledTime</span><span class="p">)</span>
- <span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
-     <span class="nx">klog</span><span class="p">.</span><span class="nf">Errorf</span><span class="p">(</span><span class="s">&#34;Unable to make Job from template in %s: %v&#34;</span><span class="p">,</span> <span class="nx">nameForLog</span><span class="p">,</span> <span class="nx">err</span><span class="p">)</span>
-     <span class="k">return</span>
- <span class="p">}</span>
+</span><span class="c1"></span>	<span class="nx">jobReq</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nf">getJobFromTemplate</span><span class="p">(</span><span class="nx">sj</span><span class="p">,</span> <span class="nx">scheduledTime</span><span class="p">)</span>
+	<span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+		<span class="nx">klog</span><span class="p">.</span><span class="nf">Errorf</span><span class="p">(</span><span class="s">&#34;Unable to make Job from template in %s: %v&#34;</span><span class="p">,</span> <span class="nx">nameForLog</span><span class="p">,</span> <span class="nx">err</span><span class="p">)</span>
+		<span class="k">return</span>
+	<span class="p">}</span>
   <span class="c1">// 调用 createJob 接口根据上面拿到的 jobTemplate 创建一个新 job
-</span><span class="c1"></span> <span class="nx">jobResp</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">jc</span><span class="p">.</span><span class="nf">CreateJob</span><span class="p">(</span><span class="nx">sj</span><span class="p">.</span><span class="nx">Namespace</span><span class="p">,</span> <span class="nx">jobReq</span><span class="p">)</span>
- <span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
-     <span class="c1">// If the namespace is being torn down, we can safely ignore
-</span><span class="c1"></span>     <span class="c1">// this error since all subsequent creations will fail.
-</span><span class="c1"></span>     <span class="k">if</span> <span class="p">!</span><span class="nx">errors</span><span class="p">.</span><span class="nf">HasStatusCause</span><span class="p">(</span><span class="nx">err</span><span class="p">,</span> <span class="nx">v1</span><span class="p">.</span><span class="nx">NamespaceTerminatingCause</span><span class="p">)</span> <span class="p">{</span>
-         <span class="nx">recorder</span><span class="p">.</span><span class="nf">Eventf</span><span class="p">(</span><span class="nx">sj</span><span class="p">,</span> <span class="nx">v1</span><span class="p">.</span><span class="nx">EventTypeWarning</span><span class="p">,</span> <span class="s">&#34;FailedCreate&#34;</span><span class="p">,</span> <span class="s">&#34;Error creating job: %v&#34;</span><span class="p">,</span> <span class="nx">err</span><span class="p">)</span>
-     <span class="p">}</span>
-     <span class="k">return</span>
- <span class="p">}</span>
- <span class="nx">klog</span><span class="p">.</span><span class="nf">V</span><span class="p">(</span><span class="mi">4</span><span class="p">).</span><span class="nf">Infof</span><span class="p">(</span><span class="s">&#34;Created Job %s for %s&#34;</span><span class="p">,</span> <span class="nx">jobResp</span><span class="p">.</span><span class="nx">Name</span><span class="p">,</span> <span class="nx">nameForLog</span><span class="p">)</span>
- <span class="nx">recorder</span><span class="p">.</span><span class="nf">Eventf</span><span class="p">(</span><span class="nx">sj</span><span class="p">,</span> <span class="nx">v1</span><span class="p">.</span><span class="nx">EventTypeNormal</span><span class="p">,</span> <span class="s">&#34;SuccessfulCreate&#34;</span><span class="p">,</span> <span class="s">&#34;Created job %v&#34;</span><span class="p">,</span> <span class="nx">jobResp</span><span class="p">.</span><span class="nx">Name</span><span class="p">)</span>
+</span><span class="c1"></span>	<span class="nx">jobResp</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">jc</span><span class="p">.</span><span class="nf">CreateJob</span><span class="p">(</span><span class="nx">sj</span><span class="p">.</span><span class="nx">Namespace</span><span class="p">,</span> <span class="nx">jobReq</span><span class="p">)</span>
+	<span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+		<span class="c1">// If the namespace is being torn down, we can safely ignore
+</span><span class="c1"></span>		<span class="c1">// this error since all subsequent creations will fail.
+</span><span class="c1"></span>		<span class="k">if</span> <span class="p">!</span><span class="nx">errors</span><span class="p">.</span><span class="nf">HasStatusCause</span><span class="p">(</span><span class="nx">err</span><span class="p">,</span> <span class="nx">v1</span><span class="p">.</span><span class="nx">NamespaceTerminatingCause</span><span class="p">)</span> <span class="p">{</span>
+			<span class="nx">recorder</span><span class="p">.</span><span class="nf">Eventf</span><span class="p">(</span><span class="nx">sj</span><span class="p">,</span> <span class="nx">v1</span><span class="p">.</span><span class="nx">EventTypeWarning</span><span class="p">,</span> <span class="s">&#34;FailedCreate&#34;</span><span class="p">,</span> <span class="s">&#34;Error creating job: %v&#34;</span><span class="p">,</span> <span class="nx">err</span><span class="p">)</span>
+		<span class="p">}</span>
+		<span class="k">return</span>
+	<span class="p">}</span>
+	<span class="nx">klog</span><span class="p">.</span><span class="nf">V</span><span class="p">(</span><span class="mi">4</span><span class="p">).</span><span class="nf">Infof</span><span class="p">(</span><span class="s">&#34;Created Job %s for %s&#34;</span><span class="p">,</span> <span class="nx">jobResp</span><span class="p">.</span><span class="nx">Name</span><span class="p">,</span> <span class="nx">nameForLog</span><span class="p">)</span>
+	<span class="nx">recorder</span><span class="p">.</span><span class="nf">Eventf</span><span class="p">(</span><span class="nx">sj</span><span class="p">,</span> <span class="nx">v1</span><span class="p">.</span><span class="nx">EventTypeNormal</span><span class="p">,</span> <span class="s">&#34;SuccessfulCreate&#34;</span><span class="p">,</span> <span class="s">&#34;Created job %v&#34;</span><span class="p">,</span> <span class="nx">jobResp</span><span class="p">.</span><span class="nx">Name</span><span class="p">)</span>
 
- <span class="c1">// 将刚创建的Job加到CronJob的Active列表中，设置LastScheduleTime，更新CronJob
-</span><span class="c1"></span> <span class="nx">ref</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nf">getRef</span><span class="p">(</span><span class="nx">jobResp</span><span class="p">)</span>
- <span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
-     <span class="nx">klog</span><span class="p">.</span><span class="nf">V</span><span class="p">(</span><span class="mi">2</span><span class="p">).</span><span class="nf">Infof</span><span class="p">(</span><span class="s">&#34;Unable to make object reference for job for %s&#34;</span><span class="p">,</span> <span class="nx">nameForLog</span><span class="p">)</span>
- <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-     <span class="nx">sj</span><span class="p">.</span><span class="nx">Status</span><span class="p">.</span><span class="nx">Active</span> <span class="p">=</span> <span class="nb">append</span><span class="p">(</span><span class="nx">sj</span><span class="p">.</span><span class="nx">Status</span><span class="p">.</span><span class="nx">Active</span><span class="p">,</span> <span class="o">*</span><span class="nx">ref</span><span class="p">)</span>
- <span class="p">}</span>
+	<span class="c1">// 将刚创建的Job加到CronJob的Active列表中，设置LastScheduleTime，更新CronJob
+</span><span class="c1"></span>	<span class="nx">ref</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nf">getRef</span><span class="p">(</span><span class="nx">jobResp</span><span class="p">)</span>
+	<span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+		<span class="nx">klog</span><span class="p">.</span><span class="nf">V</span><span class="p">(</span><span class="mi">2</span><span class="p">).</span><span class="nf">Infof</span><span class="p">(</span><span class="s">&#34;Unable to make object reference for job for %s&#34;</span><span class="p">,</span> <span class="nx">nameForLog</span><span class="p">)</span>
+	<span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+		<span class="nx">sj</span><span class="p">.</span><span class="nx">Status</span><span class="p">.</span><span class="nx">Active</span> <span class="p">=</span> <span class="nb">append</span><span class="p">(</span><span class="nx">sj</span><span class="p">.</span><span class="nx">Status</span><span class="p">.</span><span class="nx">Active</span><span class="p">,</span> <span class="o">*</span><span class="nx">ref</span><span class="p">)</span>
+	<span class="p">}</span>
   <span class="c1">// lastSchedulerTime 常用于监控判断 job schedule 是否符合预期
-</span><span class="c1"></span> <span class="nx">sj</span><span class="p">.</span><span class="nx">Status</span><span class="p">.</span><span class="nx">LastScheduleTime</span> <span class="p">=</span> <span class="o">&amp;</span><span class="nx">metav1</span><span class="p">.</span><span class="nx">Time</span><span class="p">{</span><span class="nx">Time</span><span class="p">:</span> <span class="nx">scheduledTime</span><span class="p">}</span>
- <span class="k">if</span> <span class="nx">_</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">sjc</span><span class="p">.</span><span class="nf">UpdateStatus</span><span class="p">(</span><span class="nx">sj</span><span class="p">);</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
-     <span class="nx">klog</span><span class="p">.</span><span class="nf">Infof</span><span class="p">(</span><span class="s">&#34;Unable to update status for %s (rv = %s): %v&#34;</span><span class="p">,</span> <span class="nx">nameForLog</span><span class="p">,</span> <span class="nx">sj</span><span class="p">.</span><span class="nx">ResourceVersion</span><span class="p">,</span> <span class="nx">err</span><span class="p">)</span>
- <span class="p">}</span>
+</span><span class="c1"></span>	<span class="nx">sj</span><span class="p">.</span><span class="nx">Status</span><span class="p">.</span><span class="nx">LastScheduleTime</span> <span class="p">=</span> <span class="o">&amp;</span><span class="nx">metav1</span><span class="p">.</span><span class="nx">Time</span><span class="p">{</span><span class="nx">Time</span><span class="p">:</span> <span class="nx">scheduledTime</span><span class="p">}</span>
+	<span class="k">if</span> <span class="nx">_</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">sjc</span><span class="p">.</span><span class="nf">UpdateStatus</span><span class="p">(</span><span class="nx">sj</span><span class="p">);</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+		<span class="nx">klog</span><span class="p">.</span><span class="nf">Infof</span><span class="p">(</span><span class="s">&#34;Unable to update status for %s (rv = %s): %v&#34;</span><span class="p">,</span> <span class="nx">nameForLog</span><span class="p">,</span> <span class="nx">sj</span><span class="p">.</span><span class="nx">ResourceVersion</span><span class="p">,</span> <span class="nx">err</span><span class="p">)</span>
+	<span class="p">}</span>
 
- <span class="k">return</span>
+	<span class="k">return</span>
 <span class="p">}</span>
 </code></pre></td></tr></table>
 </div>
@@ -582,7 +582,7 @@
 </ul>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -631,7 +631,7 @@
 </span><span class="lnt">47
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-go" data-lang="go"><span class="c1">// getRecentUnmetScheduleTimes 会根据传递进来的 jobSpec 中的 time series 中来判断这些时间的有效性, 比如是否过期, 如果过期数量过多(&gt;100)则认为该 job schedule 上有问题, 直接停止对该 cronjob 的调度
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="c1">// getRecentUnmetScheduleTimes 会根据传递进来的 jobSpec 中的 time series 中来判断这些时间的有效性, 比如是否过期, 如果过期数量过多(&gt;100)则认为该 job schedule 上有问题, 直接停止对该 cronjob 的调度
 </span><span class="c1"></span><span class="kd">func</span> <span class="nf">getRecentUnmetScheduleTimes</span><span class="p">(</span><span class="nx">sj</span> <span class="nx">batchv1beta1</span><span class="p">.</span><span class="nx">CronJob</span><span class="p">,</span> <span class="nx">now</span> <span class="nx">time</span><span class="p">.</span><span class="nx">Time</span><span class="p">)</span> <span class="p">([]</span><span class="nx">time</span><span class="p">.</span><span class="nx">Time</span><span class="p">,</span> <span class="kt">error</span><span class="p">)</span> <span class="p">{</span>
 	<span class="nx">starts</span> <span class="o">:=</span> <span class="p">[]</span><span class="nx">time</span><span class="p">.</span><span class="nx">Time</span><span class="p">{}</span>
   <span class="c1">// 使用 robfig/cron 对 cron schedule 进行解析
@@ -692,7 +692,7 @@
 <p>先看一段原本 pager.List 的代码:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
@@ -700,7 +700,7 @@
 </span><span class="lnt">6
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-go" data-lang="go">	<span class="nx">cronJobListFunc</span> <span class="o">:=</span> <span class="kd">func</span><span class="p">(</span><span class="nx">opts</span> <span class="nx">metav1</span><span class="p">.</span><span class="nx">ListOptions</span><span class="p">)</span> <span class="p">(</span><span class="nx">runtime</span><span class="p">.</span><span class="nx">Object</span><span class="p">,</span> <span class="kt">error</span><span class="p">)</span> <span class="p">{</span>
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go">	<span class="nx">cronJobListFunc</span> <span class="o">:=</span> <span class="kd">func</span><span class="p">(</span><span class="nx">opts</span> <span class="nx">metav1</span><span class="p">.</span><span class="nx">ListOptions</span><span class="p">)</span> <span class="p">(</span><span class="nx">runtime</span><span class="p">.</span><span class="nx">Object</span><span class="p">,</span> <span class="kt">error</span><span class="p">)</span> <span class="p">{</span>
 		<span class="k">return</span> <span class="nx">jm</span><span class="p">.</span><span class="nx">kubeClient</span><span class="p">.</span><span class="nf">BatchV1beta1</span><span class="p">().</span><span class="nf">CronJobs</span><span class="p">(</span><span class="nx">metav1</span><span class="p">.</span><span class="nx">NamespaceAll</span><span class="p">).</span><span class="nf">List</span><span class="p">(</span><span class="nx">opts</span><span class="p">)</span>
 	<span class="p">}</span>
 	<span class="nx">err</span> <span class="p">=</span> <span class="nx">pager</span><span class="p">.</span><span class="nf">New</span><span class="p">(</span><span class="nx">pager</span><span class="p">.</span><span class="nf">SimplePageFunc</span><span class="p">(</span><span class="nx">cronJobListFunc</span><span class="p">)).</span><span class="nf">EachListItem</span><span class="p">(</span><span class="nx">context</span><span class="p">.</span><span class="nf">Background</span><span class="p">(),</span> <span class="nx">metav1</span><span class="p">.</span><span class="nx">ListOptions</span><span class="p">{},</span> <span class="kd">func</span><span class="p">(</span><span class="nx">object</span> <span class="nx">runtime</span><span class="p">.</span><span class="nx">Object</span><span class="p">)</span> <span class="kt">error</span> <span class="p">{</span>
@@ -711,7 +711,7 @@
 </div><p>接着按上述方式在 controller 中先注册 event:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -741,7 +741,7 @@
 </span><span class="lnt">28
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">type</span> <span class="nx">Controller</span> <span class="kd">struct</span> <span class="p">{</span>
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="kd">type</span> <span class="nx">Controller</span> <span class="kd">struct</span> <span class="p">{</span>
 	<span class="nx">kubeClient</span> <span class="nx">clientset</span><span class="p">.</span><span class="nx">Interface</span>
 	<span class="nx">jobControl</span> <span class="nx">jobControlInterface</span>
 	<span class="nx">sjControl</span>  <span class="nx">sjControlInterface</span>
@@ -775,7 +775,7 @@
 <p>故上述代码修改为</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -830,7 +830,7 @@
 </span><span class="lnt">53
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">func</span> <span class="p">(</span><span class="nx">jm</span> <span class="o">*</span><span class="nx">CronJobController</span><span class="p">)</span> <span class="nf">addCronjob</span><span class="p">(</span><span class="nx">obj</span> <span class="kd">interface</span><span class="p">{})</span> <span class="p">{</span>
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="kd">func</span> <span class="p">(</span><span class="nx">jm</span> <span class="o">*</span><span class="nx">CronJobController</span><span class="p">)</span> <span class="nf">addCronjob</span><span class="p">(</span><span class="nx">obj</span> <span class="kd">interface</span><span class="p">{})</span> <span class="p">{</span>
 	<span class="nx">d</span> <span class="o">:=</span> <span class="nx">obj</span><span class="p">.(</span><span class="o">*</span><span class="nx">batchv1beta1</span><span class="p">.</span><span class="nx">CronJob</span><span class="p">)</span>
 	<span class="nx">glog</span><span class="p">.</span><span class="nf">V</span><span class="p">(</span><span class="mi">4</span><span class="p">).</span><span class="nf">Infof</span><span class="p">(</span><span class="s">&#34;Adding CronJob %s&#34;</span><span class="p">,</span> <span class="nx">d</span><span class="p">.</span><span class="nx">Name</span><span class="p">)</span>
 	<span class="nx">jm</span><span class="p">.</span><span class="nf">enqueue</span><span class="p">(</span><span class="nx">d</span><span class="p">)</span>
@@ -890,7 +890,7 @@
 <p>故将 syncAll 主函数代码改为</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -932,7 +932,7 @@
 </span><span class="lnt">40
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-go" data-lang="go"><span class="c1">// 提供 enqueue 函数用于将 batchv1beta1.CronJob 入队
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="c1">// 提供 enqueue 函数用于将 batchv1beta1.CronJob 入队
 </span><span class="c1"></span><span class="kd">func</span> <span class="p">(</span><span class="nx">jm</span> <span class="o">*</span><span class="nx">CronJobController</span><span class="p">)</span> <span class="nf">enqueue</span><span class="p">(</span><span class="nx">cronjob</span> <span class="o">*</span><span class="nx">batchv1beta1</span><span class="p">.</span><span class="nx">CronJob</span><span class="p">)</span> <span class="p">{</span>
 	<span class="nx">key</span><span class="p">,</span> <span class="nx">_</span> <span class="o">:=</span> <span class="nx">controller</span><span class="p">.</span><span class="nf">KeyFunc</span><span class="p">(</span><span class="nx">cronjob</span><span class="p">)</span>
 	<span class="nx">sjs</span> <span class="o">:=</span> <span class="nx">sjl</span><span class="p">.</span><span class="nx">Items</span>
@@ -977,7 +977,7 @@
 </div><p>这样整体逻辑大概清晰了, 需要做些检查性的耕作，比如由于无法确认是否为 deleted cronjob 故需要在 syncOne 函数中再加一次有效性判断等等</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -991,7 +991,7 @@
 </span><span class="lnt">12
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">func</span> <span class="nf">syncOne</span><span class="p">(</span><span class="o">...</span><span class="p">)</span> <span class="p">{</span>
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="kd">func</span> <span class="nf">syncOne</span><span class="p">(</span><span class="o">...</span><span class="p">)</span> <span class="p">{</span>
   <span class="o">...</span>
   <span class="nx">cronjob</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">jm</span><span class="p">.</span><span class="nx">cronjobLister</span><span class="p">.</span><span class="nf">CronJobs</span><span class="p">(</span><span class="nx">namespace</span><span class="p">).</span><span class="nf">Get</span><span class="p">(</span><span class="nx">name</span><span class="p">)</span>
 	<span class="k">if</span> <span class="nx">errors</span><span class="p">.</span><span class="nf">IsNotFound</span><span class="p">(</span><span class="nx">err</span><span class="p">)</span> <span class="p">{</span>
@@ -1008,7 +1008,7 @@
 </div><p>所以综上, 我们就把 pager.List 的方式改造成了 informer watch 的方式，整体改造的代码如下</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">  1
+<pre tabindex="0" class="chroma"><code><span class="lnt">  1
 </span><span class="lnt">  2
 </span><span class="lnt">  3
 </span><span class="lnt">  4
@@ -1131,7 +1131,7 @@
 </span><span class="lnt">121
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">type</span> <span class="nx">Controller</span> <span class="kd">struct</span> <span class="p">{</span>
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="kd">type</span> <span class="nx">Controller</span> <span class="kd">struct</span> <span class="p">{</span>
 	<span class="nx">kubeClient</span> <span class="nx">clientset</span><span class="p">.</span><span class="nx">Interface</span>
 	<span class="nx">jobControl</span> <span class="nx">jobControlInterface</span>
 	<span class="nx">sjControl</span>  <span class="nx">sjControlInterface</span>
@@ -1287,7 +1287,7 @@
                 Please enable JavaScript to view the comments powered by <a href="https://valine.js.org/">Valine</a>.
             </noscript></div></article></div>
             </main><footer class="footer">
-        <div class="footer-container"><div class="footer-line"><i class="far fa-copyright fa-fw"></i><span itemprop="copyrightYear">2015 - 2021</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/" target="_blank">LexusLee</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        <div class="footer-container"><div class="footer-line"><i class="far fa-copyright fa-fw"></i><span itemprop="copyrightYear">2015 - 2022</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/" target="_blank">LexusLee</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
         </div>
     </footer></div>
 

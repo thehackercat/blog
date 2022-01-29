@@ -13,10 +13,10 @@
 并且 dockerd 拉起来后, 有些 daemonsets 由于 ingress 自身 livenessProbe 等原因在 dockerd 升级期间持续 crashLoopbackoff 了, 一个原因是仍然 mount 一份旧的 docker overlay. 在 delete pod 重启后恢复. 故需要一个手段在升级后重启 ingress pods.
 Ref https://github.com/kubernetes/kubernetes/issues/75482#issuecomment-511476698" />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://example.com/upgrade-dockerd-in-k8s/" />
-<meta property="og:image" content="https://example.com/logo.png"/>
+<meta property="og:url" content="https://example.com/upgrade-dockerd-in-k8s/" /><meta property="og:image" content="https://example.com/logo.png"/><meta property="article:section" content="posts" />
 <meta property="article:published_time" content="2020-07-10T19:10:46+00:00" />
 <meta property="article:modified_time" content="2020-07-14T14:49:15+08:00" />
+
 <meta name="twitter:card" content="summary_large_image"/>
 <meta name="twitter:image" content="https://example.com/logo.png"/>
 
@@ -59,7 +59,7 @@ Ref https://github.com/kubernetes/kubernetes/issues/75482#issuecomment-511476698
             <a href="/" title="LexusLee&#39;s blog"><span class="header-title-pre"><i class='far fa-kiss-wink-heart fa-fw'></i></span>Nice to meet you</a>
         </div>
         <div class="menu">
-            <div class="menu-inner"><a class="menu-item" href="/posts/"> Posts </a><a class="menu-item" href="/tags/"> Tags </a><a class="menu-item" href="/categories/"> Categories </a><a class="menu-item" href="/categories/documentation/"> Docs </a><a class="menu-item" href="/about/"> About </a><a class="menu-item" href="https://github.com/thehackercat" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i>  </a><span class="menu-item delimiter"></span><a href="javascript:void(0);" class="menu-item language" title="Select Language">English<i class="fas fa-chevron-right fa-fw"></i>
+            <div class="menu-inner"><a class="menu-item" href="/posts/"> Posts </a><a class="menu-item" href="/tags/"> Tags </a><a class="menu-item" href="/categories/"> Categories </a><a class="menu-item" href="/photo/"> Photo </a><a class="menu-item" href="/about/"> About </a><a class="menu-item" href="https://github.com/thehackercat" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i>  </a><span class="menu-item delimiter"></span><a href="javascript:void(0);" class="menu-item language" title="Select Language">English<i class="fas fa-chevron-right fa-fw"></i>
                         <select class="language-select" id="language-select-desktop" onchange="location = this.value;"><option value="/upgrade-dockerd-in-k8s/" selected>English</option><option value="/zh-cn/upgrade-dockerd-in-k8s/">简体中文</option></select>
                     </a><span class="menu-item search" id="search-desktop">
                         <input type="text" placeholder="Search titles or contents..." id="search-input-desktop">
@@ -104,7 +104,7 @@ Ref https://github.com/kubernetes/kubernetes/issues/75482#issuecomment-511476698
                     <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
                         Cancel
                     </a>
-                </div><a class="menu-item" href="/posts/" title="">Posts</a><a class="menu-item" href="/tags/" title="">Tags</a><a class="menu-item" href="/categories/" title="">Categories</a><a class="menu-item" href="/categories/documentation/" title="">Docs</a><a class="menu-item" href="/about/" title="">About</a><a class="menu-item" href="https://github.com/thehackercat" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i></a><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                </div><a class="menu-item" href="/posts/" title="">Posts</a><a class="menu-item" href="/tags/" title="">Tags</a><a class="menu-item" href="/categories/" title="">Categories</a><a class="menu-item" href="/photo/" title="">Photo</a><a class="menu-item" href="/about/" title="">About</a><a class="menu-item" href="https://github.com/thehackercat" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i></a><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
                 <i class="fas fa-adjust fa-fw"></i>
             </a><a href="javascript:void(0);" class="menu-item" title="Select Language">English<i class="fas fa-chevron-right fa-fw"></i>
                     <select class="language-select" onchange="location = this.value;"><option value="/upgrade-dockerd-in-k8s/" selected>English</option><option value="/zh-cn/upgrade-dockerd-in-k8s/">简体中文</option></select>
@@ -147,7 +147,7 @@ Ref https://github.com/kubernetes/kubernetes/issues/75482#issuecomment-511476698
 <p>集群中的 ingress 是以 daemonsets 方式部署, 通过 node-selector 选择节点定死.</p>
 <p>而 kubectl drain node 并不 evict daemonset pods. 故在升级/重启 dockerd 期间会造成 ingress 短暂不可用. 而现有的 lb 的 health check 不能 cover 这一点, 仍会有流量打入.会导致升级期间 ingress 流量黑洞问题.</p>
 <p>并且 dockerd 拉起来后, 有些 daemonsets 由于 ingress 自身 livenessProbe 等原因在 dockerd 升级期间持续 crashLoopbackoff 了, 一个原因是仍然 mount 一份旧的 docker overlay. 在 delete pod 重启后恢复. 故需要一个手段在升级后重启 ingress pods.</p>
-<p>Ref <a href="https://github.com/kubernetes/kubernetes/issues/75482#issuecomment-511476698">https://github.com/kubernetes/kubernetes/issues/75482#issuecomment-511476698</a></p>
+<p>Ref <a href="https://github.com/kubernetes/kubernetes/issues/75482#issuecomment-511476698" target="_blank" rel="noopener noreffer">https://github.com/kubernetes/kubernetes/issues/75482#issuecomment-511476698</a></p>
 <p>但目前我没找到一个优雅的方式 restart all daemonsets pods on node, 只能通过脚本逐个杀</p>
 <h3 id="ingress-qcloud-lb-health-check-问题">ingress qcloud lb health check 问题</h3>
 <p>由于目前我们 ingress 外部还接了 qcloud lb 做一层负载均衡, 从而引入了新问题.</p>
@@ -156,10 +156,10 @@ Ref https://github.com/kubernetes/kubernetes/issues/75482#issuecomment-511476698
 <p>重启命令:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-bash" data-lang="bash">kubectl get pods --all-namespaces -owide<span class="p">|</span>awk -v <span class="nv">host</span><span class="o">=</span><span class="nv">$HOSTNAME</span> <span class="s1">&#39;{if ($8 == host) system (&#34;kubectl -n &#34; $1 &#34; delete pods &#34; $2 &#34; --grace-period=0 &#34; &#34; --force &#34;)}&#39;</span>
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash">kubectl get pods --all-namespaces -owide<span class="p">|</span>awk -v <span class="nv">host</span><span class="o">=</span><span class="nv">$HOSTNAME</span> <span class="s1">&#39;{if ($8 == host) system (&#34;kubectl -n &#34; $1 &#34; delete pods &#34; $2 &#34; --grace-period=0 &#34; &#34; --force &#34;)}&#39;</span>
 </code></pre></td></tr></table>
 </div>
 </div></div><div class="post-footer" id="post-footer">
@@ -193,7 +193,7 @@ Ref https://github.com/kubernetes/kubernetes/issues/75482#issuecomment-511476698
 </div>
 </article></div>
             </main><footer class="footer">
-        <div class="footer-container"><div class="footer-line"><i class="far fa-copyright fa-fw"></i><span itemprop="copyrightYear">2015 - 2021</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/" target="_blank">LexusLee</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        <div class="footer-container"><div class="footer-line"><i class="far fa-copyright fa-fw"></i><span itemprop="copyrightYear">2015 - 2022</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/" target="_blank">LexusLee</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
         </div>
     </footer></div>
 

@@ -12,10 +12,10 @@
 Django 是一个由 Python 编写、开源并采用经典的 MVC 设计模式的 Web Full Stack 应用框架。
 在 Django 中，控制器接受用户输入的部分由框架自行处理，所以 Django 里关注更多在模型( Model )、模板( Template )和视图( Views )，称为 MTV 模式。他们各自的职责如下：" />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://example.com/zh-cn/django-learning1/" />
-<meta property="og:image" content="https://example.com/logo.png"/>
+<meta property="og:url" content="https://example.com/zh-cn/django-learning1/" /><meta property="og:image" content="https://example.com/logo.png"/><meta property="article:section" content="posts" />
 <meta property="article:published_time" content="2015-11-14T20:12:37+08:00" />
 <meta property="article:modified_time" content="2020-07-14T14:49:15+08:00" />
+
 <meta name="twitter:card" content="summary_large_image"/>
 <meta name="twitter:image" content="https://example.com/logo.png"/>
 
@@ -159,7 +159,7 @@ Django 是一个由 Python 编写、开源并采用经典的 MVC 设计模式的
 <p>当我在 Django 中编写完视图要想将其路由要页面上时，我发现了 Django 的 URLconf 路由机制，他实现了为相应的视图函数路由到相应界面的映射功能，也就是说，当用户访问了 <code>http://127.0.0.1:8000/hello/</code> 时， Django 调用了视图 views.py 中的 hello () 函数。</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
@@ -169,7 +169,7 @@ Django 是一个由 Python 编写、开源并采用经典的 MVC 设计模式的
 </span><span class="lnt">8
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-python" data-lang="python"><span class="kn">from</span> <span class="nn">django.conf.urls</span> <span class="kn">import</span> <span class="n">include</span><span class="p">,</span> <span class="n">url</span>
+<pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="kn">from</span> <span class="nn">django.conf.urls</span> <span class="kn">import</span> <span class="n">include</span><span class="p">,</span> <span class="n">url</span>
 <span class="kn">from</span> <span class="nn">mysite.views</span> <span class="kn">import</span> <span class="n">hello</span><span class="p">,</span><span class="n">current_datetime</span><span class="p">,</span><span class="n">hours_ahead</span><span class="p">,</span><span class="n">letter</span>
 
 <span class="n">urlpatterns</span> <span class="o">=</span> <span class="p">[</span>
@@ -184,7 +184,7 @@ Django 是一个由 Python 编写、开源并采用经典的 MVC 设计模式的
 <p>注意到在其中 web.py 文件中的第2964行开始的如下代码：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
@@ -192,7 +192,7 @@ Django 是一个由 Python 编写、开源并采用经典的 MVC 设计模式的
 </span><span class="lnt">6
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-python" data-lang="python"><span class="n">application</span> <span class="o">=</span> <span class="n">tornado</span><span class="o">.</span><span class="n">web</span><span class="o">.</span><span class="n">Application</span><span class="p">([</span>
+<pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="n">application</span> <span class="o">=</span> <span class="n">tornado</span><span class="o">.</span><span class="n">web</span><span class="o">.</span><span class="n">Application</span><span class="p">([</span>
 	<span class="p">(</span><span class="sa">r</span><span class="s2">&#34;/&#34;</span><span class="p">,</span> <span class="n">MainHandler</span><span class="p">),</span>
 <span class="p">])</span>
 <span class="n">http_server</span> <span class="o">=</span> <span class="n">tornado</span><span class="o">.</span><span class="n">httpserver</span><span class="o">.</span><span class="n">HTTPServer</span><span class="p">(</span><span class="n">application</span><span class="p">)</span>
@@ -278,7 +278,7 @@ Django 是一个由 Python 编写、开源并采用经典的 MVC 设计模式的
                 Please enable JavaScript to view the comments powered by <a href="https://valine.js.org/">Valine</a>.
             </noscript></div></article></div>
             </main><footer class="footer">
-        <div class="footer-container"><div class="footer-line"><i class="far fa-copyright fa-fw"></i><span itemprop="copyrightYear">2015 - 2021</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/" target="_blank">LexusLee</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        <div class="footer-container"><div class="footer-line"><i class="far fa-copyright fa-fw"></i><span itemprop="copyrightYear">2015 - 2022</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/" target="_blank">LexusLee</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
         </div>
     </footer></div>
 
