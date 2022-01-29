@@ -266,10 +266,10 @@ enableEmoji = true
         title = ""
         weight = 3
       [[languages.zh-cn.menu.main]]
-        identifier = "documentation"
+        identifier = "photo"
         pre = ""
-        name = "文档"
-        url = "/categories/documentation/"
+        name = "相册"
+        url = "/photo/"
         title = ""
         weight = 4
       [[languages.zh-cn.menu.main]]
