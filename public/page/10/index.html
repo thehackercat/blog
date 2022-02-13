@@ -104,73 +104,21 @@
         alt="/images/avatar.png"
         title="/images/avatar.png" /></a></div><h1 class="home-title">LexusLee's blog</h1><h2 class="home-subtitle"><div id="id-1" class="typeit"></div></h2><div class="links"><a href="https://github.com/thehackercat" title="GitHub" target="_blank" rel="noopener noreffer me"><i class="fab fa-github-alt fa-fw"></i></a><a href="https://twitter.com/lexuscyborg103" title="Twitter" target="_blank" rel="noopener noreffer me"><i class="fab fa-twitter fa-fw"></i></a><a href="https://www.instagram.com/thehackercat" title="Instagram" target="_blank" rel="noopener noreffer me"><i class="fab fa-instagram fa-fw"></i></a><a href="https://t.me/thehackercat" title="Telegram" target="_blank" rel="noopener noreffer me"><i class="fab fa-telegram-plane fa-fw"></i></a><a href="https://www.douban.com/people/thehackercat" title="豆瓣" target="_blank" rel="noopener noreffer me"><i data-svg-src="https://cdn.jsdelivr.net/npm/simple-icons@2.14.0/icons/douban.svg"></i></a><a href="mailto:lexuscyborg103@gmail.com" title="Email" rel=" me"><i class="far fa-envelope fa-fw"></i></a><a href="/index.xml" title="RSS" target="_blank" rel="noopener noreffer me"><i class="fas fa-rss fa-fw"></i></a></div></div>
 <article class="single summary" itemscope itemtype="http://schema.org/Article"><h1 class="single-title" itemprop="name headline">
-        <a href="/scarllet-sql-attack/">记一次 postgresql 斯嘉丽约翰逊攻击的排查</a>
-    </h1><div class="post-meta"><span class="post-author"><a href="/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw"></i>LexusLee</a></span>&nbsp;<span class="post-publish">published on <time datetime="2018-08-11">2018-08-11</time></span>&nbsp;<span class="post-category">included in <a href="/categories/coding/"><i class="far fa-folder fa-fw"></i>Coding</a></span></div><div class="content"><h3 id="背景">背景</h3>
-<p>今天下午连续收到了腾讯云 CPU overload 报警</p>
-<p><img
+        <a href="/little-prince-and-bear/">小王子与春天的熊</a>
+    </h1><div class="post-meta"><span class="post-author"><a href="/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw"></i>LexusLee</a></span>&nbsp;<span class="post-publish">published on <time datetime="2015-04-02">2015-04-02</time></span>&nbsp;<span class="post-category">included in <a href="/categories/gossip/"><i class="far fa-folder fa-fw"></i>Gossip</a></span></div><div class="content"><p><img
         class="lazyload"
         src="/svg/loading.min.svg"
-        data-src="http://7xse6j.com1.z0.glb.clouddn.com/CPU%20Overload.png"
-        data-srcset="http://7xse6j.com1.z0.glb.clouddn.com/CPU%20Overload.png, http://7xse6j.com1.z0.glb.clouddn.com/CPU%20Overload.png 1.5x, http://7xse6j.com1.z0.glb.clouddn.com/CPU%20Overload.png 2x"
+        data-src="http://jokerwang-blogpic.stor.sinaapp.com/original/f777064f36fd2b901fadbed0d3e9efab.jpg"
+        data-srcset="http://jokerwang-blogpic.stor.sinaapp.com/original/f777064f36fd2b901fadbed0d3e9efab.jpg, http://jokerwang-blogpic.stor.sinaapp.com/original/f777064f36fd2b901fadbed0d3e9efab.jpg 1.5x, http://jokerwang-blogpic.stor.sinaapp.com/original/f777064f36fd2b901fadbed0d3e9efab.jpg 2x"
         data-sizes="auto"
-        alt="http://7xse6j.com1.z0.glb.clouddn.com/CPU%20Overload.png"
-        title="CPU Usage" /></p>
-<p>登服务器一看, 有个 postgres 账户跑的进程把 CPU 占满了，进程名特别奇怪。</p>
-<p><img
-        class="lazyload"
-        src="/svg/loading.min.svg"
-        data-src="http://7xse6j.com1.z0.glb.clouddn.com/htopinfo.png"
-        data-srcset="http://7xse6j.com1.z0.glb.clouddn.com/htopinfo.png, http://7xse6j.com1.z0.glb.clouddn.com/htopinfo.png 1.5x, http://7xse6j.com1.z0.glb.clouddn.com/htopinfo.png 2x"
-        data-sizes="auto"
-        alt="http://7xse6j.com1.z0.glb.clouddn.com/htopinfo.png"
-        title="Htop info" /></p></div><div class="post-footer">
-        <a href="/scarllet-sql-attack/">Read More</a><div class="post-tags">
-                <i class="fas fa-tags fa-fw"></i>&nbsp;<a href="/tags/security/">Security</a>,&nbsp;<a href="/tags/linux/">Linux</a></div></div>
-</article><article class="single summary" itemscope itemtype="http://schema.org/Article"><h1 class="single-title" itemprop="name headline">
-        <a href="/go-decorator/">Golang 实现装饰器</a>
-    </h1><div class="post-meta"><span class="post-author"><a href="/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw"></i>LexusLee</a></span>&nbsp;<span class="post-publish">published on <time datetime="2018-02-10">2018-02-10</time></span>&nbsp;<span class="post-category">included in <a href="/categories/coding/"><i class="far fa-folder fa-fw"></i>Coding</a></span></div><div class="content">Go 实现装饰器 类似于 Java 中的装饰器模式, 在 go 中也会有需要 patch 一个函数的需求.
-一个常见的场景就是比如计算某个函数耗时的 decorator, 那么利用 functional programming 思想. 在 go 中的实现如下:
-1 2 3 4 5 6 7 8  func timeSpent(inner func(n int) int) func(op int) int { return func(n int){ start := time.Now() ret := inner(n) fmt.Println(&#34;time spent: &#34;, time.Since(start).Seconds()) return ret } }   当然实际场景中可能更多需要的是一种 pipeline 装饰器的用法, 比如一个 http handler 需要进行 Auth 认证, 认证通过后需要进行耗时计算, 计算完耗时需要进行 statsd 打点. 那么对应的实现如下:</div><div class="post-footer">
-        <a href="/go-decorator/">Read More</a><div class="post-tags">
-                <i class="fas fa-tags fa-fw"></i>&nbsp;<a href="/tags/golang/">Golang</a></div></div>
-</article><article class="single summary" itemscope itemtype="http://schema.org/Article"><h1 class="single-title" itemprop="name headline">
-        <a href="/service-fallback/">坦率地讲 服务熔断 &amp; 服务降级</a>
-    </h1><div class="post-meta"><span class="post-author"><a href="/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw"></i>LexusLee</a></span>&nbsp;<span class="post-publish">published on <time datetime="2018-02-01">2018-02-01</time></span>&nbsp;<span class="post-category">included in <a href="/categories/coding/"><i class="far fa-folder fa-fw"></i>Coding</a></span></div><div class="content"><h2 id="坦率地讲-服务熔断--服务降级">坦率地讲 服务熔断 &amp; 服务降级</h2>
-<h3 id="背景">背景</h3>
-<p>之前遇到个问题，发现一个系统如果拆分了太多业务类服务，或者依赖于大量的第三方服务，就很容易因为某个服务的故障导致整个系统不可用，比如</p>
-<ul>
-<li>模块中使用了 Elastic Search 进行监控，但是 ES 突然挂了，相关的 api 的调用报错导致级联的服务全部阻塞，那么应该要有规避由 ES 调用 raise 出的异常或者调用超时而导致整个模块或整个系统崩溃的保护措施。</li>
-<li>使用 AWS 或 阿里云 的 ECS 服务来作为 micro-service 的载体，但是 ECS 服务故障或者过载了导致整个业务链无法正常进行，那么应有对应的降级或者限制调用频度的方案来进行保护。</li>
-</ul></div><div class="post-footer">
-        <a href="/service-fallback/">Read More</a><div class="post-tags">
-                <i class="fas fa-tags fa-fw"></i>&nbsp;<a href="/tags/service/">Service</a>,&nbsp;<a href="/tags/architecture/">Architecture</a>,&nbsp;<a href="/tags/linux/">Linux</a></div></div>
-</article><article class="single summary" itemscope itemtype="http://schema.org/Article"><h1 class="single-title" itemprop="name headline">
-        <a href="/workflow-design/">浅谈 Workflow 设计</a>
-    </h1><div class="post-meta"><span class="post-author"><a href="/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw"></i>LexusLee</a></span>&nbsp;<span class="post-publish">published on <time datetime="2017-12-03">2017-12-03</time></span>&nbsp;<span class="post-category">included in <a href="/categories/coding/"><i class="far fa-folder fa-fw"></i>Coding</a></span></div><div class="content">浅谈 Workflow 设计 LexusLee 背景 最近刚接触到 workflow 相关的东西，之前都没有造过这方面的轮子，所以看了一些框架总结了一下我认为的好的 Workflow 的设计应该是怎样的。
-什么是 Workflow ? Workflow 是一些可重复执行的事件按特定的顺序&amp;路径组合成的事件流，这个组成的事件流通常是为了满足某一个流程较长的任务。
-这些事件通常是不可再被细分，是具有原子性的。每个原子事件可能包含执行任务、文档或数据。这些事件按照提前声明好的规则组合起来就成了一个 Workflow .
-e.g. 如上图所示，Workflow 类似软件工程中的流程图，指定了每个节点可能出现的路径分支，节点执行的事情以及节点的终结状态。
-如何设计 Workflow ? 比较经典的 Workflow design pattern 应该满足以下几个元素：
- 路径覆盖 事件原子性 有效的状态迁移  路径覆盖 路径覆盖是和节点状态相关的，通常的节点状态有如下几种：
- Start —— 开始 jobs ，标明 workflow 起点 Maybe —— 表示这个任务可能会执行，但不一定会执行，它的执行依赖于一定条件，比如上层节点的输出 Likely —— 和 Maybe 节点类似，但是比它的优先级更高，是作为与 Maybe 节点共享父节点的默认路径节点 Future —— 表示 workflow 执行体认为该路径一定会到达的节点，Future 节点的任务在不被 cancel 的情况下一定会执行 Waiting —— 表示当前任务是个阻塞任务，还在执行中，需要等待执行完毕才能进入下个路径 Ready —— 表示 Waiting 节点的任务已执行完，作为 Waiting 节点的 handler Complete —— 表示整个 workflow 的 Jobs 已经全部执行完毕，为终结节点 Cancel —— 表示任务被明确终止了，在状态迁移过程中不作为最终状态  事件原子性 pass</div><div class="post-footer">
-        <a href="/workflow-design/">Read More</a><div class="post-tags">
-                <i class="fas fa-tags fa-fw"></i>&nbsp;<a href="/tags/python/">Python</a>,&nbsp;<a href="/tags/workflow/">Workflow</a></div></div>
-</article><article class="single summary" itemscope itemtype="http://schema.org/Article"><h1 class="single-title" itemprop="name headline">
-        <a href="/girl-in-the-sunny-place/">《向阳处的她》浩介先生终于有猫啦！</a>
-    </h1><div class="post-meta"><span class="post-author"><a href="/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw"></i>LexusLee</a></span>&nbsp;<span class="post-publish">published on <time datetime="2017-09-25">2017-09-25</time></span>&nbsp;<span class="post-category">included in <a href="/categories/movie/"><i class="far fa-folder fa-fw"></i>Movie</a></span></div><div class="content"><h2 id="向阳处的她浩介先生终于有猫啦">《向阳处的她》浩介先生终于有猫啦！</h2>
-<p>有一年的搞笑诺贝尔物理学奖颁给了课题：</p>
-<p>「一只猫能同时处于固体状态和液体状态吗？」</p>
-<p>通过第三人称视角研究了猫的各种形态，《向阳处的她》这部电影就给研究了一个狠狠的耳光。</p></div><div class="post-footer">
-        <a href="/girl-in-the-sunny-place/">Read More</a><div class="post-tags">
-                <i class="fas fa-tags fa-fw"></i>&nbsp;<a href="/tags/gossip/">Gossip</a>,&nbsp;<a href="/tags/movie/">Movie</a></div></div>
-</article><article class="single summary" itemscope itemtype="http://schema.org/Article"><h1 class="single-title" itemprop="name headline">
-        <a href="/tcp-close-socket/">关于关闭 Socket 的一些坑</a>
-    </h1><div class="post-meta"><span class="post-author"><a href="/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw"></i>LexusLee</a></span>&nbsp;<span class="post-publish">published on <time datetime="2017-09-06">2017-09-06</time></span>&nbsp;<span class="post-category">included in <a href="/categories/coding/"><i class="far fa-folder fa-fw"></i>Coding</a></span></div><div class="content"><h2 id="关于关闭-socket-的一些坑">关于关闭 Socket 的一些坑</h2>
-<div style="text-align: right">LexusLee</div>
-<h3 id="背景">背景</h3>
-<p>最近踩到一个 &ldquo;Socket 连接持续处于 Fin_Wait2 和 Close_Wait 状态无法关闭&rdquo; 的坑中。起因是在维护大量连接时调用 <code>socket.close()</code> 时，看到部分连接并没有正常关闭，而是从 <code>ESTABLISHED</code> 的状态变成 <code>FIN_WAIT2</code> 并且连接状态没有后续迁移，而对端的连接状态则是从 <code>ESTABLISHED</code> 变成了 <code>CLOSE_WAIT</code> 。</p></div><div class="post-footer">
-        <a href="/tcp-close-socket/">Read More</a><div class="post-tags">
-                <i class="fas fa-tags fa-fw"></i>&nbsp;<a href="/tags/tcp/">TCP</a>,&nbsp;<a href="/tags/linux/">Linux</a></div></div>
+        alt="http://jokerwang-blogpic.stor.sinaapp.com/original/f777064f36fd2b901fadbed0d3e9efab.jpg"
+        title="Litte prince" /></p>
+<p>小王子的星球上忽然绽放了一朵娇艳的玫瑰花。</p>
+<p>在我没长牙前，我就知道，草是绿的，花是红的，眼泪是咸的，口水是黏的，漂亮阿姨上厕所是不能偷看的。</p>
+<p>在我长牙约莫拾几朵玫瑰花之后，我开始明白，玫瑰是不能摘的，春天是追不到的。</p>
+<p>只能追，不能到！</p></div><div class="post-footer">
+        <a href="/little-prince-and-bear/">Read More</a><div class="post-tags">
+                <i class="fas fa-tags fa-fw"></i>&nbsp;<a href="/tags/gossip/">Gossip</a>,&nbsp;<a href="/tags/bong/">Bong</a></div></div>
 </article><ul class="pagination"><li class="page-item ">
                     <span class="page-link">
                         <a href="/">1</a>
@@ -179,27 +127,13 @@ e.g. 如上图所示，Workflow 类似软件工程中的流程图，指定了每
                     <span class="page-link" aria-hidden="true">&hellip;</span>
                 </li><li class="page-item ">
                     <span class="page-link">
-                        <a href="/page/3/">3</a>
+                        <a href="/page/8/">8</a>
                     </span>
                 </li><li class="page-item ">
                     <span class="page-link">
-                        <a href="/page/4/">4</a>
+                        <a href="/page/9/">9</a>
                     </span>
                 </li><li class="page-item active">
-                    <span class="page-link">
-                        <a href="/page/5/">5</a>
-                    </span>
-                </li><li class="page-item ">
-                    <span class="page-link">
-                        <a href="/page/6/">6</a>
-                    </span>
-                </li><li class="page-item ">
-                    <span class="page-link">
-                        <a href="/page/7/">7</a>
-                    </span>
-                </li><li class="page-item ">
-                    <span class="page-link" aria-hidden="true">&hellip;</span>
-                </li><li class="page-item ">
                     <span class="page-link">
                         <a href="/page/10/">10</a>
                     </span>

@@ -4,9 +4,16 @@
         <link>https://example.com/zh-cn/</link>
         <description>LexusLee personal blog, recording things you people wouldn&#39;t believe. Like attack ships on fire off the shoulder of Orion, c-beams glitter in the dark near the Tannhauser Gate.</description>
         <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>lexuscyborg103@gmail.com (LexusLee)</managingEditor>
-            <webMaster>lexuscyborg103@gmail.com (LexusLee)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Sat, 29 Jan 2022 16:19:50 &#43;0800</lastBuildDate>
+            <webMaster>lexuscyborg103@gmail.com (LexusLee)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Sun, 13 Feb 2022 21:55:54 &#43;0800</lastBuildDate>
             <atom:link href="https://example.com/zh-cn/index.xml" rel="self" type="application/rss+xml" />
         <item>
+    <title>记一次 k8s apiserver watch hang 问题排查</title>
+    <link>https://example.com/zh-cn/k8s-api-watch-hang-dignosis/</link>
+    <pubDate>Sun, 13 Feb 2022 21:55:54 &#43;0800</pubDate>
+    <author>作者</author>
+    <guid>https://example.com/zh-cn/k8s-api-watch-hang-dignosis/</guid>
+    <description><![CDATA[Lexus Lee 记一次 k8s apiserver watch hang 问题排查 问题背景 注📢: 本文中涉及 apiserver 地址和 ingressgateway 地址, 为脱敏处理, 将会做马赛克处理！！！ 传统的 kubernetes apiserver 请求访问链路为客户端直连 api]]></description>
+</item><item>
     <title>豆瓣，纷纷扰扰无关</title>
     <link>https://example.com/zh-cn/its-ok-douban/</link>
     <pubDate>Sat, 29 Jan 2022 16:19:50 &#43;0800</pubDate>
@@ -74,12 +81,5 @@
     <author>作者</author>
     <guid>https://example.com/zh-cn/cloud-movie-projector/</guid>
     <description><![CDATA[难得出太阳的一天。 北京的天总是阴沉沉的，有时候好像是要开启一场庭审，让我紧张得四肢发麻。 二月的第一天，终于有了一些不同。 敞亮的日光，透过大片]]></description>
-</item><item>
-    <title>I hate people</title>
-    <link>https://example.com/zh-cn/i-hate-people/</link>
-    <pubDate>Fri, 29 Jan 2021 18:47:00 &#43;0800</pubDate>
-    <author>作者</author>
-    <guid>https://example.com/zh-cn/i-hate-people/</guid>
-    <description><![CDATA[「I hate people !」 早上摸鱼时从友邻广播里看到这句话. 广播里讲了个故事，一位很健谈的朋友，一边讨厌人类，一边等个红灯都能跟人聊五块钱的，从椰子鸡到加]]></description>
 </item></channel>
 </rss>

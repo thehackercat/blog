@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1">
+        <title>记一次 k8s apiserver watch hang 问题排查 - LexusLee&#39;s blog</title><meta name="Description" content="LexusLee personal blog, recording things you people wouldn&#39;t believe. Like attack ships on fire off the shoulder of Orion, c-beams glitter in the dark near the Tannhauser Gate."><meta property="og:title" content="记一次 k8s apiserver watch hang 问题排查" />
+<meta property="og:description" content="Lexus Lee 记一次 k8s apiserver watch hang 问题排查 问题背景 注📢: 本文中涉及 apiserver 地址和 ingressgateway 地址, 为脱敏处理, 将会做马赛克处理！！！ 传统的 kubernetes apiserver 请求访问链路为客户端直连 api" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://example.com/zh-cn/k8s-api-watch-hang-dignosis/" /><meta property="og:image" content="https://example.com/logo.png"/><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2022-02-13T21:55:54+08:00" />
+<meta property="article:modified_time" content="2022-02-13T21:55:54+08:00" />
+
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://example.com/logo.png"/>
+
+<meta name="twitter:title" content="记一次 k8s apiserver watch hang 问题排查"/>
+<meta name="twitter:description" content="Lexus Lee 记一次 k8s apiserver watch hang 问题排查 问题背景 注📢: 本文中涉及 apiserver 地址和 ingressgateway 地址, 为脱敏处理, 将会做马赛克处理！！！ 传统的 kubernetes apiserver 请求访问链路为客户端直连 api"/>
+<meta name="application-name" content="LexusLee&#39;s blog">
+<meta name="apple-mobile-web-app-title" content="LexusLee&#39;s blog"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="icon" href="/images/favicon.ico"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://example.com/zh-cn/k8s-api-watch-hang-dignosis/" /><link rel="prev" href="https://example.com/zh-cn/its-ok-douban/" /><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/normalize.css@8.0.1/normalize.min.css"><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.13.0/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.7.2/animate.min.css"><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "记一次 k8s apiserver watch hang 问题排查",
+        "inLanguage": "zh-CN",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/example.com\/zh-cn\/k8s-api-watch-hang-dignosis\/"
+        },"image": ["https:\/\/example.com\/images\/Apple-Devices-Preview.png"],"genre": "posts","keywords": "Kubernetes, Linux","wordcount":  2991 ,
+        "url": "https:\/\/example.com\/zh-cn\/k8s-api-watch-hang-dignosis\/","datePublished": "2022-02-13T21:55:54+08:00","dateModified": "2022-02-13T21:55:54+08:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.","publisher": {
+            "@type": "Organization",
+            "name": "LexusLee","logo": {
+                    "@type": "ImageObject",
+                    "url": "https:\/\/example.com\/images\/avatar.png",
+                    "width":  552 ,
+                    "height":  608 
+                }},"author": {
+                "@type": "Person",
+                "name": "LexusLee"
+            },"description": ""
+    }
+    </script></head>
+    <body header-desktop="fixed" header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/zh-cn/" title="LexusLee&#39;s blog"><span class="header-title-pre"><i class='far fa-kiss-wink-heart fa-fw'></i></span>Nice to meet you</a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/zh-cn/posts/"> 所有文章 </a><a class="menu-item" href="/zh-cn/tags/"> 标签 </a><a class="menu-item" href="/zh-cn/categories/"> 分类 </a><a class="menu-item" href="/zh-cn/photo/"> 相册 </a><a class="menu-item" href="/zh-cn/about/"> 关于 </a><a class="menu-item" href="https://github.com/thehackercat" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i>  </a><span class="menu-item delimiter"></span><a href="javascript:void(0);" class="menu-item language" title="选择语言">简体中文<i class="fas fa-chevron-right fa-fw"></i>
+                        <select class="language-select" id="language-select-desktop" onchange="location = this.value;"><option value="/k8s-api-watch-hang-dignosis/">English</option><option value="/zh-cn/k8s-api-watch-hang-dignosis/" selected>简体中文</option></select>
+                    </a><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="搜索文章标题或内容..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="搜索">
+                            <i class="fas fa-search fa-fw"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="清空">
+                            <i class="fas fa-times-circle fa-fw"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <i class="fas fa-spinner fa-fw fa-spin"></i>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                    <i class="fas fa-adjust fa-fw"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/zh-cn/" title="LexusLee&#39;s blog"><span class="header-title-pre"><i class='far fa-kiss-wink-heart fa-fw'></i></span>Nice to meet you</a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="搜索文章标题或内容..." id="search-input-mobile">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="搜索">
+                            <i class="fas fa-search fa-fw"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="清空">
+                            <i class="fas fa-times-circle fa-fw"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <i class="fas fa-spinner fa-fw fa-spin"></i>
+                        </span>
+                    </div>
+                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                        取消
+                    </a>
+                </div><a class="menu-item" href="/zh-cn/posts/" title="">所有文章</a><a class="menu-item" href="/zh-cn/tags/" title="">标签</a><a class="menu-item" href="/zh-cn/categories/" title="">分类</a><a class="menu-item" href="/zh-cn/photo/" title="">相册</a><a class="menu-item" href="/zh-cn/about/" title="">关于</a><a class="menu-item" href="https://github.com/thehackercat" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i></a><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                <i class="fas fa-adjust fa-fw"></i>
+            </a><a href="javascript:void(0);" class="menu-item" title="选择语言">简体中文<i class="fas fa-chevron-right fa-fw"></i>
+                    <select class="language-select" onchange="location = this.value;"><option value="/k8s-api-watch-hang-dignosis/">English</option><option value="/zh-cn/k8s-api-watch-hang-dignosis/" selected>简体中文</option></select>
+                </a></div>
+    </div>
+</header>
+<div class="search-dropdown desktop">
+    <div id="search-dropdown-desktop"></div>
+</div>
+<div class="search-dropdown mobile">
+    <div id="search-dropdown-mobile"></div>
+</div>
+<main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">目录</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animated flipInX">记一次 k8s apiserver watch hang 问题排查</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw"></i>LexusLee</a></span>&nbsp;<span class="post-category">收录于 <a href="/zh-cn/categories/coding/"><i class="far fa-folder fa-fw"></i>Coding</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw"></i>&nbsp;<time datetime="2022-02-13">2022-02-13</time>&nbsp;<i class="fas fa-pencil-alt fa-fw"></i>&nbsp;约 2991 字&nbsp;
+                <i class="far fa-clock fa-fw"></i>&nbsp;预计阅读 6 分钟&nbsp;</div>
+        </div><div class="details toc" id="toc-static"  kept="">
+                <div class="details-summary toc-title">
+                    <span>目录</span>
+                    <span><i class="details-icon fas fa-angle-right"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#问题背景">问题背景</a></li>
+    <li><a href="#问题现象">问题现象</a></li>
+    <li><a href="#排查过程">排查过程</a>
+      <ul>
+        <li><a href="#环境">环境</a></li>
+        <li><a href="#复现">复现</a>
+          <ul>
+            <li><a href="#1-新建调试网关-隔离线上流量">1. 新建调试网关, 隔离线上流量</a></li>
+            <li><a href="#2-修改本地-dns-将流量打向网关">2. 修改本地 dns, 将流量打向网关</a></li>
+            <li><a href="#3-本地启动脚本模拟-watch-请求">3. 本地启动脚本模拟 watch 请求</a></li>
+          </ul>
+        </li>
+        <li><a href="#排查">排查</a></li>
+        <li><a href="#找解决方案">找解决方案</a></li>
+        <li><a href="#验证">验证</a></li>
+        <li><a href="#根据-pprof-进行结论的二次验证">根据 pprof 进行结论的二次验证</a></li>
+      </ul>
+    </li>
+    <li><a href="#问题根因">问题根因</a></li>
+    <li><a href="#思考">思考</a></li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><div style="text-align: right;">Lexus Lee</div>
+<h1 id="记一次-k8s-apiserver-watch-hang-问题排查">记一次 k8s apiserver watch hang 问题排查</h1>
+<h2 id="问题背景">问题背景</h2>
+<p><em>注📢: 本文中涉及 apiserver 地址和 ingressgateway 地址, 为脱敏处理, 将会做马赛克处理！！！</em></p>
+<p>传统的 kubernetes apiserver 请求访问链路为客户端直连 apiserver，为了做 apiserver 高可用，通常我们会给 apiserver 前端再套一层4层或7层代理做多个 apiserver 实例的负载均衡。</p>
+<p>在我们的场景下，使用了 istio 的 ingressgateway 作为 <code>client -&gt; apiserver</code> 这条链路中的7层代理。链路变成了 <code>client -&gt; ingressgateway -&gt; apiserver</code> ，gateway 暴露 80 端口供客户端访问, 同时通过 istio virtualService + destinationRule 规则配置 gateway 能通过域名访问到 apiserver 6443 端口，从而实现流量路由。</p>
+<p>具体链路如下图所示，</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://tva1.sinaimg.cn/large/008i3skNgy1gzbztm2qpgj31320em40j.jpg"
+        data-srcset="https://tva1.sinaimg.cn/large/008i3skNgy1gzbztm2qpgj31320em40j.jpg, https://tva1.sinaimg.cn/large/008i3skNgy1gzbztm2qpgj31320em40j.jpg 1.5x, https://tva1.sinaimg.cn/large/008i3skNgy1gzbztm2qpgj31320em40j.jpg 2x"
+        data-sizes="auto"
+        alt="https://tva1.sinaimg.cn/large/008i3skNgy1gzbztm2qpgj31320em40j.jpg"
+        title="现在 apiserver 访问链路" /></p>
+<p>在这样的链路下，我们遇到了如下问题，</p>
+<p>在 k8s apiserver 1.18 版本的集群在滚动重启过出现部分组件无法 watch 到事件的情况，客户端 watch 请求偶发 503。需要重启组件，重建 watch 连接才能恢复。</p>
+<h2 id="问题现象">问题现象</h2>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://tva1.sinaimg.cn/large/008i3skNgy1gzbzsiptdej319q0iujvi.jpg"
+        data-srcset="https://tva1.sinaimg.cn/large/008i3skNgy1gzbzsiptdej319q0iujvi.jpg, https://tva1.sinaimg.cn/large/008i3skNgy1gzbzsiptdej319q0iujvi.jpg 1.5x, https://tva1.sinaimg.cn/large/008i3skNgy1gzbzsiptdej319q0iujvi.jpg 2x"
+        data-sizes="auto"
+        alt="https://tva1.sinaimg.cn/large/008i3skNgy1gzbzsiptdej319q0iujvi.jpg"
+        title="本次故障中 apiserver 访问链路" /></p>
+<p>由于 k8s watch 请求是 http2 协议, 故 client 与 gateway 之间保持了长连接，同时 gateway 与后端也保持长连接。</p>
+<p>当 apiserver 发生滚动重建后，gateway 与旧 apiserver 连接断开，同时与新 apiserver 建连。此时 client 与 gateway 仍然保持着原来那根连接，故在不重建 7 层 http2 连接的情况下，请求没法打到 new apiserver。</p>
+<p>故客户端虽然与 Upstream 网关连接正常，但网关与 apiserver 侧可能仍使用到旧 apiserver 的连接对，导致无法 watch 到事件。</p>
+<p>具体现象为</p>
+<ol>
+<li>客户端出现 watch 请求 hang 住, 偶发出现 watch 请求 503, 报错为: <code>server is currently unable to handler the requests</code> <img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://tva1.sinaimg.cn/large/008i3skNgy1gzbztytugsj325g09gn1l.jpg"
+        data-srcset="https://tva1.sinaimg.cn/large/008i3skNgy1gzbztytugsj325g09gn1l.jpg, https://tva1.sinaimg.cn/large/008i3skNgy1gzbztytugsj325g09gn1l.jpg 1.5x, https://tva1.sinaimg.cn/large/008i3skNgy1gzbztytugsj325g09gn1l.jpg 2x"
+        data-sizes="auto"
+        alt="https://tva1.sinaimg.cn/large/008i3skNgy1gzbztytugsj325g09gn1l.jpg"
+        title="503客户端截图" /></li>
+<li>通过 pprof 查看到 client-go ListAndWatch 函数中的 <code>watchHandler</code> 执行了 6000+ 分钟, 实际应该在 5-10 分钟后就退出重连。</li>
+</ol>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://tva1.sinaimg.cn/large/008i3skNgy1gzc6lt71lyj32460hadpv.jpg"
+        data-srcset="https://tva1.sinaimg.cn/large/008i3skNgy1gzc6lt71lyj32460hadpv.jpg, https://tva1.sinaimg.cn/large/008i3skNgy1gzc6lt71lyj32460hadpv.jpg 1.5x, https://tva1.sinaimg.cn/large/008i3skNgy1gzc6lt71lyj32460hadpv.jpg 2x"
+        data-sizes="auto"
+        alt="https://tva1.sinaimg.cn/large/008i3skNgy1gzc6lt71lyj32460hadpv.jpg"
+        title="503pprof截图" /></p>
+<h2 id="排查过程">排查过程</h2>
+<p>首先我的疑点是网关侧(ingressgateway)配置不正确导致了网关和旧 apiserver 连接仍保持，从而导致了客户端(client) watch 请求没有打到新 apiserver 上，但网关侧没有了现场更多信息，且线上 apiserver 集群不能频繁重启，故尝试用风险较低的场景<strong>复现问题</strong>。</p>
+<h3 id="环境">环境</h3>
+<ul>
+<li>两台 apiserver 实例(apiserver1、apiserver2)</li>
+<li>一台网关实例 (ingressgateway1)</li>
+<li>个人PC启动 k8s client</li>
+</ul>
+<h3 id="复现">复现</h3>
+<p>线下调试集群 apiserver (之后简称该集群为 staging 集群)请求一共有2实例, 脱敏考虑，我们简写其 ip 为 apiserverIp1、apiserverIp2</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://tva1.sinaimg.cn/large/008i3skNgy1gzbzywk9dgj324q0aywgy.jpg"
+        data-srcset="https://tva1.sinaimg.cn/large/008i3skNgy1gzbzywk9dgj324q0aywgy.jpg, https://tva1.sinaimg.cn/large/008i3skNgy1gzbzywk9dgj324q0aywgy.jpg 1.5x, https://tva1.sinaimg.cn/large/008i3skNgy1gzbzywk9dgj324q0aywgy.jpg 2x"
+        data-sizes="auto"
+        alt="https://tva1.sinaimg.cn/large/008i3skNgy1gzbzywk9dgj324q0aywgy.jpg"
+        title="本地netstat截图" /></p>
+<h4 id="1-新建调试网关-隔离线上流量">1. 新建调试网关, 隔离线上流量</h4>
+<p>先在生产环境单独起了一个 ingressgateway 网关实例，用于隔离线上流量，仅接收我的本地调试流量</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://tva1.sinaimg.cn/large/008i3skNly1gzc6pins06j324i03iwfd.jpg"
+        data-srcset="https://tva1.sinaimg.cn/large/008i3skNly1gzc6pins06j324i03iwfd.jpg, https://tva1.sinaimg.cn/large/008i3skNly1gzc6pins06j324i03iwfd.jpg 1.5x, https://tva1.sinaimg.cn/large/008i3skNly1gzc6pins06j324i03iwfd.jpg 2x"
+        data-sizes="auto"
+        alt="https://tva1.sinaimg.cn/large/008i3skNly1gzc6pins06j324i03iwfd.jpg"
+        title="单台调试网关实例" /></p>
+<h4 id="2-修改本地-dns-将流量打向网关">2. 修改本地 dns, 将流量打向网关</h4>
+<p>此时在 <code>/etc/hosts</code> 中将 staging 集群 apiserver 请求定向指向该 ingressgateway 实例</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://tva1.sinaimg.cn/large/008i3skNgy1gzc5ptnwg5j31fq0gwq6d.jpg"
+        data-srcset="https://tva1.sinaimg.cn/large/008i3skNgy1gzc5ptnwg5j31fq0gwq6d.jpg, https://tva1.sinaimg.cn/large/008i3skNgy1gzc5ptnwg5j31fq0gwq6d.jpg 1.5x, https://tva1.sinaimg.cn/large/008i3skNgy1gzc5ptnwg5j31fq0gwq6d.jpg 2x"
+        data-sizes="auto"
+        alt="https://tva1.sinaimg.cn/large/008i3skNgy1gzc5ptnwg5j31fq0gwq6d.jpg"
+        title="hosts注入内容" /></p>
+<h4 id="3-本地启动脚本模拟-watch-请求">3. 本地启动脚本模拟 watch 请求</h4>
+<p>在本地启动以下脚本 watch staging pod 事件</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span><span class="lnt">47
+</span><span class="lnt">48
+</span><span class="lnt">49
+</span><span class="lnt">50
+</span><span class="lnt">51
+</span><span class="lnt">52
+</span><span class="lnt">53
+</span><span class="lnt">54
+</span><span class="lnt">55
+</span><span class="lnt">56
+</span><span class="lnt">57
+</span><span class="lnt">58
+</span><span class="lnt">59
+</span><span class="lnt">60
+</span><span class="lnt">61
+</span><span class="lnt">62
+</span><span class="lnt">63
+</span><span class="lnt">64
+</span><span class="lnt">65
+</span><span class="lnt">66
+</span><span class="lnt">67
+</span><span class="lnt">68
+</span><span class="lnt">69
+</span><span class="lnt">70
+</span><span class="lnt">71
+</span><span class="lnt">72
+</span><span class="lnt">73
+</span><span class="lnt">74
+</span><span class="lnt">75
+</span><span class="lnt">76
+</span><span class="lnt">77
+</span><span class="lnt">78
+</span><span class="lnt">79
+</span><span class="lnt">80
+</span><span class="lnt">81
+</span><span class="lnt">82
+</span><span class="lnt">83
+</span><span class="lnt">84
+</span><span class="lnt">85
+</span><span class="lnt">86
+</span><span class="lnt">87
+</span><span class="lnt">88
+</span><span class="lnt">89
+</span><span class="lnt">90
+</span><span class="lnt">91
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-GO" data-lang="GO"><span class="kn">package</span> <span class="nx">main</span>
+
+<span class="kn">import</span> <span class="p">(</span>
+	<span class="s">&#34;flag&#34;</span>
+	<span class="s">&#34;fmt&#34;</span>
+	<span class="s">&#34;net/http&#34;</span>
+	<span class="nx">_</span> <span class="s">&#34;net/http/pprof&#34;</span>
+	<span class="s">&#34;time&#34;</span>
+
+	<span class="nx">v1</span> <span class="s">&#34;k8s.io/api/core/v1&#34;</span>
+	<span class="s">&#34;k8s.io/apimachinery/pkg/fields&#34;</span>
+	<span class="s">&#34;k8s.io/client-go/kubernetes&#34;</span>
+	<span class="s">&#34;k8s.io/client-go/tools/cache&#34;</span>
+	<span class="s">&#34;k8s.io/client-go/tools/clientcmd&#34;</span>
+	<span class="s">&#34;k8s.io/klog/v2&#34;</span>
+<span class="p">)</span>
+
+<span class="kd">var</span> <span class="p">(</span>
+	<span class="nx">kubeconfig</span>  <span class="p">=</span> <span class="nx">flag</span><span class="p">.</span><span class="nf">String</span><span class="p">(</span><span class="s">&#34;kubeconfig&#34;</span><span class="p">,</span> <span class="s">&#34;./config&#34;</span><span class="p">,</span> <span class="s">&#34;absolute path to the kubeconfig file&#34;</span><span class="p">)</span>
+	<span class="nx">enableProxy</span> <span class="p">=</span> <span class="nx">flag</span><span class="p">.</span><span class="nf">Bool</span><span class="p">(</span><span class="s">&#34;enableProxy&#34;</span><span class="p">,</span> <span class="kc">false</span><span class="p">,</span> <span class="s">&#34;if true, enable http proxy&#34;</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+	<span class="nx">klog</span><span class="p">.</span><span class="nf">InitFlags</span><span class="p">(</span><span class="kc">nil</span><span class="p">)</span>
+	<span class="k">defer</span> <span class="nx">klog</span><span class="p">.</span><span class="nf">Flush</span><span class="p">()</span>
+	<span class="nx">flag</span><span class="p">.</span><span class="nf">Parse</span><span class="p">()</span>
+	<span class="nx">klog</span><span class="p">.</span><span class="nf">Info</span><span class="p">(</span><span class="s">&#34;Starting test-watch-conn&#34;</span><span class="p">)</span>
+	<span class="nx">config</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">clientcmd</span><span class="p">.</span><span class="nf">BuildConfigFromFlags</span><span class="p">(</span><span class="s">&#34;&#34;</span><span class="p">,</span> <span class="o">*</span><span class="nx">kubeconfig</span><span class="p">)</span>
+	<span class="nx">config</span><span class="p">.</span><span class="nx">UserAgent</span> <span class="p">=</span> <span class="s">&#34;test-from-xiaoxu&#34;</span>
+	<span class="k">if</span> <span class="o">*</span><span class="nx">enableProxy</span> <span class="p">{</span>
+		<span class="nx">klog</span><span class="p">.</span><span class="nf">Info</span><span class="p">(</span><span class="s">&#34;Enable proxy, disabling tls cert verification&#34;</span><span class="p">)</span>
+		<span class="nx">config</span><span class="p">.</span><span class="nx">TLSClientConfig</span><span class="p">.</span><span class="nx">CAData</span> <span class="p">=</span> <span class="kc">nil</span>
+		<span class="nx">config</span><span class="p">.</span><span class="nx">TLSClientConfig</span><span class="p">.</span><span class="nx">Insecure</span> <span class="p">=</span> <span class="kc">true</span>
+	<span class="p">}</span>
+	<span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+		<span class="nb">panic</span><span class="p">(</span><span class="nx">err</span><span class="p">.</span><span class="nf">Error</span><span class="p">())</span>
+	<span class="p">}</span>
+	<span class="nx">clientset</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">kubernetes</span><span class="p">.</span><span class="nf">NewForConfig</span><span class="p">(</span><span class="nx">config</span><span class="p">)</span>
+	<span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+		<span class="nb">panic</span><span class="p">(</span><span class="nx">err</span><span class="p">.</span><span class="nf">Error</span><span class="p">())</span>
+	<span class="p">}</span>
+	<span class="c1">// Set hangFlag to test health of watching connection
+</span><span class="c1"></span>	<span class="nx">hangFlag</span> <span class="o">:=</span> <span class="mi">1</span>
+
+	<span class="nx">watchlist</span> <span class="o">:=</span> <span class="nx">cache</span><span class="p">.</span><span class="nf">NewListWatchFromClient</span><span class="p">(</span><span class="nx">clientset</span><span class="p">.</span><span class="nf">CoreV1</span><span class="p">().</span><span class="nf">RESTClient</span><span class="p">(),</span> <span class="s">&#34;pods&#34;</span><span class="p">,</span> <span class="nx">v1</span><span class="p">.</span><span class="nx">NamespaceAll</span><span class="p">,</span>
+		<span class="nx">fields</span><span class="p">.</span><span class="nf">Everything</span><span class="p">())</span>
+	<span class="nx">_</span><span class="p">,</span> <span class="nx">controller</span> <span class="o">:=</span> <span class="nx">cache</span><span class="p">.</span><span class="nf">NewInformer</span><span class="p">(</span>
+		<span class="nx">watchlist</span><span class="p">,</span>
+		<span class="o">&amp;</span><span class="nx">v1</span><span class="p">.</span><span class="nx">Pod</span><span class="p">{},</span>
+		<span class="nx">time</span><span class="p">.</span><span class="nx">Second</span><span class="o">*</span><span class="mi">0</span><span class="p">,</span>
+		<span class="nx">cache</span><span class="p">.</span><span class="nx">ResourceEventHandlerFuncs</span><span class="p">{</span>
+			<span class="nx">AddFunc</span><span class="p">:</span> <span class="kd">func</span><span class="p">(</span><span class="nx">obj</span> <span class="kd">interface</span><span class="p">{})</span> <span class="p">{</span>
+				<span class="c1">// fmt.Printf(&#34;pods added...\n&#34;)
+</span><span class="c1"></span>			<span class="p">},</span>
+			<span class="nx">DeleteFunc</span><span class="p">:</span> <span class="kd">func</span><span class="p">(</span><span class="nx">obj</span> <span class="kd">interface</span><span class="p">{})</span> <span class="p">{</span>
+				<span class="c1">// fmt.Printf(&#34;pods deleted...\n&#34;)
+</span><span class="c1"></span>			<span class="p">},</span>
+			<span class="nx">UpdateFunc</span><span class="p">:</span> <span class="kd">func</span><span class="p">(</span><span class="nx">oldObj</span><span class="p">,</span> <span class="nx">newObj</span> <span class="kd">interface</span><span class="p">{})</span> <span class="p">{</span>
+				<span class="nx">currentTime</span> <span class="o">:=</span> <span class="nx">time</span><span class="p">.</span><span class="nf">Now</span><span class="p">()</span>
+				<span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;[%s] pods(%s) changed...\n&#34;</span><span class="p">,</span> <span class="nx">currentTime</span><span class="p">.</span><span class="nf">Format</span><span class="p">(</span><span class="s">&#34;2006-01-02 15:04:05&#34;</span><span class="p">),</span> <span class="nx">newObj</span><span class="p">.(</span><span class="o">*</span><span class="nx">v1</span><span class="p">.</span><span class="nx">Pod</span><span class="p">).</span><span class="nx">Name</span><span class="p">)</span>
+				<span class="k">if</span> <span class="nx">hangFlag</span> <span class="o">==</span> <span class="mi">1</span> <span class="p">{</span>
+					<span class="c1">// Reset hangFlag
+</span><span class="c1"></span>					<span class="nx">hangFlag</span> <span class="p">=</span> <span class="mi">0</span>
+				<span class="p">}</span>
+			<span class="p">},</span>
+		<span class="p">},</span>
+	<span class="p">)</span>
+	<span class="nx">stop</span> <span class="o">:=</span> <span class="nb">make</span><span class="p">(</span><span class="kd">chan</span> <span class="kd">struct</span><span class="p">{})</span>
+	<span class="k">go</span> <span class="nx">controller</span><span class="p">.</span><span class="nf">Run</span><span class="p">(</span><span class="nx">stop</span><span class="p">)</span>
+
+	<span class="c1">// periodically check the connection
+</span><span class="c1"></span>	<span class="nx">timer</span> <span class="o">:=</span> <span class="nx">time</span><span class="p">.</span><span class="nf">NewTimer</span><span class="p">(</span><span class="mi">60</span> <span class="o">*</span> <span class="nx">time</span><span class="p">.</span><span class="nx">Second</span><span class="p">)</span>
+	<span class="k">go</span> <span class="kd">func</span><span class="p">()</span> <span class="p">{</span>
+		<span class="k">for</span> <span class="p">{</span>
+			<span class="nx">timer</span><span class="p">.</span><span class="nf">Reset</span><span class="p">(</span><span class="mi">60</span> <span class="o">*</span> <span class="nx">time</span><span class="p">.</span><span class="nx">Second</span><span class="p">)</span>
+			<span class="k">select</span> <span class="p">{</span>
+			<span class="k">case</span> <span class="o">&lt;-</span><span class="nx">timer</span><span class="p">.</span><span class="nx">C</span><span class="p">:</span>
+				<span class="k">if</span> <span class="nx">hangFlag</span> <span class="o">==</span> <span class="mi">1</span> <span class="p">{</span>
+					<span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;[%s]!!!Watch connection hang\n&#34;</span><span class="p">,</span> <span class="nx">time</span><span class="p">.</span><span class="nf">Now</span><span class="p">().</span><span class="nf">Format</span><span class="p">(</span><span class="s">&#34;2006-01-02 15:04:05&#34;</span><span class="p">))</span>
+				<span class="p">}</span>
+			<span class="p">}</span>
+		<span class="p">}</span>
+	<span class="p">}()</span>
+	<span class="c1">// start http server
+</span><span class="c1"></span>	<span class="nx">http</span><span class="p">.</span><span class="nf">ListenAndServe</span><span class="p">(</span><span class="s">&#34;0.0.0.0:6061&#34;</span><span class="p">,</span> <span class="kc">nil</span><span class="p">)</span>
+	<span class="nx">klog</span><span class="p">.</span><span class="nf">Info</span><span class="p">(</span><span class="s">&#34;Http server start, listening on 0.0.0.0:6061 : )&#34;</span><span class="p">)</span>
+	<span class="k">for</span> <span class="p">{</span>
+		<span class="nx">time</span><span class="p">.</span><span class="nf">Sleep</span><span class="p">(</span><span class="nx">time</span><span class="p">.</span><span class="nx">Second</span><span class="p">)</span>
+	<span class="p">}</span>
+<span class="p">}</span>
+
+</code></pre></td></tr></table>
+</div>
+</div><p>启动脚本开始 watch pod, 观察到此时 watch pod 正常.</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://tva1.sinaimg.cn/large/008i3skNgy1gzc5pzxaxaj31gi09sn1l.jpg"
+        data-srcset="https://tva1.sinaimg.cn/large/008i3skNgy1gzc5pzxaxaj31gi09sn1l.jpg, https://tva1.sinaimg.cn/large/008i3skNgy1gzc5pzxaxaj31gi09sn1l.jpg 1.5x, https://tva1.sinaimg.cn/large/008i3skNgy1gzc5pzxaxaj31gi09sn1l.jpg 2x"
+        data-sizes="auto"
+        alt="https://tva1.sinaimg.cn/large/008i3skNgy1gzc5pzxaxaj31gi09sn1l.jpg"
+        title="客户端client-go日志" /></p>
+<p>此时登录 ingressgateway 容器观察到网关一共有2个与 apiserver 的连接(这儿看到的 8080 端口是因为开了 istio sidecar)</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://tva1.sinaimg.cn/large/008i3skNgy1gzc5q6w7q0j312o0a8wg5.jpg"
+        data-srcset="https://tva1.sinaimg.cn/large/008i3skNgy1gzc5q6w7q0j312o0a8wg5.jpg, https://tva1.sinaimg.cn/large/008i3skNgy1gzc5q6w7q0j312o0a8wg5.jpg 1.5x, https://tva1.sinaimg.cn/large/008i3skNgy1gzc5q6w7q0j312o0a8wg5.jpg 2x"
+        data-sizes="auto"
+        alt="https://tva1.sinaimg.cn/large/008i3skNgy1gzc5q6w7q0j312o0a8wg5.jpg"
+        title="istio-apiserver访问链路" /></p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://tva1.sinaimg.cn/large/008i3skNgy1gzc5qd2fcfj324y07ijtu.jpg"
+        data-srcset="https://tva1.sinaimg.cn/large/008i3skNgy1gzc5qd2fcfj324y07ijtu.jpg, https://tva1.sinaimg.cn/large/008i3skNgy1gzc5qd2fcfj324y07ijtu.jpg 1.5x, https://tva1.sinaimg.cn/large/008i3skNgy1gzc5qd2fcfj324y07ijtu.jpg 2x"
+        data-sizes="auto"
+        alt="https://tva1.sinaimg.cn/large/008i3skNgy1gzc5qd2fcfj324y07ijtu.jpg"
+        title="在istio-apiserver链路下netstat信息" /></p>
+<p>此时对<strong>其中一个 apiserver 实例</strong>注入丢包规则，模拟 ingress -&gt; apiserver 请求失败。(<em>另一台 apiserver 正常</em>)</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash">iptables -A OUTPUT -p tcp --dst apiserver_ip_1 --dport <span class="m">8080</span> -j DROP
+</code></pre></td></tr></table>
+</div>
+</div><p>并且在网关侧同时对所有 apiserver 实例 8080 端口进行 tcpdump 抓包，预期情况下，apisever1 将不再出现新请求，同时另一个可用的  apiserver2 应该收到请求。</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://tva1.sinaimg.cn/large/008i3skNgy1gzc5rq23blj31kl0u0wpe.jpg"
+        data-srcset="https://tva1.sinaimg.cn/large/008i3skNgy1gzc5rq23blj31kl0u0wpe.jpg, https://tva1.sinaimg.cn/large/008i3skNgy1gzc5rq23blj31kl0u0wpe.jpg 1.5x, https://tva1.sinaimg.cn/large/008i3skNgy1gzc5rq23blj31kl0u0wpe.jpg 2x"
+        data-sizes="auto"
+        alt="https://tva1.sinaimg.cn/large/008i3skNgy1gzc5rq23blj31kl0u0wpe.jpg"
+        title="网关侧对异常apiserver抓包" /></p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://tva1.sinaimg.cn/large/008i3skNgy1gzc5rru2fvj31jl0u0ai8.jpg"
+        data-srcset="https://tva1.sinaimg.cn/large/008i3skNgy1gzc5rru2fvj31jl0u0ai8.jpg, https://tva1.sinaimg.cn/large/008i3skNgy1gzc5rru2fvj31jl0u0ai8.jpg 1.5x, https://tva1.sinaimg.cn/large/008i3skNgy1gzc5rru2fvj31jl0u0ai8.jpg 2x"
+        data-sizes="auto"
+        alt="https://tva1.sinaimg.cn/large/008i3skNgy1gzc5rru2fvj31jl0u0ai8.jpg"
+        title="网关侧对正常apiserver抓包" /></p>
+<p>此时观察到客户端 watch 请求 Hang 住，同时出现了 503, 复现了故障期间 watch 请求不断开的场景。</p>
+<h3 id="排查">排查</h3>
+<p>此时根据上述现场深挖信息，发现<strong>正常的 apiserver 抓包看到并没有收到新请求</strong>，同时异常的 apiserver 处于丢包状态无法处理请求，即从网关侧连接后端2个 apiserver 均&quot;异常&quot;了, 故客户端 watch 请求必然出现异常。</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://tva1.sinaimg.cn/large/008i3skNgy1gzc5rx04drj31cq0u0qf8.jpg"
+        data-srcset="https://tva1.sinaimg.cn/large/008i3skNgy1gzc5rx04drj31cq0u0qf8.jpg, https://tva1.sinaimg.cn/large/008i3skNgy1gzc5rx04drj31cq0u0qf8.jpg 1.5x, https://tva1.sinaimg.cn/large/008i3skNgy1gzc5rx04drj31cq0u0qf8.jpg 2x"
+        data-sizes="auto"
+        alt="https://tva1.sinaimg.cn/large/008i3skNgy1gzc5rx04drj31cq0u0qf8.jpg"
+        title="客户端client-go日志信息" /></p>
+<p>此时观察到本地客户端的 4 层 tcp 连接如下 (src port: 49739)， 端口未改变过，说明客户端 -&gt; ingress 的 tcp 连接未断开过。</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://tva1.sinaimg.cn/large/008i3skNgy1gzc5s01onyj324o0543zm.jpg"
+        data-srcset="https://tva1.sinaimg.cn/large/008i3skNgy1gzc5s01onyj324o0543zm.jpg, https://tva1.sinaimg.cn/large/008i3skNgy1gzc5s01onyj324o0543zm.jpg 1.5x, https://tva1.sinaimg.cn/large/008i3skNgy1gzc5s01onyj324o0543zm.jpg 2x"
+        data-sizes="auto"
+        alt="https://tva1.sinaimg.cn/large/008i3skNgy1gzc5s01onyj324o0543zm.jpg"
+        title="本地netstat截图" /></p>
+<p>于是我怀疑请求仍然走的老连接打到了异常 apiserver 上，网关侧没有做切换，将访问 apiserver 的请求路由到未丢包的 apiserver 上</p>
+<h3 id="找解决方案">找解决方案</h3>
+<p>根据上述疑点，我发现网关访问新的 apiserver 仍然是能通的，只是客户端 watch 请在于网关未断开的情况下仍使用了老的 apiserver 的连接，没有使用到这根新连接上。</p>
+<p>于是解决方案的思路大致为：<strong>如何让客户端断开异常的 apiserver 连接并连上新的 apiserver 。</strong></p>
+<p>由于在我们的链路下，客户端不直接和 apiserver 通讯，而是由网关进行代理，故问题转移到了如何在网关上找到方式通知客户端进行重连。调研后得到以下两种方案：</p>
+<ul>
+<li>方案1：在网关侧配置 <code>stream_idle_timeout</code> 参数, 由于客户端与网关在该异常下长时间没有 http2 的包传输，故必然不会有 h2 stream，那么使用该参数来使得网关侧主动断开没有包传输的老连接，触发客户端重连新连接。</li>
+</ul>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://tva1.sinaimg.cn/large/008i3skNgy1gzc5s1x0quj31g80l6dle.jpg"
+        data-srcset="https://tva1.sinaimg.cn/large/008i3skNgy1gzc5s1x0quj31g80l6dle.jpg, https://tva1.sinaimg.cn/large/008i3skNgy1gzc5s1x0quj31g80l6dle.jpg 1.5x, https://tva1.sinaimg.cn/large/008i3skNgy1gzc5s1x0quj31g80l6dle.jpg 2x"
+        data-sizes="auto"
+        alt="https://tva1.sinaimg.cn/large/008i3skNgy1gzc5s1x0quj31g80l6dle.jpg"
+        title="解决方案1" /></p>
+<ul>
+<li>方案2：网关侧通过 tcpKeepalive 掐断与异常 apiserver(配置了丢包规则) 连接，使得客户端重连。</li>
+</ul>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://tva1.sinaimg.cn/large/008i3skNgy1gzc5s4aa3oj31c80jo79n.jpg"
+        data-srcset="https://tva1.sinaimg.cn/large/008i3skNgy1gzc5s4aa3oj31c80jo79n.jpg, https://tva1.sinaimg.cn/large/008i3skNgy1gzc5s4aa3oj31c80jo79n.jpg 1.5x, https://tva1.sinaimg.cn/large/008i3skNgy1gzc5s4aa3oj31c80jo79n.jpg 2x"
+        data-sizes="auto"
+        alt="https://tva1.sinaimg.cn/large/008i3skNgy1gzc5s4aa3oj31c80jo79n.jpg"
+        title="解决方案2" /></p>
+<h3 id="验证">验证</h3>
+<p>我首先验证了方案1 &mdash;- <code>stream_idle_timeout</code> 的方式，增加如下 envoyFilter 配置。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">networking.istio.io/v1alpha3</span><span class="w">
+</span><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">EnvoyFilter</span><span class="w">
+</span><span class="w"></span><span class="nt">metadata</span><span class="p">:</span><span class="w">
+</span><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">ef-enable-stream-idle-timeout</span><span class="w">
+</span><span class="w">  </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l">istio-system</span><span class="w">
+</span><span class="w"></span><span class="nt">spec</span><span class="p">:</span><span class="w">
+</span><span class="w">  </span><span class="nt">configPatches</span><span class="p">:</span><span class="w">
+</span><span class="w">  </span>- <span class="nt">applyTo</span><span class="p">:</span><span class="w"> </span><span class="l">NETWORK_FILTER</span><span class="w">
+</span><span class="w">    </span><span class="nt">match</span><span class="p">:</span><span class="w">
+</span><span class="w">      </span><span class="nt">listener</span><span class="p">:</span><span class="w">
+</span><span class="w">        </span><span class="nt">filterChain</span><span class="p">:</span><span class="w">
+</span><span class="w">          </span><span class="nt">filter</span><span class="p">:</span><span class="w">
+</span><span class="w">            </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">envoy.http_connection_manager</span><span class="w">
+</span><span class="w">    </span><span class="nt">patch</span><span class="p">:</span><span class="w">
+</span><span class="w">      </span><span class="nt">operation</span><span class="p">:</span><span class="w"> </span><span class="l">MERGE</span><span class="w">
+</span><span class="w">      </span><span class="nt">value</span><span class="p">:</span><span class="w">
+</span><span class="w">        </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">envoy.http_connection_manager</span><span class="w">
+</span><span class="w">        </span><span class="nt">typed_config</span><span class="p">:</span><span class="w">
+</span><span class="w">          </span><span class="nt">&#34;@type&#34;: </span><span class="l">type.googleapis.com/envoy.extensions.filters.network.http_connection_manager.v3.HttpConnectionManager</span><span class="w">
+</span><span class="w">          </span><span class="nt">stream_idle_timeout</span><span class="p">:</span><span class="w"> </span><span class="l">600s</span><span class="w"> </span><span class="c"># 10mins, must be disabled for long-lived and streaming requests</span><span class="w">
+</span></code></pre></td></tr></table>
+</div>
+</div><p>网关确实能掐掉异常连接了，但也会掐掉 exec 这类客户端登录容器的&quot;正常连接&quot;，即业务方存在需要通过和 apiserver 建立 exec 长连接且长时间不会发送数据包的情况。加上 <code>stream_idle_timeout</code> 会误掐掉这些连接，对业务是有损的，于是放弃了方案一。</p>
+<p>接着我开始验证方案2，修改 apiserver destinationRule 配置，增加 tcpKeepalive</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://tva1.sinaimg.cn/large/008i3skNgy1gzc5s8d0h3j30gu0buaar.jpg"
+        data-srcset="https://tva1.sinaimg.cn/large/008i3skNgy1gzc5s8d0h3j30gu0buaar.jpg, https://tva1.sinaimg.cn/large/008i3skNgy1gzc5s8d0h3j30gu0buaar.jpg 1.5x, https://tva1.sinaimg.cn/large/008i3skNgy1gzc5s8d0h3j30gu0buaar.jpg 2x"
+        data-sizes="auto"
+        alt="https://tva1.sinaimg.cn/large/008i3skNgy1gzc5s8d0h3j30gu0buaar.jpg"
+        title="tcpKeepalive参数配置" /></p>
+<p>接着按照丢包的方案重新启动本地测试 client 进行验证</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://tva1.sinaimg.cn/large/008i3skNgy1gzc5s6kn0ej315q0mywm9.jpg"
+        data-srcset="https://tva1.sinaimg.cn/large/008i3skNgy1gzc5s6kn0ej315q0mywm9.jpg, https://tva1.sinaimg.cn/large/008i3skNgy1gzc5s6kn0ej315q0mywm9.jpg 1.5x, https://tva1.sinaimg.cn/large/008i3skNgy1gzc5s6kn0ej315q0mywm9.jpg 2x"
+        data-sizes="auto"
+        alt="https://tva1.sinaimg.cn/large/008i3skNgy1gzc5s6kn0ej315q0mywm9.jpg"
+        title="感知到报错的客户端日志" /></p>
+<p>观察发现客户端在下一次 relist(ListAndWatch) 后恢复正常</p>
+<p>同时再次在本地查看客户端端口为 49739, 4 层 tcp 连接未断开，说明客户端 -&gt; ingress 链路正常.</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://tva1.sinaimg.cn/large/008i3skNgy1gzc5sgzr78j324q0aywgy.jpg"
+        data-srcset="https://tva1.sinaimg.cn/large/008i3skNgy1gzc5sgzr78j324q0aywgy.jpg, https://tva1.sinaimg.cn/large/008i3skNgy1gzc5sgzr78j324q0aywgy.jpg 1.5x, https://tva1.sinaimg.cn/large/008i3skNgy1gzc5sgzr78j324q0aywgy.jpg 2x"
+        data-sizes="auto"
+        alt="https://tva1.sinaimg.cn/large/008i3skNgy1gzc5sgzr78j324q0aywgy.jpg"
+        title="感知到报错的客户端netstat截图" /></p>
+<p>进一步佐证了问题可能是 ingress 连上了不可用的 apiserver，而加上 tcpKeepalive 则让网关检查到 apiserver 不可用(仅网络层)，从而切换到另一个可用的 apiserver 实例。</p>
+<h3 id="根据-pprof-进行结论的二次验证">根据 pprof 进行结论的二次验证</h3>
+<p>由于目前所使用的 client-go 代码中增加了 watchTimeout 的逻辑，会周期性地进行 relist&amp;watch, 从而保障 watch 请求不会长时间 hang 住</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://tva1.sinaimg.cn/large/008i3skNgy1gzc5sj9vobj324k0ae0uu.jpg"
+        data-srcset="https://tva1.sinaimg.cn/large/008i3skNgy1gzc5sj9vobj324k0ae0uu.jpg, https://tva1.sinaimg.cn/large/008i3skNgy1gzc5sj9vobj324k0ae0uu.jpg 1.5x, https://tva1.sinaimg.cn/large/008i3skNgy1gzc5sj9vobj324k0ae0uu.jpg 2x"
+        data-sizes="auto"
+        alt="https://tva1.sinaimg.cn/large/008i3skNgy1gzc5sj9vobj324k0ae0uu.jpg"
+        title="client-go watchTimeout 代码段1" /></p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://tva1.sinaimg.cn/large/008i3skNgy1gzc5sln9z3j324q0kq456.jpg"
+        data-srcset="https://tva1.sinaimg.cn/large/008i3skNgy1gzc5sln9z3j324q0kq456.jpg, https://tva1.sinaimg.cn/large/008i3skNgy1gzc5sln9z3j324q0kq456.jpg 1.5x, https://tva1.sinaimg.cn/large/008i3skNgy1gzc5sln9z3j324q0kq456.jpg 2x"
+        data-sizes="auto"
+        alt="https://tva1.sinaimg.cn/large/008i3skNgy1gzc5sln9z3j324q0kq456.jpg"
+        title="client-go watchTimeout 代码段2" /></p>
+<p>故正常情况下 client-go watch 请求行为如下:</p>
+<ul>
+<li><strong>预期</strong>: 在每次调用 <code>ListAndWatch</code> 的时间窗口(5-10分钟内)未接收到请求，则会自动断开，进行 relist</li>
+</ul>
+<p>在未开启 tcpKeepalive 前，出现了 watchHandler goroutine hang 住问题, 观察下图 pprof 中 goroutine stack 发现，watchHandler 这个 goroutine 运行了超过 10min，未触发 client-go 中 relist 逻辑, 不符合预期。属于 watch hang 住行为。</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://tva1.sinaimg.cn/large/008i3skNgy1gzc5so5elfj31jg0u07hd.jpg"
+        data-srcset="https://tva1.sinaimg.cn/large/008i3skNgy1gzc5so5elfj31jg0u07hd.jpg, https://tva1.sinaimg.cn/large/008i3skNgy1gzc5so5elfj31jg0u07hd.jpg 1.5x, https://tva1.sinaimg.cn/large/008i3skNgy1gzc5so5elfj31jg0u07hd.jpg 2x"
+        data-sizes="auto"
+        alt="https://tva1.sinaimg.cn/large/008i3skNgy1gzc5so5elfj31jg0u07hd.jpg"
+        title="本地pprof截图" /></p>
+<p>而开启 tcpKeepalive 后，watchHandler goroutine hang 住问题消失，watchHandler 均不超过 5min，符合预期。watch hang 住问题消失。</p>
+<h2 id="问题根因">问题根因</h2>
+<p>定位到了 tcpKeepalive 能解这个问题后，咱开始怀疑这个参数的底层逻辑是啥，为啥能解这个问题。</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://robberphex.com/how-to-inspect-kubernetes-api/capture-architecture.png"
+        data-srcset="https://robberphex.com/how-to-inspect-kubernetes-api/capture-architecture.png, https://robberphex.com/how-to-inspect-kubernetes-api/capture-architecture.png 1.5x, https://robberphex.com/how-to-inspect-kubernetes-api/capture-architecture.png 2x"
+        data-sizes="auto"
+        alt="https://robberphex.com/how-to-inspect-kubernetes-api/capture-architecture.png"
+        title="charles k8s抓包链路" /></p>
+<p>由于这个参数是作用在网络 4 层，于是我第一想法是进行抓包拿更多信息。参考上图的抓包链路，我启动了 charles 进行 k8s apiserver https 抓包。</p>
+<p>观察发现未开启 tcpKeepalive 时，异常时(ingress 侧开启了单台 apiserver 丢包) ，客户端的 watch 请求 Tcp/Http 连接均不断开。而开启 tcpKeepalive 后，当网关访问到配置了丢包规则的 apiserver 时出现了 503, 并返回错误给客户端, 同时客户端的7层连接进行重建(streamId 变了)，重建后下一次 <code>ListAndWatch</code> 请求可以正常拿到响应。</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://tva1.sinaimg.cn/large/008i3skNgy1gzc5szlzjcj31c30u0tcq.jpg"
+        data-srcset="https://tva1.sinaimg.cn/large/008i3skNgy1gzc5szlzjcj31c30u0tcq.jpg, https://tva1.sinaimg.cn/large/008i3skNgy1gzc5szlzjcj31c30u0tcq.jpg 1.5x, https://tva1.sinaimg.cn/large/008i3skNgy1gzc5szlzjcj31c30u0tcq.jpg 2x"
+        data-sizes="auto"
+        alt="https://tva1.sinaimg.cn/large/008i3skNgy1gzc5szlzjcj31c30u0tcq.jpg"
+        title="charles 本地抓包截图1" /></p>
+<p>所以是什么导致了这个行为呢？</p>
+<p>由于 charles 只能抓取 7 层的数据包，我想看看 4 层的网络行为，依葫芦画瓢，再次通过 wireshark 抓包</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://tva1.sinaimg.cn/large/008i3skNgy1gzc5t30skyj31fw0u0wm2.jpg"
+        data-srcset="https://tva1.sinaimg.cn/large/008i3skNgy1gzc5t30skyj31fw0u0wm2.jpg, https://tva1.sinaimg.cn/large/008i3skNgy1gzc5t30skyj31fw0u0wm2.jpg 1.5x, https://tva1.sinaimg.cn/large/008i3skNgy1gzc5t30skyj31fw0u0wm2.jpg 2x"
+        data-sizes="auto"
+        alt="https://tva1.sinaimg.cn/large/008i3skNgy1gzc5t30skyj31fw0u0wm2.jpg"
+        title="wireshark解包截图1" /></p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://tva1.sinaimg.cn/large/008i3skNgy1gzc5t5t2z2j31gc0u0do9.jpg"
+        data-srcset="https://tva1.sinaimg.cn/large/008i3skNgy1gzc5t5t2z2j31gc0u0do9.jpg, https://tva1.sinaimg.cn/large/008i3skNgy1gzc5t5t2z2j31gc0u0do9.jpg 1.5x, https://tva1.sinaimg.cn/large/008i3skNgy1gzc5t5t2z2j31gc0u0do9.jpg 2x"
+        data-sizes="auto"
+        alt="https://tva1.sinaimg.cn/large/008i3skNgy1gzc5t5t2z2j31gc0u0do9.jpg"
+        title="wireshark解包截图2" /></p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://tva1.sinaimg.cn/large/008i3skNgy1gzc5t8lllrj31gf0u0dog.jpg"
+        data-srcset="https://tva1.sinaimg.cn/large/008i3skNgy1gzc5t8lllrj31gf0u0dog.jpg, https://tva1.sinaimg.cn/large/008i3skNgy1gzc5t8lllrj31gf0u0dog.jpg 1.5x, https://tva1.sinaimg.cn/large/008i3skNgy1gzc5t8lllrj31gf0u0dog.jpg 2x"
+        data-sizes="auto"
+        alt="https://tva1.sinaimg.cn/large/008i3skNgy1gzc5t8lllrj31gf0u0dog.jpg"
+        title="wireshark抓包截图3" /></p>
+<p>发现在开启网关侧 tcpKeepalive 后，网关侧访问异常 apiserver 失败，在网关节点上掐断了与异常 apiserver 的，同时客户端在与网关的 60s tcpkeepalive timeout 后，网关侧主动向客户端发送了一条报文，触发了客户端重建7层连接，客户端在连接重建后恢复正常，观察发现请求打到了另外一台正常的 apiserver 上。</p>
+<h2 id="思考">思考</h2>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://tva1.sinaimg.cn/large/008i3skNgy1gzc7935v52j308c04o0so.jpg"
+        data-srcset="https://tva1.sinaimg.cn/large/008i3skNgy1gzc7935v52j308c04o0so.jpg, https://tva1.sinaimg.cn/large/008i3skNgy1gzc7935v52j308c04o0so.jpg 1.5x, https://tva1.sinaimg.cn/large/008i3skNgy1gzc7935v52j308c04o0so.jpg 2x"
+        data-sizes="auto"
+        alt="https://tva1.sinaimg.cn/large/008i3skNgy1gzc7935v52j308c04o0so.jpg"
+        title="client-go-goodorbad" />
+client-go 中的 watchTimeout 是依靠 apiserver 主动发起才能进行 relist，在上述丢包场景下，apiserver 无法回包，故 watch 连接 hang 住的问题在 client-go 自身的机制是无法保证能自愈的，故在整条 apiserver 访问连上上，需要加上健康检查/探活逻辑(如 istio ingressgateway 对 apiserver 的探活)，才能保证 watch 请求可靠性。</p>
+</div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>更新于 2022-02-13</span>
+            </div>
+            <div class="post-info-license"></div>
+        </div>
+        <div class="post-info-line">
+            <div class="post-info-md"><span>
+                            <a class="link-to-markdown" href="/zh-cn/k8s-api-watch-hang-dignosis/index.md" target="_blank">阅读原始文档</a>
+                        </span></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="分享到 Twitter" data-sharer="twitter" data-url="https://example.com/zh-cn/k8s-api-watch-hang-dignosis/" data-title="记一次 k8s apiserver watch hang 问题排查" data-via="lexuscyborg103" data-hashtags="Kubernetes,Linux"><i class="fab fa-twitter fa-fw"></i></a><a href="javascript:void(0);" title="分享到 微博" data-sharer="weibo" data-url="https://example.com/zh-cn/k8s-api-watch-hang-dignosis/" data-title="记一次 k8s apiserver watch hang 问题排查"><i class="fab fa-weibo fa-fw"></i></a><a href="javascript:void(0);" title="分享到 Evernote" data-sharer="evernote" data-url="https://example.com/zh-cn/k8s-api-watch-hang-dignosis/" data-title="记一次 k8s apiserver watch hang 问题排查"><i class="fab fa-evernote fa-fw"></i></a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw"></i>&nbsp;<a href="/zh-cn/tags/kubernetes/">Kubernetes</a>,&nbsp;<a href="/zh-cn/tags/linux/">Linux</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">返回</a></span>&nbsp;|&nbsp;<span><a href="/zh-cn/">主页</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/zh-cn/its-ok-douban/" class="prev" rel="prev" title="豆瓣，纷纷扰扰无关"><i class="fas fa-angle-left fa-fw"></i>豆瓣，纷纷扰扰无关</a></div>
+</div>
+</article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line"><i class="far fa-copyright fa-fw"></i><span itemprop="copyrightYear">2015 - 2022</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/" target="_blank">LexusLee</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="回到顶部">
+                <i class="fas fa-arrow-up fa-fw"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="查看评论">
+                <i class="fas fa-comment fa-fw"></i>
+            </a>
+        </div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery.js@1.2.0/dist/css/lightgallery.min.css"><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/smooth-scroll@16.1.3/dist/smooth-scroll.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/autocomplete.js@0.37.1/dist/autocomplete.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/algoliasearch@4.2.0/dist/algoliasearch-lite.umd.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lazysizes@5.2.2/lazysizes.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lightgallery.js@1.2.0/dist/js/lightgallery.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lg-thumbnail.js@1.2.0/dist/lg-thumbnail.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lg-zoom.js@1.2.0/dist/lg-zoom.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/clipboard@2.0.6/dist/clipboard.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sharer.js@0.4.0/sharer.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"复制到剪贴板","maxShownLines":10},"comment":{},"lightGallery":{"actualSize":false,"exThumbImage":"data-thumbnail","hideBarsDelay":2000,"selector":".lightgallery","speed":400,"thumbContHeight":80,"thumbWidth":80,"thumbnail":true},"search":{"algoliaAppID":"PASDMWALPK","algoliaIndex":"index.zh-cn","algoliaSearchKey":"b42948e51daaa93df92381c8e2ac0f93","highlightTag":"em","maxResultLength":10,"noResultsFound":"没有找到结果","snippetLength":50,"type":"algolia"}};</script><script type="text/javascript" src="/js/theme.min.js"></script></body>
+</html>

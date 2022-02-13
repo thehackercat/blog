@@ -4,7 +4,19 @@
         <link>https://example.com/tags/linux/</link>
         <description>Linux - Tag - LexusLee&#39;s blog</description>
         <generator>Hugo -- gohugo.io</generator><language>en</language><managingEditor>lexuscyborg103@gmail.com (LexusLee)</managingEditor>
-            <webMaster>lexuscyborg103@gmail.com (LexusLee)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Sun, 26 Dec 2021 13:40:08 &#43;0800</lastBuildDate><atom:link href="https://example.com/tags/linux/" rel="self" type="application/rss+xml" /><item>
+            <webMaster>lexuscyborg103@gmail.com (LexusLee)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Sun, 13 Feb 2022 21:55:54 &#43;0800</lastBuildDate><atom:link href="https://example.com/tags/linux/" rel="self" type="application/rss+xml" /><item>
+    <title>记一次 k8s apiserver watch hang 问题排查</title>
+    <link>https://example.com/k8s-api-watch-hang-dignosis/</link>
+    <pubDate>Sun, 13 Feb 2022 21:55:54 &#43;0800</pubDate>
+    <author>Author</author>
+    <guid>https://example.com/k8s-api-watch-hang-dignosis/</guid>
+    <description><![CDATA[Lexus Lee 记一次 k8s apiserver watch hang 问题排查 问题背景 注📢: 本文中涉及 apiserver 地址和 ingressgateway 地址, 为脱敏处理, 将会做马赛克处理！！！
+传统的 kubernetes apiserver 请求访问链路为客户端直连 apiserver，为了做 apiserver 高可用，通常我们会给 apiserver 前端再套一层4层或7层代理做多个 apiserver 实例的负载均衡。
+在我们的场景下，使用了 istio 的 ingressgateway 作为 client -&gt; apiserver 这条链路中的7层代理。链路变成了 client -&gt; ingressgateway -&gt; apiserver ，gateway 暴露 80 端口供客户端访问, 同时通过 istio virtualService + destinationRule 规则配置 gateway 能通过域名访问到 apiserver 6443 端口，从而实现流量路由。
+具体链路如下图所示，
+在这样的链路下，我们遇到了如下问题，
+在 k8s apiserver 1.18 版本的集群在滚动重启过出现部分组件无法 watch 到事件的情况，客户端 watch 请求偶发 503。需要重启组件，重建 watch 连接才能恢复。]]></description>
+</item><item>
     <title>《容器高手实战》笔记</title>
     <link>https://example.com/container-travel-lesson-01/</link>
     <pubDate>Sun, 26 Dec 2021 13:40:08 &#43;0800</pubDate>
@@ -116,18 +128,5 @@ Scheduler 会先 watch apiserver 获取其中待调度的 pod, 即 pod.spec.node
 <p></p>
 <p>登服务器一看, 有个 postgres 账户跑的进程把 CPU 占满了，进程名特别奇怪。</p>
 <p></p>]]></description>
-</item><item>
-    <title>坦率地讲 服务熔断 &amp; 服务降级</title>
-    <link>https://example.com/service-fallback/</link>
-    <pubDate>Thu, 01 Feb 2018 19:03:25 &#43;0000</pubDate>
-    <author>Author</author>
-    <guid>https://example.com/service-fallback/</guid>
-    <description><![CDATA[<h2 id="坦率地讲-服务熔断--服务降级">坦率地讲 服务熔断 &amp; 服务降级</h2>
-<h3 id="背景">背景</h3>
-<p>之前遇到个问题，发现一个系统如果拆分了太多业务类服务，或者依赖于大量的第三方服务，就很容易因为某个服务的故障导致整个系统不可用，比如</p>
-<ul>
-<li>模块中使用了 Elastic Search 进行监控，但是 ES 突然挂了，相关的 api 的调用报错导致级联的服务全部阻塞，那么应该要有规避由 ES 调用 raise 出的异常或者调用超时而导致整个模块或整个系统崩溃的保护措施。</li>
-<li>使用 AWS 或 阿里云 的 ECS 服务来作为 micro-service 的载体，但是 ECS 服务故障或者过载了导致整个业务链无法正常进行，那么应有对应的降级或者限制调用频度的方案来进行保护。</li>
-</ul>]]></description>
 </item></channel>
 </rss>

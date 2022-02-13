@@ -104,6 +104,29 @@
         alt="/images/avatar.png"
         title="/images/avatar.png" /></a></div><h1 class="home-title">LexusLee's blog</h1><h2 class="home-subtitle"><div id="id-1" class="typeit"></div></h2><div class="links"><a href="https://github.com/thehackercat" title="GitHub" target="_blank" rel="noopener noreffer me"><i class="fab fa-github-alt fa-fw"></i></a><a href="https://twitter.com/lexuscyborg103" title="Twitter" target="_blank" rel="noopener noreffer me"><i class="fab fa-twitter fa-fw"></i></a><a href="https://www.instagram.com/thehackercat" title="Instagram" target="_blank" rel="noopener noreffer me"><i class="fab fa-instagram fa-fw"></i></a><a href="https://t.me/thehackercat" title="Telegram" target="_blank" rel="noopener noreffer me"><i class="fab fa-telegram-plane fa-fw"></i></a><a href="https://www.douban.com/people/thehackercat" title="豆瓣" target="_blank" rel="noopener noreffer me"><i data-svg-src="https://cdn.jsdelivr.net/npm/simple-icons@2.14.0/icons/douban.svg"></i></a><a href="mailto:lexuscyborg103@gmail.com" title="Email" rel=" me"><i class="far fa-envelope fa-fw"></i></a><a href="/zh-cn/index.xml" title="RSS" target="_blank" rel="noopener noreffer me"><i class="fas fa-rss fa-fw"></i></a></div></div>
 <article class="single summary" itemscope itemtype="http://schema.org/Article"><h1 class="single-title" itemprop="name headline">
+        <a href="/zh-cn/scarllet-sql-attack/">记一次 postgresql 斯嘉丽约翰逊攻击的排查</a>
+    </h1><div class="post-meta"><span class="post-author"><a href="/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw"></i>LexusLee</a></span>&nbsp;<span class="post-publish">发布于 <time datetime="2018-08-11">2018-08-11</time></span>&nbsp;<span class="post-category">收录于 <a href="/zh-cn/categories/coding/"><i class="far fa-folder fa-fw"></i>Coding</a></span></div><div class="content"><h3 id="背景">背景</h3>
+<p>今天下午连续收到了腾讯云 CPU overload 报警</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="http://7xse6j.com1.z0.glb.clouddn.com/CPU%20Overload.png"
+        data-srcset="http://7xse6j.com1.z0.glb.clouddn.com/CPU%20Overload.png, http://7xse6j.com1.z0.glb.clouddn.com/CPU%20Overload.png 1.5x, http://7xse6j.com1.z0.glb.clouddn.com/CPU%20Overload.png 2x"
+        data-sizes="auto"
+        alt="http://7xse6j.com1.z0.glb.clouddn.com/CPU%20Overload.png"
+        title="CPU Usage" /></p>
+<p>登服务器一看, 有个 postgres 账户跑的进程把 CPU 占满了，进程名特别奇怪。</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="http://7xse6j.com1.z0.glb.clouddn.com/htopinfo.png"
+        data-srcset="http://7xse6j.com1.z0.glb.clouddn.com/htopinfo.png, http://7xse6j.com1.z0.glb.clouddn.com/htopinfo.png 1.5x, http://7xse6j.com1.z0.glb.clouddn.com/htopinfo.png 2x"
+        data-sizes="auto"
+        alt="http://7xse6j.com1.z0.glb.clouddn.com/htopinfo.png"
+        title="Htop info" /></p></div><div class="post-footer">
+        <a href="/zh-cn/scarllet-sql-attack/">阅读全文</a><div class="post-tags">
+                <i class="fas fa-tags fa-fw"></i>&nbsp;<a href="/zh-cn/tags/security/">Security</a>,&nbsp;<a href="/zh-cn/tags/linux/">Linux</a></div></div>
+</article><article class="single summary" itemscope itemtype="http://schema.org/Article"><h1 class="single-title" itemprop="name headline">
         <a href="/zh-cn/go-decorator/">Golang 实现装饰器</a>
     </h1><div class="post-meta"><span class="post-author"><a href="/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw"></i>LexusLee</a></span>&nbsp;<span class="post-publish">发布于 <time datetime="2018-02-10">2018-02-10</time></span>&nbsp;<span class="post-category">收录于 <a href="/zh-cn/categories/coding/"><i class="far fa-folder fa-fw"></i>Coding</a></span></div><div class="content">Go 实现装饰器 类似于 Java 中的装饰器模式, 在 go 中也会有需要 patch 一个函数的需求. 一个常见的场景就是比如计算某个函数耗时的 decorator, 那么利用 functional programming 思想. 在 go 中的实</div><div class="post-footer">
         <a href="/zh-cn/go-decorator/">阅读全文</a><div class="post-tags">
@@ -140,11 +163,6 @@
 <p>最近踩到一个 &ldquo;Socket 连接持续处于 Fin_Wait2 和 Close_Wait 状态无法关闭&rdquo; 的坑中。起因是在维护大量连接时调用 <code>socket.close()</code> 时，看到部分连接并没有正常关闭，而是从 <code>ESTABLISHED</code> 的状态变成 <code>FIN_WAIT2</code> 并且连接状态没有后续迁移，而对端的连接状态则是从 <code>ESTABLISHED</code> 变成了 <code>CLOSE_WAIT</code> 。</p></div><div class="post-footer">
         <a href="/zh-cn/tcp-close-socket/">阅读全文</a><div class="post-tags">
                 <i class="fas fa-tags fa-fw"></i>&nbsp;<a href="/zh-cn/tags/tcp/">TCP</a>,&nbsp;<a href="/zh-cn/tags/linux/">Linux</a></div></div>
-</article><article class="single summary" itemscope itemtype="http://schema.org/Article"><h1 class="single-title" itemprop="name headline">
-        <a href="/zh-cn/sketch-icon-understanding/">Sketch 锤子水箱图标仿制心得</a>
-    </h1><div class="post-meta"><span class="post-author"><a href="/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw"></i>LexusLee</a></span>&nbsp;<span class="post-publish">发布于 <time datetime="2017-08-22">2017-08-22</time></span>&nbsp;<span class="post-category">收录于 <a href="/zh-cn/categories/design/"><i class="far fa-folder fa-fw"></i>Design</a></span></div><div class="content">Sketch 锤子水箱图标仿制心得 背景 第一次按照教程走了一遍，发现做出来的颜色、高光和饱和方面都很差，拟物化的感觉不是很明显。 第二次修改心得 接着私信问了</div><div class="post-footer">
-        <a href="/zh-cn/sketch-icon-understanding/">阅读全文</a><div class="post-tags">
-                <i class="fas fa-tags fa-fw"></i>&nbsp;<a href="/zh-cn/tags/icon/">Icon</a>,&nbsp;<a href="/zh-cn/tags/sketch/">Sketch</a></div></div>
 </article><ul class="pagination"><li class="page-item ">
                     <span class="page-link">
                         <a href="/zh-cn/">1</a>
@@ -175,7 +193,7 @@
                     <span class="page-link" aria-hidden="true">&hellip;</span>
                 </li><li class="page-item ">
                     <span class="page-link">
-                        <a href="/zh-cn/page/9/">9</a>
+                        <a href="/zh-cn/page/10/">10</a>
                     </span>
                 </li></ul></div></div>
             </main><footer class="footer">

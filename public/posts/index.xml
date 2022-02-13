@@ -4,7 +4,19 @@
         <link>https://example.com/posts/</link>
         <description>All Posts | LexusLee&#39;s blog</description>
         <generator>Hugo -- gohugo.io</generator><language>en</language><managingEditor>lexuscyborg103@gmail.com (LexusLee)</managingEditor>
-            <webMaster>lexuscyborg103@gmail.com (LexusLee)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Sat, 29 Jan 2022 16:19:50 &#43;0800</lastBuildDate><atom:link href="https://example.com/posts/" rel="self" type="application/rss+xml" /><item>
+            <webMaster>lexuscyborg103@gmail.com (LexusLee)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Sun, 13 Feb 2022 21:55:54 &#43;0800</lastBuildDate><atom:link href="https://example.com/posts/" rel="self" type="application/rss+xml" /><item>
+    <title>记一次 k8s apiserver watch hang 问题排查</title>
+    <link>https://example.com/k8s-api-watch-hang-dignosis/</link>
+    <pubDate>Sun, 13 Feb 2022 21:55:54 &#43;0800</pubDate>
+    <author>Author</author>
+    <guid>https://example.com/k8s-api-watch-hang-dignosis/</guid>
+    <description><![CDATA[Lexus Lee 记一次 k8s apiserver watch hang 问题排查 问题背景 注📢: 本文中涉及 apiserver 地址和 ingressgateway 地址, 为脱敏处理, 将会做马赛克处理！！！
+传统的 kubernetes apiserver 请求访问链路为客户端直连 apiserver，为了做 apiserver 高可用，通常我们会给 apiserver 前端再套一层4层或7层代理做多个 apiserver 实例的负载均衡。
+在我们的场景下，使用了 istio 的 ingressgateway 作为 client -&gt; apiserver 这条链路中的7层代理。链路变成了 client -&gt; ingressgateway -&gt; apiserver ，gateway 暴露 80 端口供客户端访问, 同时通过 istio virtualService + destinationRule 规则配置 gateway 能通过域名访问到 apiserver 6443 端口，从而实现流量路由。
+具体链路如下图所示，
+在这样的链路下，我们遇到了如下问题，
+在 k8s apiserver 1.18 版本的集群在滚动重启过出现部分组件无法 watch 到事件的情况，客户端 watch 请求偶发 503。需要重启组件，重建 watch 连接才能恢复。]]></description>
+</item><item>
     <title>豆瓣，纷纷扰扰无关</title>
     <link>https://example.com/its-ok-douban/</link>
     <pubDate>Sat, 29 Jan 2022 16:19:50 &#43;0800</pubDate>
@@ -169,47 +181,5 @@ Scuba 是Facebook的数据管理系统，用于大部分的实时分析。Scuba 
 我给自己定了个目标，这一年里，要看够 1750 部电影。
 没想一个月过去了，只看到了 1518 部。
 要是电影可以投射在云层里，那我便天天都可以看电影了。]]></description>
-</item><item>
-    <title>I hate people</title>
-    <link>https://example.com/i-hate-people/</link>
-    <pubDate>Fri, 29 Jan 2021 18:47:00 &#43;0800</pubDate>
-    <author>Author</author>
-    <guid>https://example.com/i-hate-people/</guid>
-    <description><![CDATA[「I hate people !」
-早上摸鱼时从友邻广播里看到这句话.
-广播里讲了个故事，一位很健谈的朋友，一边讨厌人类，一边等个红灯都能跟人聊五块钱的，从椰子鸡到加拿大冰球，什么都聊。
-如此言行不一致, 遭到了质疑。
-朋友解释道，people in general 才是让他厌烦之处。When it gets personal, 那世界就变得有趣起来。
-我开始反思。
-是啊, people 是个非常 general 的概念, 是无具象的.
-但当讨论到 person. 那这个人开始有了名字，有了声调. 这个人从&quot;people&quot;的群体里脱离出来，变得具象起来。
-every single person 各有各自值得喜欢的地方。
-只要一想到一个人类，无论他或她在哪里，在做什么想什么，都在发出悠长的呼吸;
-睡梦时眼皮微微滑动，在做梦
-睡醒时眼皮被太阳直登登地打亮
-这样鲜活的人，多浪漫呀.
-哪儿会有人不喜欢具象的人呢。
-反观下来，自己似乎常常追逐一些抽象的事物。
-越是虚妄，越着迷。
-像是对超级英雄有着的不切实际的幻想, 渴望超能力的降临.
-而抽离回生活中，却只能靠具象之物来校正这份抽象，而无法放弃抽象本身。
-即使那些肌肤相亲的实景实物让人感到愉悦，但也会怀疑是否是自己赋予了某种抽象的意义.
-王小波说，人是轻易不能知道自己的。
-因为我们的感官是向外的，能察觉到他人细微的变化。但对于自己却不十分了然。
-我不太信。
-我爱游离在幻想与现实的边界。
-有时，我想我爱自己多过爱他人。
-我希望我的自我永远滋滋作响，翻腾不休，就像火炭上的一滴糖。
-只是转念一想，
-椰子鸡也好吃，加拿大冰球，也挺酷。
-还有铲冰激凌，炸得焦脆的牛奶块。
-打开冰箱门满满的饮料。
-冬天里猫咪柔软的肚子，以及情人温软的胸膛。
-美好得令人惭愧。
-你说，从今天起,
-我也要开始学习爱人，爱他人，爱具象的人。
-像王小波一样, 像友邻的朋友一样，
-I hate people,
-But I love person.]]></description>
 </item></channel>
 </rss>
